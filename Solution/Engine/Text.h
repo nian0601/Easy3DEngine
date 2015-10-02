@@ -8,7 +8,7 @@ struct ID3D11InputLayout;
 struct D3D11_BUFFER_DESC;
 struct D3D11_SUBRESOURCE_DATA;
 
-namespace Prism
+namespace Easy3D
 {
 	class Effect;
 	class Font;

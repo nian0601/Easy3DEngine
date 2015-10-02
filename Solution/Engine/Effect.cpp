@@ -9,12 +9,12 @@
 #include "Engine.h"
 #include "Texture.h"
 
-Prism::Effect::Effect()
+Easy3D::Effect::Effect()
 {
 	myEffectListeners.Init(2);
 }
 
-bool Prism::Effect::Init(const std::string& aEffectFile)
+bool Easy3D::Effect::Init(const std::string& aEffectFile)
 {
 	//if (myEffect != nullptr)
 	//{
@@ -36,33 +36,33 @@ bool Prism::Effect::Init(const std::string& aEffectFile)
 
 }
 
-void Prism::Effect::SetScaleVector(const CU::Vector3<float>& aScaleVector)
+void Easy3D::Effect::SetScaleVector(const CU::Vector3<float>& aScaleVector)
 {
 	myScaleVectorVariable->SetFloatVector(&aScaleVector.x);
 }
 
-void Prism::Effect::SetWorldMatrix(const CU::Matrix44<float>& aWorldMatrix)
+void Easy3D::Effect::SetWorldMatrix(const CU::Matrix44<float>& aWorldMatrix)
 {
 	myWorldMatrixVariable->SetMatrix(&aWorldMatrix.myMatrix[0]);
 }
 
-void Prism::Effect::SetViewMatrix(const CU::Matrix44<float>& aViewMatrix)
+void Easy3D::Effect::SetViewMatrix(const CU::Matrix44<float>& aViewMatrix)
 {
 	myViewMatrixVariable->SetMatrix(&aViewMatrix.myMatrix[0]);
 }
 
-void Prism::Effect::SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix)
+void Easy3D::Effect::SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix)
 {
 	myProjectionMatrixVariable->SetMatrix(&aProjectionMatrix.myMatrix[0]);
 }
 
-void Prism::Effect::SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask)
+void Easy3D::Effect::SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask)
 {
 	Engine::GetInstance()->GetContex()->OMSetBlendState(aBlendState, aBlendFactor, aSampleMask);
 }
 
-void Prism::Effect::UpdateDirectionalLights(
-	const CU::StaticArray<Prism::DirectionalLightData, NUMBER_OF_DIRECTIONAL_LIGHTS>& someDirectionalLightData)
+void Easy3D::Effect::UpdateDirectionalLights(
+	const CU::StaticArray<Easy3D::DirectionalLightData, NUMBER_OF_DIRECTIONAL_LIGHTS>& someDirectionalLightData)
 {
 	if (myDirectionalLightVariable != nullptr)
 	{
@@ -71,7 +71,7 @@ void Prism::Effect::UpdateDirectionalLights(
 	}
 }
 
-void Prism::Effect::UpdatePointLights(const CU::StaticArray<PointLightData, NUMBER_OF_POINT_LIGHTS>& somePointLightData)
+void Easy3D::Effect::UpdatePointLights(const CU::StaticArray<PointLightData, NUMBER_OF_POINT_LIGHTS>& somePointLightData)
 {
 	if (myPointLightVariable != nullptr)
 	{
@@ -79,7 +79,7 @@ void Prism::Effect::UpdatePointLights(const CU::StaticArray<PointLightData, NUMB
 	}
 }
 
-void Prism::Effect::UpdateSpotLights(const CU::StaticArray<SpotLightData, NUMBER_OF_SPOT_LIGHTS>& someSpotLightData)
+void Easy3D::Effect::UpdateSpotLights(const CU::StaticArray<SpotLightData, NUMBER_OF_SPOT_LIGHTS>& someSpotLightData)
 {
 	if (mySpotLightVariable != nullptr)
 	{
@@ -87,7 +87,7 @@ void Prism::Effect::UpdateSpotLights(const CU::StaticArray<SpotLightData, NUMBER
 	}
 }
 
-void Prism::Effect::UpdateTime(const float aDeltaTime)
+void Easy3D::Effect::UpdateTime(const float aDeltaTime)
 {
 	if (myTotalTimeVariable != nullptr)
 	{
@@ -99,7 +99,7 @@ void Prism::Effect::UpdateTime(const float aDeltaTime)
 }
 
 
-bool Prism::Effect::ReloadShader(const std::string& aFile)
+bool Easy3D::Effect::ReloadShader(const std::string& aFile)
 {
 	Sleep(100);
 

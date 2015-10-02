@@ -8,7 +8,7 @@ struct D3D11_BUFFER_DESC;
 struct D3D11_SUBRESOURCE_DATA;
 struct ID3D11InputLayout;
 
-namespace Prism
+namespace Easy3D
 {
 	class Camera;
 	class Effect;

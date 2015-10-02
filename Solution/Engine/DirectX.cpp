@@ -4,27 +4,27 @@
 
 
 
-Prism::DirectX::DirectX(HWND& aHwnd, SetupInfo& aSetupInfo)
+Easy3D::DirectX::DirectX(HWND& aHwnd, SetupInfo& aSetupInfo)
 	: myHWND(aHwnd)
 	, mySetupInfo(aSetupInfo)
 {
 	D3DSetup();
 }
 
-void Prism::DirectX::Present(const unsigned int aSyncInterval, const unsigned int aFlags)
+void Easy3D::DirectX::Present(const unsigned int aSyncInterval, const unsigned int aFlags)
 {
 	mySwapChain->Present(aSyncInterval, aFlags);
 	
 }
 
-void Prism::DirectX::Clear(const float aClearColor[4])
+void Easy3D::DirectX::Clear(const float aClearColor[4])
 {
 	myContext->OMSetRenderTargets(1, &myRenderTargetView, myDepthBufferView);
 	myContext->ClearRenderTargetView(myRenderTargetView, aClearColor);
 	myContext->ClearDepthStencilView(myDepthBufferView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
-void Prism::DirectX::OnResize(const int aWidth, const int aHeight)
+void Easy3D::DirectX::OnResize(const int aWidth, const int aHeight)
 {
 	myContext->OMSetRenderTargets(0, NULL, NULL);
 	myRenderTargetView->Release();
@@ -41,7 +41,7 @@ void Prism::DirectX::OnResize(const int aWidth, const int aHeight)
 	D3DStencilBufferSetup(aWidth, aHeight);
 }
 
-void Prism::DirectX::CleanD3D()
+void Easy3D::DirectX::CleanD3D()
 {
 	mySwapChain->SetFullscreenState(FALSE, NULL);
 
@@ -58,17 +58,17 @@ void Prism::DirectX::CleanD3D()
 	myContext = nullptr;
 }
 
-void Prism::DirectX::EnableZBuffer()
+void Easy3D::DirectX::EnableZBuffer()
 {
 	myContext->OMSetDepthStencilState(myEnabledDepthStencilState, 1);
 }
 
-void Prism::DirectX::DisableZBuffer()
+void Easy3D::DirectX::DisableZBuffer()
 {
 	myContext->OMSetDepthStencilState(myDisabledDepthStencilState, 1);
 }
 
-bool Prism::DirectX::D3DSetup()
+bool Easy3D::DirectX::D3DSetup()
 {
 	if (D3DSwapChainSetup() == false)
 	{
@@ -131,7 +131,7 @@ bool Prism::DirectX::D3DSetup()
 	return true;
 }
 
-bool Prism::DirectX::D3DRenderTargetSetup()
+bool Easy3D::DirectX::D3DRenderTargetSetup()
 {
 	ID3D11Texture2D* backBuffer = nullptr;
 	mySwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
@@ -144,7 +144,7 @@ bool Prism::DirectX::D3DRenderTargetSetup()
 	return TRUE;
 }
 
-bool Prism::DirectX::D3DSwapChainSetup()
+bool Easy3D::DirectX::D3DSwapChainSetup()
 {
 	DXGI_SWAP_CHAIN_DESC swapChainDesc;
 	ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
@@ -181,7 +181,7 @@ bool Prism::DirectX::D3DSwapChainSetup()
 	return TRUE;
 }
 
-bool Prism::DirectX::D3DViewPortSetup(int aWidth, int aHeight)
+bool Easy3D::DirectX::D3DViewPortSetup(int aWidth, int aHeight)
 {
 	D3D11_VIEWPORT viewPort;
 	ZeroMemory(&viewPort, sizeof(D3D11_VIEWPORT));
@@ -198,7 +198,7 @@ bool Prism::DirectX::D3DViewPortSetup(int aWidth, int aHeight)
 	return true;
 }
 
-bool Prism::DirectX::D3DStencilBufferSetup(int aWidth, int aHeight)
+bool Easy3D::DirectX::D3DStencilBufferSetup(int aWidth, int aHeight)
 {
 	HRESULT hr = S_OK;
 
@@ -237,7 +237,7 @@ bool Prism::DirectX::D3DStencilBufferSetup(int aWidth, int aHeight)
 	return true;
 }
 
-bool Prism::DirectX::D3DEnabledStencilStateSetup()
+bool Easy3D::DirectX::D3DEnabledStencilStateSetup()
 {
 	HRESULT hr = S_OK;
 
@@ -268,7 +268,7 @@ bool Prism::DirectX::D3DEnabledStencilStateSetup()
 	return true;
 }
 
-bool Prism::DirectX::D3DDisabledStencilStateSetup()
+bool Easy3D::DirectX::D3DDisabledStencilStateSetup()
 {
 	HRESULT hr = S_OK;
 
@@ -299,7 +299,7 @@ bool Prism::DirectX::D3DDisabledStencilStateSetup()
 	return true;
 }
 
-bool Prism::DirectX::D3DWireframeRasterizerStateSetup()
+bool Easy3D::DirectX::D3DWireframeRasterizerStateSetup()
 {
 
 	D3D11_RASTERIZER_DESC desc;
@@ -321,7 +321,7 @@ bool Prism::DirectX::D3DWireframeRasterizerStateSetup()
 	return true;
 }
 
-bool Prism::DirectX::D3DSolidRasterizerStateSetup()
+bool Easy3D::DirectX::D3DSolidRasterizerStateSetup()
 {
 	D3D11_RASTERIZER_DESC desc;
 	ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
@@ -342,12 +342,12 @@ bool Prism::DirectX::D3DSolidRasterizerStateSetup()
 	return true;
 }
 
-void Prism::DirectX::EnableWireframe()
+void Easy3D::DirectX::EnableWireframe()
 {
 	myContext->RSSetState(myWireframeRasterizer);
 }
 
-void Prism::DirectX::DisableWireframe()
+void Easy3D::DirectX::DisableWireframe()
 {
 	myContext->RSSetState(mySolidRasterizer);
 }

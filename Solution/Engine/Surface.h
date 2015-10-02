@@ -4,7 +4,7 @@
 
 struct ID3DX11EffectShaderResourceVariable;
 
-namespace Prism{
+namespace Easy3D{
 	class Texture;
 	class Effect;
 
@@ -50,52 +50,52 @@ namespace Prism{
 	};
 }
 
-inline int Prism::Surface::GetVertexStart() const
+inline int Easy3D::Surface::GetVertexStart() const
 {
 	return myVertexStart;
 }
 
-inline void Prism::Surface::SetVertexStart(const int aStart)
+inline void Easy3D::Surface::SetVertexStart(const int aStart)
 {
 	myVertexStart = aStart;
 }
 
-inline int Prism::Surface::GetVertexCount() const
+inline int Easy3D::Surface::GetVertexCount() const
 {
 	return myVertexCount;
 }
 
-inline void Prism::Surface::SetVertexCount(const int aCount)
+inline void Easy3D::Surface::SetVertexCount(const int aCount)
 {
 	myVertexCount = aCount;
 }
 
-inline int Prism::Surface::GetIndexStart() const
+inline int Easy3D::Surface::GetIndexStart() const
 {
 	return myIndexStart;
 }
 
-inline void Prism::Surface::SetIndexStart(const int aStart)
+inline void Easy3D::Surface::SetIndexStart(const int aStart)
 {
 	myIndexStart = aStart;
 }
 
-inline int Prism::Surface::GetIndexCount() const
+inline int Easy3D::Surface::GetIndexCount() const
 {
 	return myIndexCount;
 }
 
-inline void Prism::Surface::SetIndexCount(const int aCount)
+inline void Easy3D::Surface::SetIndexCount(const int aCount)
 {
 	myIndexCount = aCount;
 }
 
-inline void Prism::Surface::SetEffect(Effect* aEffect)
+inline void Easy3D::Surface::SetEffect(Effect* aEffect)
 {
 	myEffect = aEffect;
 }
 
-inline void Prism::Surface::SetPrimitiveTopology(const D3D11_PRIMITIVE_TOPOLOGY aTopology)
+inline void Easy3D::Surface::SetPrimitiveTopology(const D3D11_PRIMITIVE_TOPOLOGY aTopology)
 {
 	myPrimitiveTopologyType = aTopology;
 }

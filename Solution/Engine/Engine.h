@@ -9,7 +9,7 @@
 struct ID3D11Device;
 struct ID3D11DeviceContext;
 
-namespace Prism
+namespace Easy3D
 {
 	class Camera;
 	class DebugDataDisplay;
@@ -98,47 +98,47 @@ namespace Prism
 	};
 }
 
-inline Prism::TextureContainer* Prism::Engine::GetTextureContainer()
+inline Easy3D::TextureContainer* Easy3D::Engine::GetTextureContainer()
 {
 	return myTextureContainer;
 }
 
-inline Prism::EffectContainer* Prism::Engine::GetEffectContainer()
+inline Easy3D::EffectContainer* Easy3D::Engine::GetEffectContainer()
 {
 	return myEffectContainer;
 }
 
-inline Prism::FontContainer* Prism::Engine::GetFontContainer()
+inline Easy3D::FontContainer* Easy3D::Engine::GetFontContainer()
 {
 	return myFontContainer;
 }
 
-inline Prism::DebugDataDisplay* Prism::Engine::GetDebugDisplay()
+inline Easy3D::DebugDataDisplay* Easy3D::Engine::GetDebugDisplay()
 {
 	return myDebugDataDisplay;
 }
 
-inline Prism::FileWatcher* Prism::Engine::GetFileWatcher()
+inline Easy3D::FileWatcher* Easy3D::Engine::GetFileWatcher()
 {
 	return myFileWatcher;
 }
 
-inline Prism::ModelLoader* Prism::Engine::GetModelLoader()
+inline Easy3D::ModelLoader* Easy3D::Engine::GetModelLoader()
 {
 	return myModelLoader;
 }
 
-inline const CU::Vector2<int>& Prism::Engine::GetWindowSize() const
+inline const CU::Vector2<int>& Easy3D::Engine::GetWindowSize() const
 {
 	return myWindowSize;
 }
 
-inline const CU::Matrix44<float>& Prism::Engine::GetOrthogonalMatrix() const
+inline const CU::Matrix44<float>& Easy3D::Engine::GetOrthogonalMatrix() const
 {
 	return myOrthogonalMatrix;
 }
 
-inline void Prism::Engine::SetClearColor(const CU::Vector4<float>& aClearColor)
+inline void Easy3D::Engine::SetClearColor(const CU::Vector4<float>& aClearColor)
 {
 	myClearColor = aClearColor;
 }

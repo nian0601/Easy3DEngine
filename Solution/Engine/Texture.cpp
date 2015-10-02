@@ -5,12 +5,12 @@
 #include "Texture.h"
 
 
-Prism::Texture::~Texture()
+Easy3D::Texture::~Texture()
 {
 	myTexture->Release();
 }
 
-bool Prism::Texture::LoadTexture(const std::string& aFilePath)
+bool Easy3D::Texture::LoadTexture(const std::string& aFilePath)
 {
 	HRESULT hr = D3DX11CreateShaderResourceViewFromFile(Engine::GetInstance()->GetDevice(), aFilePath.c_str()
 		, NULL, NULL, &myTexture, NULL);
@@ -30,12 +30,12 @@ bool Prism::Texture::LoadTexture(const std::string& aFilePath)
 	return true;
 }
 
-const std::string& Prism::Texture::GetFileName() const
+const std::string& Easy3D::Texture::GetFileName() const
 {
 	return myFileName;
 }
 
-ID3D11ShaderResourceView* Prism::Texture::GetShaderView()
+ID3D11ShaderResourceView* Easy3D::Texture::GetShaderView()
 {
 	return myTexture;
 }

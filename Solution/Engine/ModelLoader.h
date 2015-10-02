@@ -4,7 +4,7 @@
 #include <GrowingArray.h>
 #include <atomic>
 
-namespace Prism
+namespace Easy3D
 {
 	class Model;
 	class ModelProxy;

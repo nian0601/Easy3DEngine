@@ -4,7 +4,7 @@
 #include "TextureContainer.h"
 
 
-Prism::TextureContainer::~TextureContainer()
+Easy3D::TextureContainer::~TextureContainer()
 {
 	for (auto it = myTextures.begin(); it != myTextures.end(); ++it)
 	{
@@ -14,7 +14,7 @@ Prism::TextureContainer::~TextureContainer()
 	myTextures.clear();
 }
 
-Prism::Texture* Prism::TextureContainer::GetTexture(const std::string& aFileName)
+Easy3D::Texture* Easy3D::TextureContainer::GetTexture(const std::string& aFileName)
 {
 	auto it = myTextures.find(aFileName);
 
@@ -26,7 +26,7 @@ Prism::Texture* Prism::TextureContainer::GetTexture(const std::string& aFileName
 	return myTextures[aFileName];
 }
 
-void Prism::TextureContainer::LoadTexture(const std::string& aFileName)
+void Easy3D::TextureContainer::LoadTexture(const std::string& aFileName)
 {
 	Texture* newTex = new Texture();
 	newTex->LoadTexture(aFileName);

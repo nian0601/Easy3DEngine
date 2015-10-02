@@ -14,7 +14,7 @@ struct ID3DX11EffectVariable;
 struct ID3DX11EffectScalarVariable;
 struct ID3DX11EffectVectorVariable;
 
-namespace Prism
+namespace Easy3D
 {
 	class EffectListener;
 
@@ -66,23 +66,23 @@ namespace Prism
 	};
 }
 
-inline ID3DX11Effect* Prism::Effect::GetEffect()
+inline ID3DX11Effect* Easy3D::Effect::GetEffect()
 {
 	return myEffect;
 }
 
-inline ID3DX11EffectTechnique* Prism::Effect::GetTechnique()
+inline ID3DX11EffectTechnique* Easy3D::Effect::GetTechnique()
 {
 	return myTechnique;
 }
 
-inline const std::string& Prism::Effect::GetFileName() const
+inline const std::string& Easy3D::Effect::GetFileName() const
 {
 	return myFileName;
 }
 
 
-inline void Prism::Effect::AddListener(EffectListener* aListener)
+inline void Easy3D::Effect::AddListener(EffectListener* aListener)
 {
 	myEffectListeners.Add(aListener);
 }

@@ -2,7 +2,7 @@
 #include "FontContainer.h"
 #include "Font.h"
 
-Prism::Font* Prism::FontContainer::GetFont(const std::string& aPath)
+Easy3D::Font* Easy3D::FontContainer::GetFont(const std::string& aPath)
 {
 	auto it = myFonts.find(aPath);
 
@@ -14,7 +14,7 @@ Prism::Font* Prism::FontContainer::GetFont(const std::string& aPath)
 	return myFonts[aPath];
 }
 
-void Prism::FontContainer::LoadFont(const std::string& aPath)
+void Easy3D::FontContainer::LoadFont(const std::string& aPath)
 {
 	Font* newFont = new Font();
 	newFont->Init(aPath.c_str());

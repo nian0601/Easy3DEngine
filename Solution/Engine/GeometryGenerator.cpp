@@ -2,7 +2,7 @@
 #include "GeometryGenerator.h"
 
 
-void Prism::GeometryGenerator::CreateGrid(const float aWidth, const float aDepth, 
+void Easy3D::GeometryGenerator::CreateGrid(const float aWidth, const float aDepth, 
 		const unsigned int aM, const unsigned int aN, MeshData& aOutputMeshData)
 {
 	unsigned int vertexCount = aM * aN;
@@ -73,7 +73,7 @@ void Prism::GeometryGenerator::CreateGrid(const float aWidth, const float aDepth
 	}
 }
 
-void Prism::GeometryGenerator::GenerateHeightAndColor(Vertex& aVertex)
+void Easy3D::GeometryGenerator::GenerateHeightAndColor(Vertex& aVertex)
 {
 	float divFactor = ((rand() % 10) / 10) + 25.f;
 

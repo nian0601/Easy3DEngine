@@ -7,7 +7,7 @@ struct ModelData;
 class FBXLoader;
 class FbxModelData;
 
-namespace Prism
+namespace Easy3D
 {
 class Model;
 class Effect;

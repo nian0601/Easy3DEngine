@@ -14,7 +14,7 @@
 #include "IndexBufferWrapper.h"
 #include "Surface.h"
 
-Prism::Text::Text()
+Easy3D::Text::Text()
 	: myHasText(false)
 	, myLastDrawX(-999.f)
 	, myLastDrawY(-999.f)
@@ -27,7 +27,7 @@ Prism::Text::Text()
 }
 
 
-Prism::Text::~Text()
+Easy3D::Text::~Text()
 {
 	if (myVertexBuffer->myVertexBuffer != nullptr)
 	{
@@ -47,7 +47,7 @@ Prism::Text::~Text()
 	delete mySurface;
 }
 
-void Prism::Text::Init(Font* aFont)
+void Easy3D::Text::Init(Font* aFont)
 {
 	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/FontEffect.fx");
 	myFont = aFont;
@@ -79,7 +79,7 @@ void Prism::Text::Init(Font* aFont)
 	ZeroMemory(myInitData, sizeof(myInitData));
 }
 
-void Prism::Text::InitVertexBuffer()
+void Easy3D::Text::InitVertexBuffer()
 {
 	myVertexBuffer = new VertexBufferWrapper();
 	myVertexBuffer->myStride = sizeof(VertexPosColorUV);
@@ -96,7 +96,7 @@ void Prism::Text::InitVertexBuffer()
 	myVertexBufferDesc->StructureByteStride = 0;
 }
 
-void Prism::Text::InitIndexBuffer()
+void Easy3D::Text::InitIndexBuffer()
 {
 	myIndexBuffer = new IndexBufferWrapper();
 	myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
@@ -111,7 +111,7 @@ void Prism::Text::InitIndexBuffer()
 	myIndexBufferDesc->StructureByteStride = 0;
 }
 
-void Prism::Text::InitSurface()
+void Easy3D::Text::InitSurface()
 {
 	mySurface = new Surface();
 
@@ -124,7 +124,7 @@ void Prism::Text::InitSurface()
 	mySurface->SetTexture("DiffuseTexture", myFont->GetTexture());
 }
 
-void Prism::Text::InitBlendState()
+void Easy3D::Text::InitBlendState()
 {
 	D3D11_BLEND_DESC blendDesc;
 	blendDesc.AlphaToCoverageEnable = false;
@@ -145,7 +145,7 @@ void Prism::Text::InitBlendState()
 	}
 }
 
-void Prism::Text::Render(const char* aString
+void Easy3D::Text::Render(const char* aString
 	, const float aDrawX, const float aDrawY, const CU::Vector4<float>& aColor, const float aScale)
 {
 
@@ -202,7 +202,7 @@ void Prism::Text::Render(const char* aString
 }
 
 
-CU::Vector2<float> Prism::Text::GetTextSize(const char* aString) const
+CU::Vector2<float> Easy3D::Text::GetTextSize(const char* aString) const
 {
 	int numOfLetters = static_cast<int>(strlen(aString));
 	CU::Vector2<float> size;
@@ -214,12 +214,12 @@ CU::Vector2<float> Prism::Text::GetTextSize(const char* aString) const
 	return size;
 }
 
-float Prism::Text::GetTextWidth() const
+float Easy3D::Text::GetTextWidth() const
 {
 	return myTextWidth;
 }
 
-void Prism::Text::SetupVertexBuffer()
+void Easy3D::Text::SetupVertexBuffer()
 {
 	TIME_FUNCTION
 
@@ -234,12 +234,11 @@ void Prism::Text::SetupVertexBuffer()
 	HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
 	if (FAILED(hr) != S_OK)
 	{
-		HRESULT deviceRemovedReason = Engine::GetInstance()->GetDevice()->GetDeviceRemovedReason();
 		DL_MESSAGE_BOX("Failed to SetupVertexBuffer", "Text::SetupVertexBuffer", MB_ICONWARNING);
 	}
 }
 
-void Prism::Text::SetupIndexBuffer()
+void Easy3D::Text::SetupIndexBuffer()
 {
 	TIME_FUNCTION
 
@@ -254,13 +253,12 @@ void Prism::Text::SetupIndexBuffer()
 		&myIndexBuffer->myIndexBuffer);
 	if (FAILED(hr) != S_OK)
 	{
-		HRESULT deviceRemovedReason = Engine::GetInstance()->GetDevice()->GetDeviceRemovedReason();
 		DL_MESSAGE_BOX("Failed to SetupIndexBuffer", "Text::SetupIndexBuffer", MB_ICONWARNING);
 	}
 }
 
 
-void Prism::Text::CreateFirstTri(const CU::Vector3<float>& aDrawPos, const float aScale, const int aIndex,
+void Easy3D::Text::CreateFirstTri(const CU::Vector3<float>& aDrawPos, const float aScale, const int aIndex,
 	const CU::Vector2<float>& aTopLeftUV, const CU::Vector2<float>& aBotRightUV, const CU::Vector4<float>& aColor)
 {
 	int index = aIndex;
@@ -297,7 +295,7 @@ void Prism::Text::CreateFirstTri(const CU::Vector3<float>& aDrawPos, const float
 	++index;
 }
 
-void Prism::Text::CreateSecondTri(const CU::Vector3<float>& aDrawPos, const float aScale, const int aIndex,
+void Easy3D::Text::CreateSecondTri(const CU::Vector3<float>& aDrawPos, const float aScale, const int aIndex,
 	const CU::Vector2<float>& aTopLeftUV, const CU::Vector2<float>& aBotRightUV, const CU::Vector4<float>& aColor)
 {
 	int index = aIndex;
@@ -333,7 +331,7 @@ void Prism::Text::CreateSecondTri(const CU::Vector3<float>& aDrawPos, const floa
 }
 
 
-void Prism::Text::UpdateSentence(const char* aString, const float aDrawX, const float aDrawY,
+void Easy3D::Text::UpdateSentence(const char* aString, const float aDrawX, const float aDrawY,
 	const CU::Vector4<float>& aColor, const float aScale)
 {
 	TIME_FUNCTION

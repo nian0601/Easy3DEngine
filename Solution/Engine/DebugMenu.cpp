@@ -6,7 +6,7 @@
 #include <InputWrapper.h>
 #include "Text.h"
 
-namespace Prism
+namespace Easy3D
 {
 	DebugMenu::DebugMenu()
 		: myIsVisible(false)

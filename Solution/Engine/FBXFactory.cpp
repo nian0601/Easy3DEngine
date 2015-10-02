@@ -11,7 +11,7 @@
 #include "VertexIndexWrapper.h"
 
 
-Prism::FBXFactory::FBXFactory()
+Easy3D::FBXFactory::FBXFactory()
 {
 	CU::Matrix44f test;
 	test.SetPos(CU::Vector3f(1, 1, 1));
@@ -20,12 +20,12 @@ Prism::FBXFactory::FBXFactory()
 	myLoader = new FBXLoader();
 }
 	
-Prism::FBXFactory::~FBXFactory()
+Easy3D::FBXFactory::~FBXFactory()
 {
 	delete myLoader;
 }
 
-void Prism::FBXFactory::FillData(ModelData* someData, Model* outData, Effect* aEffect)
+void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect* aEffect)
 {
 	VertexIndexWrapper* indexWrapper = new VertexIndexWrapper();
 	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
@@ -137,7 +137,7 @@ void Prism::FBXFactory::FillData(ModelData* someData, Model* outData, Effect* aE
 	outData->mySurfaces.Add(new Surface(surface));
 }
 
-Prism::Model* Prism::FBXFactory::CreateModel(FbxModelData* someModelData, Effect* aEffect)
+Easy3D::Model* Easy3D::FBXFactory::CreateModel(FbxModelData* someModelData, Effect* aEffect)
 {
 	Model* tempModel = new Model();
 	tempModel->SetEffect(aEffect);
@@ -156,7 +156,7 @@ Prism::Model* Prism::FBXFactory::CreateModel(FbxModelData* someModelData, Effect
 	return tempModel;
 }
 
-Prism::Model* Prism::FBXFactory::LoadModel(const char* aFilePath, Effect* aEffect)
+Easy3D::Model* Easy3D::FBXFactory::LoadModel(const char* aFilePath, Effect* aEffect)
 {
 	if (myModels.find(aFilePath) != myModels.end())
 	{

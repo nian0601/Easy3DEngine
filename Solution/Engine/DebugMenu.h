@@ -3,14 +3,14 @@
 #include <functional>
 
 #define ADD_FUNCTION_TO_RADIAL_MENU(ELEMENT_NAME, FUNCTION, OBJECT_TO_CALL_FUNC_ON) \
-	(Prism::Engine::GetInstance()->GetDebugDisplay()->GetDebugMenu()->AddFunctionCallback(ELEMENT_NAME, std::bind(&FUNCTION, OBJECT_TO_CALL_FUNC_ON)))
+	(Easy3D::Engine::GetInstance()->GetDebugDisplay()->GetDebugMenu()->AddFunctionCallback(ELEMENT_NAME, std::bind(&FUNCTION, OBJECT_TO_CALL_FUNC_ON)))
 
 namespace CommonUtilities
 {
 	class InputWrapper;
 }
 
-namespace Prism
+namespace Easy3D
 {
 	class Text;
 

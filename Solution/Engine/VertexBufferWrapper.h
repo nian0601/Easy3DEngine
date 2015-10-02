@@ -2,7 +2,7 @@
 
 struct ID3D11Buffer;
 
-namespace Prism
+namespace Easy3D
 {
 	struct VertexBufferWrapper
 	{

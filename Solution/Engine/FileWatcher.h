@@ -1,12 +1,12 @@
 #pragma once
 
 
-#define WATCH_FILE(FILE, FUNCTION) (Prism::Engine::GetInstance()->GetFileWatcher()->WatchFile(FILE, std::bind(&FUNCTION, this, FILE)))
+#define WATCH_FILE(FILE, FUNCTION) (Easy3D::Engine::GetInstance()->GetFileWatcher()->WatchFile(FILE, std::bind(&FUNCTION, this, FILE)))
 
 #include <functional>
 #include <string>
 
-namespace Prism
+namespace Easy3D
 {
 	class FileWatcher
 	{

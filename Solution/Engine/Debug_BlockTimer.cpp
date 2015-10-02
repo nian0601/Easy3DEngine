@@ -3,14 +3,14 @@
 #include "DebugDataDisplay.h"
 
 
-Prism::Debug_BlockTimer::Debug_BlockTimer(const char* aName)
+Easy3D::Debug_BlockTimer::Debug_BlockTimer(const char* aName)
 	: myName(aName)
 {
 	Engine::GetInstance()->GetDebugDisplay()->StartFunctionTimer(myName);
 }
 
 
-Prism::Debug_BlockTimer::~Debug_BlockTimer()
+Easy3D::Debug_BlockTimer::~Debug_BlockTimer()
 {
 	Engine::GetInstance()->GetDebugDisplay()->EndFunctionTimer(myName);
 }

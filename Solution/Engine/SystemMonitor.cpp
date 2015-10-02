@@ -3,7 +3,7 @@
 #include "SystemMonitor.h"
 #include <Psapi.h>
 
-namespace Prism
+namespace Easy3D
 {
 	FILETIME SystemMonitor::myPrevSysKernel;
 	FILETIME SystemMonitor::myPrevSysUser;

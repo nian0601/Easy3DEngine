@@ -2,7 +2,7 @@
 
 #include "Vertices.h"
 
-namespace Prism
+namespace Easy3D
 {
 	struct VertexDataWrapper
 	{
@@ -16,7 +16,7 @@ namespace Prism
 	};
 }
 
-inline Prism::VertexPosColor* Prism::VertexDataWrapper::GetDataAsVertexPosColor()
+inline Easy3D::VertexPosColor* Easy3D::VertexDataWrapper::GetDataAsVertexPosColor()
 {
 	return reinterpret_cast<VertexPosColor*>(myVertexData);
 }

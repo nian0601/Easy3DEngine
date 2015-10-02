@@ -2,7 +2,7 @@
 #include "FileWatcher.h"
 
 
-namespace Prism
+namespace Easy3D
 {
 	FileWatcher::FileWatcher()
 	{

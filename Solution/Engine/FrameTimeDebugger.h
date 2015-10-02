@@ -11,7 +11,7 @@ namespace CommonUtilities
 	class InputWrapper;
 }
 
-namespace Prism
+namespace Easy3D
 {
 	class Camera;
 	class GraphRenderer;

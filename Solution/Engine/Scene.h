@@ -6,7 +6,7 @@
 
 
 
-namespace Prism
+namespace Easy3D
 {
 	class Camera;
 	class DirectionalLight;

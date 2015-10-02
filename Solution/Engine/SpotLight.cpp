@@ -6,7 +6,7 @@
 #include "SpotLight.h"
 
 
-namespace Prism
+namespace Easy3D
 {
 
 	void SpotLight::Initiate()

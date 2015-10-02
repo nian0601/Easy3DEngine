@@ -4,7 +4,7 @@
 #include <xnamath.h>
 #include <XMLReader.h>
 
-namespace Prism
+namespace Easy3D
 {
 	Camera::Camera(CU::Matrix44f& aPlayerMatrix)
 		: myOrientation(aPlayerMatrix)
@@ -22,7 +22,7 @@ namespace Prism
 	{
 		Sleep(10);
 		XMLReader reader;
-		reader.OpenDocument("Data/script/camera.xml");
+		reader.OpenDocument(aFileName);
 		tinyxml2::XMLElement* levelElement = reader.ForceFindFirstChild("camera");
 		reader.ForceReadAttribute(levelElement, "fov", myFOV);
 		myFOV *= 3.14159f / 180.f;

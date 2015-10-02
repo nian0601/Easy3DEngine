@@ -7,7 +7,7 @@
 #include "Vertices.h"
 
 
-namespace Prism
+namespace Easy3D
 {
 	class Effect;
 	class Surface;

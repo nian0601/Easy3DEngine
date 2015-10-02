@@ -1,7 +1,7 @@
 #pragma once
-#define TIME_FUNCTION Prism::Debug_BlockTimer funcTimer__(__FUNCTION__);
-#define BEGIN_TIME_BLOCK(NAME) Prism::Engine::GetInstance()->GetDebugDisplay()->StartFunctionTimer(NAME);
-#define END_TIME_BLOCK(NAME) Prism::Engine::GetInstance()->GetDebugDisplay()->EndFunctionTimer(NAME);
+#define TIME_FUNCTION Easy3D::Debug_BlockTimer funcTimer__(__FUNCTION__);
+#define BEGIN_TIME_BLOCK(NAME) Easy3D::Engine::GetInstance()->GetDebugDisplay()->StartFunctionTimer(NAME);
+#define END_TIME_BLOCK(NAME) Easy3D::Engine::GetInstance()->GetDebugDisplay()->EndFunctionTimer(NAME);
 
 
 #include <bitset>
@@ -15,7 +15,7 @@ namespace CommonUtilities
 	class InputWrapper;
 }
 
-namespace Prism
+namespace Easy3D
 {
 	class Camera;
 	class DebugMenu;
@@ -81,27 +81,27 @@ namespace Prism
 	};
 }
 
-inline void Prism::DebugDataDisplay::ToggleFunctionTimers()
+inline void Easy3D::DebugDataDisplay::ToggleFunctionTimers()
 {
 	myBoolContainer[eBitSetEnum::FUNCTION_TIMERS].flip();
 }
 
-inline void Prism::DebugDataDisplay::ToggleMemoryUsage()
+inline void Easy3D::DebugDataDisplay::ToggleMemoryUsage()
 {
 	myBoolContainer[eBitSetEnum::MEMORY_USAGE].flip();
 }
 
-inline void Prism::DebugDataDisplay::ToggleCPUUsage()
+inline void Easy3D::DebugDataDisplay::ToggleCPUUsage()
 {
 	myBoolContainer[eBitSetEnum::CPU_USAGE].flip();
 }
 
-inline void Prism::DebugDataDisplay::ToggleFrameTime()
+inline void Easy3D::DebugDataDisplay::ToggleFrameTime()
 {
 	myBoolContainer[eBitSetEnum::FRAME_TIME].flip();
 }
 
-inline Prism::DebugMenu* Prism::DebugDataDisplay::GetDebugMenu()
+inline Easy3D::DebugMenu* Easy3D::DebugDataDisplay::GetDebugMenu()
 {
 	return myDebugMenu;
 }

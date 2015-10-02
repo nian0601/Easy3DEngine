@@ -16,7 +16,7 @@
 #include <Vector.h>
 #include "VTuneApi.h"
 
-namespace Prism
+namespace Easy3D
 {
 	Engine* Engine::myInstance = nullptr;
 

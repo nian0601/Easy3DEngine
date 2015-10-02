@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "TextureContainer.h"
 
-Prism::Surface::Surface()
+Easy3D::Surface::Surface()
 {
 	myTextures.Init(2);
 	myShaderViews.Init(2);
@@ -14,7 +14,7 @@ Prism::Surface::Surface()
 	myShaderResourceNames.Init(2);
 }
 
-bool Prism::Surface::SetTexture(const std::string& aResourceName, const std::string& aFileName, bool aUseSRGB)
+bool Easy3D::Surface::SetTexture(const std::string& aResourceName, const std::string& aFileName, bool aUseSRGB)
 {
 	aUseSRGB;
 
@@ -37,7 +37,7 @@ bool Prism::Surface::SetTexture(const std::string& aResourceName, const std::str
 	return true;
 }
 
-void Prism::Surface::ReloadSurface()
+void Easy3D::Surface::ReloadSurface()
 {
 	myTextures.RemoveAll();
 	myShaderViews.RemoveAll();
@@ -59,7 +59,7 @@ void Prism::Surface::ReloadSurface()
 	}
 }
 
-bool Prism::Surface::SetTexture(const std::string& aResourceName, Texture* aTexture)
+bool Easy3D::Surface::SetTexture(const std::string& aResourceName, Texture* aTexture)
 {
 	ID3DX11EffectShaderResourceVariable* shaderVar = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
 	if (shaderVar->IsValid() == false)
@@ -75,7 +75,7 @@ bool Prism::Surface::SetTexture(const std::string& aResourceName, Texture* aText
 	return true;
 }
 
-void Prism::Surface::Activate()
+void Easy3D::Surface::Activate()
 {
 	Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(myPrimitiveTopologyType);
 

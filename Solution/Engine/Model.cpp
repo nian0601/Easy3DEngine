@@ -12,7 +12,7 @@
 #include "VertexDataWrapper.h"
 #include "VertexIndexWrapper.h"
 
-Prism::Model::Model()
+Easy3D::Model::Model()
 {
 	myChilds.Init(2);
 	myChildTransforms.Init(2);
@@ -29,7 +29,7 @@ Prism::Model::Model()
 	myIndexBaseData = nullptr;
 }
 
-Prism::Model::~Model()
+Easy3D::Model::~Model()
 {
 	myChilds.DeleteAll();
 
@@ -51,7 +51,7 @@ Prism::Model::~Model()
 	
 }
 
-void Prism::Model::Init()
+void Easy3D::Model::Init()
 {
 	if (myIsNULLObject == false)
 	{
@@ -99,7 +99,7 @@ void Prism::Model::Init()
 	}
 }
 
-void Prism::Model::InitPolygon()
+void Easy3D::Model::InitPolygon()
 {
 	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/PolygonEffect.fx");
 
@@ -154,7 +154,7 @@ void Prism::Model::InitPolygon()
 	myIsNULLObject = false;
 }
 
-void Prism::Model::InitCube(const float aWidth, const float aHeight, const float aDepth)
+void Easy3D::Model::InitCube(const float aWidth, const float aHeight, const float aDepth)
 {
 	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/CubeEffect.fx");
 
@@ -306,7 +306,7 @@ void Prism::Model::InitCube(const float aWidth, const float aHeight, const float
 	myIsNULLObject = false;
 }
 
-void Prism::Model::InitLightCube(const float aWidth, const float aHeight, const float aDepth, CU::Vector4f aColour)
+void Easy3D::Model::InitLightCube(const float aWidth, const float aHeight, const float aDepth, CU::Vector4f aColour)
 {
 	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/CubeColored.fx");
 
@@ -456,7 +456,7 @@ void Prism::Model::InitLightCube(const float aWidth, const float aHeight, const 
 	myIsNULLObject = false;
 }
 
-void Prism::Model::InitGeometry(const MeshData& aMeshData)
+void Easy3D::Model::InitGeometry(const MeshData& aMeshData)
 {
 	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/GeometryEffect.fx");
 	
@@ -518,18 +518,18 @@ void Prism::Model::InitGeometry(const MeshData& aMeshData)
 	myIsNULLObject = false;
 }
 
-void Prism::Model::AddChild(Model* aChild)
+void Easy3D::Model::AddChild(Model* aChild)
 {
 	myChilds.Add(aChild);
 	myChildTransforms.Add(aChild->myOrientation);
 }
 
-Prism::Effect* Prism::Model::GetEffect()
+Easy3D::Effect* Easy3D::Model::GetEffect()
 {
 	return myEffect;
 }
 
-void Prism::Model::SetEffect(Effect* aEffect)
+void Easy3D::Model::SetEffect(Effect* aEffect)
 {
 	myEffect = aEffect;
 	myEffect->AddListener(this);
@@ -540,7 +540,7 @@ void Prism::Model::SetEffect(Effect* aEffect)
 	}
 }
 
-void Prism::Model::Render(const CU::Matrix44<float>& aOrientation)
+void Easy3D::Model::Render(const CU::Matrix44<float>& aOrientation)
 {
 	if (myIsNULLObject == false)
 	{
@@ -586,7 +586,7 @@ void Prism::Model::Render(const CU::Matrix44<float>& aOrientation)
 	}
 }
 
-void Prism::Model::OnEffectLoad()
+void Easy3D::Model::OnEffectLoad()
 {
 	for (int i = 0; i < mySurfaces.Size(); ++i)
 	{
@@ -594,7 +594,7 @@ void Prism::Model::OnEffectLoad()
 	}
 }
 
-void Prism::Model::InitVertexBaseData(int aNumberOfVertices, VertexType aVertexType, int aVertexSize, char* aVertexData)
+void Easy3D::Model::InitVertexBaseData(int aNumberOfVertices, VertexType aVertexType, int aVertexSize, char* aVertexData)
 {
 	myVertexBaseData = new VertexDataWrapper();
 	myVertexBaseData->myNumberOfVertices = aNumberOfVertices;
@@ -604,7 +604,7 @@ void Prism::Model::InitVertexBaseData(int aNumberOfVertices, VertexType aVertexT
 	myVertexBaseData->myVertexData = aVertexData;
 }
 
-void Prism::Model::InitIndexBaseData(DXGI_FORMAT aFormat, int aNumberOfIndices, char* aIndexData)
+void Easy3D::Model::InitIndexBaseData(DXGI_FORMAT aFormat, int aNumberOfIndices, char* aIndexData)
 {
 	myIndexBaseData = new VertexIndexWrapper();
 	myIndexBaseData->myFormat = aFormat;
@@ -613,7 +613,7 @@ void Prism::Model::InitIndexBaseData(DXGI_FORMAT aFormat, int aNumberOfIndices, 
 	myIndexBaseData->mySize = sizeof(UINT) * myIndexBaseData->myNumberOfIndices;
 }
 
-bool Prism::Model::InitVertexBuffer()
+bool Easy3D::Model::InitVertexBuffer()
 {
 	myVertexBuffer = new VertexBufferWrapper();
 
@@ -644,7 +644,7 @@ bool Prism::Model::InitVertexBuffer()
 	return true;
 }
 
-bool Prism::Model::InitIndexBuffer()
+bool Easy3D::Model::InitIndexBuffer()
 {
 	myIndexBuffer = new IndexBufferWrapper();
 

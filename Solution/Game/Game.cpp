@@ -28,11 +28,11 @@ bool Game::Init(HWND& aHwnd)
 		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 
 
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle FPS", Prism::DebugDataDisplay::ToggleFrameTime, Prism::Engine::GetInstance()->GetDebugDisplay());
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Graph", Prism::DebugDataDisplay::ToggleFunctionTimers, Prism::Engine::GetInstance()->GetDebugDisplay());
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Mem", Prism::DebugDataDisplay::ToggleMemoryUsage, Prism::Engine::GetInstance()->GetDebugDisplay());
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle CPU", Prism::DebugDataDisplay::ToggleCPUUsage, Prism::Engine::GetInstance()->GetDebugDisplay());
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Wireframe", Prism::Engine::ToggleWireframe, Prism::Engine::GetInstance());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle FPS", Easy3D::DebugDataDisplay::ToggleFrameTime, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Graph", Easy3D::DebugDataDisplay::ToggleFunctionTimers, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Mem", Easy3D::DebugDataDisplay::ToggleMemoryUsage, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle CPU", Easy3D::DebugDataDisplay::ToggleCPUUsage, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Wireframe", Easy3D::Engine::ToggleWireframe, Easy3D::Engine::GetInstance());
 
 	GAME_LOG("Init Successful");
 	return true;
@@ -66,8 +66,8 @@ bool Game::Update()
 		SetCursorPos(myWindowSize.x / 2, myWindowSize.y / 2);
 	}
 
-	Prism::Engine::GetInstance()->GetDebugDisplay()->Update(*myInputWrapper);
-	Prism::Engine::GetInstance()->GetDebugDisplay()->RecordFrameTime(delta);
+	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*myInputWrapper);
+	Easy3D::Engine::GetInstance()->GetDebugDisplay()->RecordFrameTime(delta);
 
 	Render();
 	END_TIME_BLOCK("Game::Update");
@@ -76,7 +76,7 @@ bool Game::Update()
 
 void Game::Render()
 {
-	Prism::Engine::GetInstance()->GetDebugDisplay()->Render();
+	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Render();
 }
 
 void Game::Pause()

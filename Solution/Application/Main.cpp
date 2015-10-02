@@ -8,7 +8,7 @@
 //#include <vld.h>
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
-void ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath);
+void ReadSetup(Easy3D::SetupInfo& aSetup, const std::string& aFilePath);
 void OnResize();
 
 Game* globalGame = nullptr;
@@ -59,12 +59,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 		LocalFree(realCommands);
 	}
 
-	Prism::SetupInfo setup;
+	Easy3D::SetupInfo setup;
 	ReadSetup(setup, "Data/bin/config.bin");
 
 	HWND hwnd;
 
-	if (Prism::Engine::Create(hwnd, WndProc, setup) == false)
+	if (Easy3D::Engine::Create(hwnd, WndProc, setup) == false)
 	{
 		return 1;
 	}
@@ -99,7 +99,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 			}
 
 
-			Prism::Engine::GetInstance()->Render();
+			Easy3D::Engine::GetInstance()->Render();
 		}
 	}
 
@@ -107,8 +107,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 	delete globalGame;
 	globalGame = nullptr;
 
-	Prism::Engine::GetInstance()->Shutdown();
-	Prism::Engine::Destroy();
+	Easy3D::Engine::GetInstance()->Shutdown();
+	Easy3D::Engine::Destroy();
 	return 0;
 }
 
@@ -195,10 +195,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 void OnResize()
 {
 	globalGame->OnResize(globalClientWidth, globalClientHeight);
-	Prism::Engine::GetInstance()->OnResize(globalClientWidth, globalClientHeight);
+	Easy3D::Engine::GetInstance()->OnResize(globalClientWidth, globalClientHeight);
 }
 
-void ReadSetup(Prism::SetupInfo& aSetup, const std::string& aFilePath)
+void ReadSetup(Easy3D::SetupInfo& aSetup, const std::string& aFilePath)
 {
 	int width = 800;
 	int height = 600;

@@ -1,7 +1,7 @@
 #pragma once
 #include <D3D11.h>
 
-namespace Prism
+namespace Easy3D
 {
 	struct IndexBufferWrapper
 	{

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Prism
+namespace Easy3D
 {
 	class DirectionalLight
 	{
@@ -24,41 +24,41 @@ namespace Prism
 	};
 }
 
-inline void Prism::DirectionalLight::Update()
+inline void Easy3D::DirectionalLight::Update()
 {
 	CU::Vector3f newDir = myOriginalDirection * myOrientation;
 
 	myDirection = newDir;
 }
 
-inline CU::Vector4<float> Prism::DirectionalLight::GetCurrentDir() const
+inline CU::Vector4<float> Easy3D::DirectionalLight::GetCurrentDir() const
 {
 	return myDirection;
 }
 
-inline const CU::Vector4<float>& Prism::DirectionalLight::GetColor() const
+inline const CU::Vector4<float>& Easy3D::DirectionalLight::GetColor() const
 {
 	return myColor;
 }
 
-inline const CU::Vector3<float>& Prism::DirectionalLight::GetDir() const
+inline const CU::Vector3<float>& Easy3D::DirectionalLight::GetDir() const
 {
 	return myOriginalDirection;
 }
 
  
-inline void Prism::DirectionalLight::PerformRotation(const CU::Matrix33<float>& aOrientation)
+inline void Easy3D::DirectionalLight::PerformRotation(const CU::Matrix33<float>& aOrientation)
 {
 	myOrientation = aOrientation * myOrientation;
 }
 
  
-inline void Prism::DirectionalLight::SetColor(const CU::Vector4<float>& aVector)
+inline void Easy3D::DirectionalLight::SetColor(const CU::Vector4<float>& aVector)
 {
 	myColor = aVector;
 }
 
-inline void Prism::DirectionalLight::SetDir(const CU::Vector3<float>& aVector)
+inline void Easy3D::DirectionalLight::SetDir(const CU::Vector3<float>& aVector)
 {
 	myOriginalDirection = aVector;
 	myDirection = aVector;

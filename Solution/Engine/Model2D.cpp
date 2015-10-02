@@ -12,7 +12,7 @@
 #include "Surface.h"
 #include "TextureContainer.h"
 
-Prism::Model2D::Model2D()
+Easy3D::Model2D::Model2D()
 {
 	myLastDrawX = -999.f;
 	myLastDrawY = -999.f;
@@ -21,7 +21,7 @@ Prism::Model2D::Model2D()
 	myInitData = new D3D11_SUBRESOURCE_DATA();
 }
 
-Prism::Model2D::~Model2D()
+Easy3D::Model2D::~Model2D()
 {
 	myVertexBuffer->myVertexBuffer->Release();
 	myIndexBuffer->myIndexBuffer->Release();
@@ -31,7 +31,7 @@ Prism::Model2D::~Model2D()
 	delete myInitData;
 }
 
-void Prism::Model2D::Init(const std::string& aFileName, const CU::Vector2<float> aTextureSize)
+void Easy3D::Model2D::Init(const std::string& aFileName, const CU::Vector2<float> aTextureSize)
 {
 	myTextureSize = aTextureSize;
 	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/SpriteEffect.fx");
@@ -66,7 +66,7 @@ void Prism::Model2D::Init(const std::string& aFileName, const CU::Vector2<float>
 	ZeroMemory(myInitData, sizeof(myInitData));
 }
 
-void Prism::Model2D::InitVertexBuffer()
+void Easy3D::Model2D::InitVertexBuffer()
 {
 	myVertexBuffer = new VertexBufferWrapper();
 	myVertexBuffer->myStride = sizeof(VertexPosUV);
@@ -83,7 +83,7 @@ void Prism::Model2D::InitVertexBuffer()
 	myVertexBufferDesc->StructureByteStride = 0;
 }
 
-void Prism::Model2D::InitIndexBuffer()
+void Easy3D::Model2D::InitIndexBuffer()
 {
 	myIndexBuffer = new IndexBufferWrapper();
 	myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
@@ -98,7 +98,7 @@ void Prism::Model2D::InitIndexBuffer()
 	myIndexBufferDesc->StructureByteStride = 0;
 }
 
-void Prism::Model2D::InitSurface(const std::string& aFileName)
+void Easy3D::Model2D::InitSurface(const std::string& aFileName)
 {
 	mySurface = new Surface();
 
@@ -111,7 +111,7 @@ void Prism::Model2D::InitSurface(const std::string& aFileName)
 	mySurface->SetTexture("DiffuseTexture", aFileName, true);
 }
 
-void Prism::Model2D::InitBlendState()
+void Easy3D::Model2D::InitBlendState()
 {
 	D3D11_BLEND_DESC blendDesc;
 	blendDesc.AlphaToCoverageEnable = true;
@@ -132,7 +132,7 @@ void Prism::Model2D::InitBlendState()
 	}
 }
 
-void Prism::Model2D::Render(const Camera& aCamera, const float aDrawX, const float aDrawY)
+void Easy3D::Model2D::Render(const Camera& aCamera, const float aDrawX, const float aDrawY)
 {
 	Update(aDrawX, aDrawY);
 
@@ -171,7 +171,7 @@ void Prism::Model2D::Render(const Camera& aCamera, const float aDrawX, const flo
 	Engine::GetInstance()->EnableZBuffer();
 }
 
-void Prism::Model2D::SetupVertexBuffer()
+void Easy3D::Model2D::SetupVertexBuffer()
 {
 	TIME_FUNCTION
 
@@ -189,7 +189,7 @@ void Prism::Model2D::SetupVertexBuffer()
 	}
 }
 
-void Prism::Model2D::SetupIndexBuffer()
+void Easy3D::Model2D::SetupIndexBuffer()
 {
 	TIME_FUNCTION
 
@@ -208,12 +208,12 @@ void Prism::Model2D::SetupIndexBuffer()
 	}
 }
 
-void Prism::Model2D::OnEffectLoad()
+void Easy3D::Model2D::OnEffectLoad()
 {
 	mySurface->ReloadSurface();
 }
 
-void Prism::Model2D::Update(const float aDrawX, const float aDrawY)
+void Easy3D::Model2D::Update(const float aDrawX, const float aDrawY)
 {
 	TIME_FUNCTION
 

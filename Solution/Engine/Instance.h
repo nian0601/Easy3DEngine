@@ -5,7 +5,7 @@
 #include <Matrix.h>
 #include <StaticArray.h>
 
-namespace Prism
+namespace Easy3D
 {
 	class Camera;
 	class Light;

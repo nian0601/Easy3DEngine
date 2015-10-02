@@ -3,7 +3,7 @@
 class Camera;
 class Instance;
 
-namespace Prism
+namespace Easy3D
 {
 	class PointLight
 	{
@@ -38,43 +38,43 @@ namespace Prism
 	};
 }
 
-inline void Prism::PointLight::Update()
+inline void Easy3D::PointLight::Update()
 {
 	myPosition = myOriginalPosition * myOrientation;
 }
 
-inline const CU::Vector4<float>& Prism::PointLight::GetColor() const
+inline const CU::Vector4<float>& Easy3D::PointLight::GetColor() const
 {
 	return myColor;
 }
 
-inline void Prism::PointLight::SetColor(const CU::Vector4<float>& aColor)
+inline void Easy3D::PointLight::SetColor(const CU::Vector4<float>& aColor)
 {
 	myColor = aColor;
 }
 
-inline const CU::Vector4<float>& Prism::PointLight::GetPosition() const
+inline const CU::Vector4<float>& Easy3D::PointLight::GetPosition() const
 {
 	return myPosition;
 }
 
-inline void Prism::PointLight::SetPosition(const CU::Vector4<float>& aPosition)
+inline void Easy3D::PointLight::SetPosition(const CU::Vector4<float>& aPosition)
 {
 	myPosition = aPosition;
 	myOriginalPosition = aPosition;
 }
 
-inline void Prism::PointLight::SetRange(float aRange)
+inline void Easy3D::PointLight::SetRange(float aRange)
 {
 	myRange = aRange;
 }
 
-inline float Prism::PointLight::GetRange() const
+inline float Easy3D::PointLight::GetRange() const
 {
 	return myRange;
 }
 
-inline void Prism::PointLight::PerformTransformation(const CU::Matrix44<float>& aTransformation)
+inline void Easy3D::PointLight::PerformTransformation(const CU::Matrix44<float>& aTransformation)
 {
 	myOrientation = aTransformation * myOrientation;
 }

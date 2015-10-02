@@ -11,7 +11,7 @@
 
 #define THREADED_LOADING
 
-namespace Prism
+namespace Easy3D
 {
 	ModelLoader::ModelLoader()
 		: myModelsToLoad(4)
@@ -58,7 +58,7 @@ namespace Prism
 				Model* model = nullptr;
 				switch (loadType)
 				{
-				case Prism::ModelLoader::eLoadType::MODEL:
+				case Easy3D::ModelLoader::eLoadType::MODEL:
 				{
 					CU::TimerManager::GetInstance()->StartTimer("LoadModel");
 
@@ -72,34 +72,34 @@ namespace Prism
 					RESOURCE_LOG("Model \"%s\" took %d ms to load", loadArray[i].myModelPath.c_str(), elapsed);
 					break;
 				}
-				case Prism::ModelLoader::eLoadType::POLYGON:
+				case Easy3D::ModelLoader::eLoadType::POLYGON:
 				{
-					model = new Prism::Model();
+					model = new Easy3D::Model();
 					model->InitPolygon();
 
 					myNonFXBModels.Add(model);
 					break;
 				}
-				case Prism::ModelLoader::eLoadType::CUBE:
+				case Easy3D::ModelLoader::eLoadType::CUBE:
 				{
-					model = new Prism::Model();
+					model = new Easy3D::Model();
 					model->InitCube(loadArray[i].mySize.x, loadArray[i].mySize.y, loadArray[i].mySize.z);
 
 					myNonFXBModels.Add(model);
 					break;
 				}
-				case Prism::ModelLoader::eLoadType::LIGHT_CUBE:
+				case Easy3D::ModelLoader::eLoadType::LIGHT_CUBE:
 				{
-					model = new Prism::Model();
+					model = new Easy3D::Model();
 					model->InitLightCube(loadArray[i].mySize.x, loadArray[i].mySize.y,
 						loadArray[i].mySize.z, loadArray[i].myColor);
 
 					myNonFXBModels.Add(model);
 					break;
 				}
-				case Prism::ModelLoader::eLoadType::GEOMETRY:
+				case Easy3D::ModelLoader::eLoadType::GEOMETRY:
 				{
-					model = new Prism::Model();
+					model = new Easy3D::Model();
 					model->InitGeometry(loadArray[i].myMeshData);
 
 					myNonFXBModels.Add(model);
@@ -189,7 +189,7 @@ namespace Prism
 		return proxy;
 #else
 		ModelProxy* proxy = new ModelProxy();
-		Model* model = new Prism::Model();
+		Model* model = new Easy3D::Model();
 		model->InitPolygon();
 
 		proxy->SetModel(model);
@@ -220,7 +220,7 @@ namespace Prism
 		return proxy;
 #else
 		ModelProxy* proxy = new ModelProxy();
-		Model* model = new Prism::Model();
+		Model* model = new Easy3D::Model();
 		model->InitCube(aWidth, aHeight, aDepth);
 
 		proxy->SetModel(model);
@@ -252,7 +252,7 @@ namespace Prism
 		return proxy;
 #else
 		ModelProxy* proxy = new ModelProxy();
-		Model* model = new Prism::Model();
+		Model* model = new Easy3D::Model();
 		model->InitLightCube(aWidth, aHeight, aDepth, aColour);
 
 		proxy->SetModel(model);
@@ -281,7 +281,7 @@ namespace Prism
 		return proxy;
 #else
 		ModelProxy* proxy = new ModelProxy();
-		Model* model = new Prism::Model();
+		Model* model = new Easy3D::Model();
 		model->InitGeometry(aMeshData);
 
 		proxy->SetModel(model);

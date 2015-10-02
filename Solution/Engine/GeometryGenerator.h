@@ -2,7 +2,7 @@
 #include <GrowingArray.h>
 #include <Vector.h>
 
-namespace Prism
+namespace Easy3D
 {
 	struct Vertex
 	{

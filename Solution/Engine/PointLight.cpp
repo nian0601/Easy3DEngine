@@ -6,7 +6,7 @@
 #include "Model.h"
 #include "PointLight.h"
 
-namespace Prism
+namespace Easy3D
 {
 
 	void PointLight::Initiate()

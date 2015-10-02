@@ -1,7 +1,7 @@
 #pragma once
 #include <Vector.h>
 
-namespace Prism
+namespace Easy3D
 {
 	class Texture;
 
@@ -29,12 +29,12 @@ namespace Prism
 	};
 }
 
-inline const CU::Vector2<float>& Prism::Font::GetCharSize() const
+inline const CU::Vector2<float>& Easy3D::Font::GetCharSize() const
 {
 	return myCharSize;
 }
 
-inline Prism::Texture* Prism::Font::GetTexture()
+inline Easy3D::Texture* Easy3D::Font::GetTexture()
 {
 	return myTexture;
 }

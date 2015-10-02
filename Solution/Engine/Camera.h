@@ -1,7 +1,7 @@
 #pragma once
 #include <Matrix44.h>
 
-namespace Prism
+namespace Easy3D
 {
 	class Camera
 	{

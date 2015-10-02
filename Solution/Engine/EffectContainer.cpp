@@ -8,7 +8,7 @@
 #include "Texture.h"
 #include "TextureContainer.h"
 
-Prism::Effect* Prism::EffectContainer::GetEffect(const std::string& aFilePath)
+Easy3D::Effect* Easy3D::EffectContainer::GetEffect(const std::string& aFilePath)
 {
 	auto it = myEffects.find(aFilePath);
 
@@ -20,7 +20,7 @@ Prism::Effect* Prism::EffectContainer::GetEffect(const std::string& aFilePath)
 	return myEffects[aFilePath];
 }
 
-void Prism::EffectContainer::LoadEffect(const std::string& aFilePath)
+void Easy3D::EffectContainer::LoadEffect(const std::string& aFilePath)
 {
 	Effect* newEffect = new Effect();
 	
@@ -45,10 +45,10 @@ void Prism::EffectContainer::LoadEffect(const std::string& aFilePath)
 
 	myEffects[aFilePath] = newEffect;
 
-	WATCH_FILE(aFilePath, Prism::EffectContainer::ReloadEffect);
+	WATCH_FILE(aFilePath, Easy3D::EffectContainer::ReloadEffect);
 }
 
-void Prism::EffectContainer::ReloadEffect(const std::string& aFilePath)
+void Easy3D::EffectContainer::ReloadEffect(const std::string& aFilePath)
 {
 	if (myEffects.find(aFilePath) == myEffects.end())
 	{
@@ -67,7 +67,7 @@ void Prism::EffectContainer::ReloadEffect(const std::string& aFilePath)
 	}
 }
 
-void Prism::EffectContainer::Update(const float aDeltaTime)
+void Easy3D::EffectContainer::Update(const float aDeltaTime)
 {
 	for (auto it = myEffects.begin(); it != myEffects.end(); ++it)
 	{
@@ -75,7 +75,7 @@ void Prism::EffectContainer::Update(const float aDeltaTime)
 	}
 }
 
-void Prism::EffectContainer::SetCubeMap(const std::string& aFilePath)
+void Easy3D::EffectContainer::SetCubeMap(const std::string& aFilePath)
 {
 	myCubeMap = aFilePath;
 }

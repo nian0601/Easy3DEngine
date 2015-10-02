@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Prism
+namespace Easy3D
 {
 	struct SetupInfo
 	{

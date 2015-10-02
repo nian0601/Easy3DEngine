@@ -1,6 +1,6 @@
 #pragma once
 #include <Vector.h>
-namespace Prism
+namespace Easy3D
 {
 	enum class VertexType
 	{

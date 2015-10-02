@@ -1,7 +1,7 @@
 #pragma once
 #include <unordered_map>
 
-namespace Prism
+namespace Easy3D
 {
 	class Font;
 	class FontContainer

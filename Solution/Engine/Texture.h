@@ -2,7 +2,7 @@
 #include <string>
 struct ID3D11ShaderResourceView;
 
-namespace Prism
+namespace Easy3D
 {
 	class Texture
 	{

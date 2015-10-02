@@ -10,21 +10,21 @@
 #include "Surface.h"
 #include "VertexBufferWrapper.h"
 
-Prism::GraphRenderer::GraphRenderer()
+Easy3D::GraphRenderer::GraphRenderer()
 {
 	myVertexBufferDesc = new D3D11_BUFFER_DESC();
 	myIndexBufferDesc = new D3D11_BUFFER_DESC();
 	myInitData = new D3D11_SUBRESOURCE_DATA();
 }
 
-Prism::GraphRenderer::~GraphRenderer()
+Easy3D::GraphRenderer::~GraphRenderer()
 {
 	delete myVertexBufferDesc;
 	delete myIndexBufferDesc;
 	delete myInitData;
 }
 
-void Prism::GraphRenderer::Init()
+void Easy3D::GraphRenderer::Init()
 {
 	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/GraphEffect.fx");
 
@@ -53,7 +53,7 @@ void Prism::GraphRenderer::Init()
 	ZeroMemory(myInitData, sizeof(myInitData));
 }
 
-void Prism::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
+void Easy3D::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
 	, const CU::Vector2<float>& aTopLeftDrawPos, const CU::Vector2<float>& aGraphSize
 	, const float aMaxValue, bool aNewData)
 {
@@ -105,7 +105,7 @@ void Prism::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
 	}
 }
 
-void Prism::GraphRenderer::InitVertexBuffer()
+void Easy3D::GraphRenderer::InitVertexBuffer()
 {
 	myVertexBuffer = new VertexBufferWrapper();
 	myVertexBuffer->myStride = sizeof(VertexPosColor);
@@ -122,7 +122,7 @@ void Prism::GraphRenderer::InitVertexBuffer()
 	myVertexBufferDesc->StructureByteStride = 0;
 }
 
-void Prism::GraphRenderer::InitIndexBuffer()
+void Easy3D::GraphRenderer::InitIndexBuffer()
 {
 	myIndexBuffer = new IndexBufferWrapper();
 	myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
@@ -137,7 +137,7 @@ void Prism::GraphRenderer::InitIndexBuffer()
 	myIndexBufferDesc->StructureByteStride = 0;
 }
 
-void Prism::GraphRenderer::InitSurface()
+void Easy3D::GraphRenderer::InitSurface()
 {
 	mySurface = new Surface();
 
@@ -149,7 +149,7 @@ void Prism::GraphRenderer::InitSurface()
 	mySurface->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void Prism::GraphRenderer::BuildBuffers(const CU::GrowingArray<float>& aDataArray, const CU::Vector2<float>& aTopLeftDrawPos
+void Easy3D::GraphRenderer::BuildBuffers(const CU::GrowingArray<float>& aDataArray, const CU::Vector2<float>& aTopLeftDrawPos
 	, const CU::Vector2<float>& aGraphSize, const float aMaxValue)
 {
 	TIME_FUNCTION
@@ -190,7 +190,7 @@ void Prism::GraphRenderer::BuildBuffers(const CU::GrowingArray<float>& aDataArra
 	mySurface->SetVertexCount(myVertices.Size());
 }
 
-void Prism::GraphRenderer::CreateFirstTri(const CU::Vector2<float>& aBotLeft, const CU::Vector2<float>& aColumSize
+void Easy3D::GraphRenderer::CreateFirstTri(const CU::Vector2<float>& aBotLeft, const CU::Vector2<float>& aColumSize
 	, const int aIndex, const float aHeightCoef)
 {
 	TIME_FUNCTION
@@ -224,7 +224,7 @@ void Prism::GraphRenderer::CreateFirstTri(const CU::Vector2<float>& aBotLeft, co
 	++index;
 }
 
-void Prism::GraphRenderer::CreateSecondTri(const CU::Vector2<float>& aBotLeft, const CU::Vector2<float>& aColumSize
+void Easy3D::GraphRenderer::CreateSecondTri(const CU::Vector2<float>& aBotLeft, const CU::Vector2<float>& aColumSize
 	, const int aIndex, const float aHeightCoef)
 {
 	TIME_FUNCTION
@@ -258,7 +258,7 @@ void Prism::GraphRenderer::CreateSecondTri(const CU::Vector2<float>& aBotLeft, c
 	++index;
 }
 
-void Prism::GraphRenderer::SetupVertexBuffer()
+void Easy3D::GraphRenderer::SetupVertexBuffer()
 {
 	TIME_FUNCTION
 
@@ -277,7 +277,7 @@ void Prism::GraphRenderer::SetupVertexBuffer()
 	}
 }
 
-void Prism::GraphRenderer::SetupIndexBuffer()
+void Easy3D::GraphRenderer::SetupIndexBuffer()
 {
 	TIME_FUNCTION
 
@@ -296,7 +296,7 @@ void Prism::GraphRenderer::SetupIndexBuffer()
 	}
 }
 
-CU::Vector4<float> Prism::GraphRenderer::GetColor(const float aHeightCoef)
+CU::Vector4<float> Easy3D::GraphRenderer::GetColor(const float aHeightCoef)
 {
 	if (aHeightCoef < 0.25f)
 		return{ 0.f, 1.f, 0.f, 1.f };

@@ -7,7 +7,7 @@
 #include "Scene.h"
 #include "SpotLight.h"
 
-Prism::Scene::Scene()
+Easy3D::Scene::Scene()
 {
 	myInstances.Init(4);
 	myDirectionalLights.Init(4);
@@ -19,12 +19,12 @@ Prism::Scene::Scene()
 	memset(&mySpotLightData[0], 0, sizeof(SpotLightData) * NUMBER_OF_SPOT_LIGHTS);
 }
 
-Prism::Scene::~Scene()
+Easy3D::Scene::~Scene()
 {
 	myInstances.DeleteAll();
 }
 
-void Prism::Scene::Render()
+void Easy3D::Scene::Render()
 {
 	TIME_FUNCTION;
 
@@ -66,7 +66,7 @@ void Prism::Scene::Render()
 
 }
 
-void Prism::Scene::Render(CU::GrowingArray<Instance*>& someBulletInstances)
+void Easy3D::Scene::Render(CU::GrowingArray<Instance*>& someBulletInstances)
 {
 	Render();
 
@@ -79,37 +79,37 @@ void Prism::Scene::Render(CU::GrowingArray<Instance*>& someBulletInstances)
 	}
 }
 
-void Prism::Scene::AddInstance(Instance* aInstance)
+void Easy3D::Scene::AddInstance(Instance* aInstance)
 {
 	myInstances.Add(aInstance);
 }
 
-void Prism::Scene::AddLight(DirectionalLight* aLight)
+void Easy3D::Scene::AddLight(DirectionalLight* aLight)
 {
 	myDirectionalLights.Add(aLight);
 }
 
-void Prism::Scene::AddLight(PointLight* aLight)
+void Easy3D::Scene::AddLight(PointLight* aLight)
 {
 	myPointLights.Add(aLight);
 }
 
-void Prism::Scene::AddLight(SpotLight* aLight)
+void Easy3D::Scene::AddLight(SpotLight* aLight)
 {
 	mySpotLights.Add(aLight);
 }
 
-void Prism::Scene::RemoveInstance(Instance* aInstance) 
+void Easy3D::Scene::RemoveInstance(Instance* aInstance) 
 {
 	myInstances.RemoveCyclic(aInstance);
 }
 
-void Prism::Scene::SetCamera(Camera* aCamera)
+void Easy3D::Scene::SetCamera(Camera* aCamera)
 {
 	myCamera = aCamera;
 }
 
-Prism::Camera& Prism::Scene::GetCamera()
+Easy3D::Camera& Easy3D::Scene::GetCamera()
 {
 	return *myCamera;
 }

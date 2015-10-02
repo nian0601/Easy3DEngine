@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace Prism
+namespace Easy3D
 {
 	class Effect;
 	class EffectContainer
