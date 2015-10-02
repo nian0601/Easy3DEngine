@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Precompile</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DirectX.cpp">
+      <Filter>DirectX</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="FBX\FbxLoader.cpp">
+      <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXFactory.cpp">
+      <Filter>FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryGenerator.cpp" />
+    <ClCompile Include="Font.cpp">
+      <Filter>Rendering\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Text.cpp">
+      <Filter>Rendering\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugDataDisplay.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
+    <ClCompile Include="Debug_BlockTimer.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphRenderer.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
+    <ClCompile Include="FontContainer.cpp">
+      <Filter>Rendering\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="FileWatcher.cpp" />
+    <ClCompile Include="SpotLight.cpp">
+      <Filter>Lights</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameTimeDebugger.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
+    <ClCompile Include="SystemMonitor.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
+    <ClCompile Include="Instance.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Model2D.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureContainer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Effect.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectContainer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelLoader.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelProxy.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugMenu.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine.h" />
+    <ClInclude Include="stdafx.h">
+      <Filter>Precompile</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="DirectX.h">
+      <Filter>DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBufferWrapper.h">
+      <Filter>DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBufferWrapper.h">
+      <Filter>DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexDataWrapper.h">
+      <Filter>DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexIndexWrapper.h">
+      <Filter>DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="SetupInfo.h">
+      <Filter>DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="FBX\FbxLoader.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="FBXFactory.h">
+      <Filter>FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryGenerator.h" />
+    <ClInclude Include="Font.h">
+      <Filter>Rendering\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Text.h">
+      <Filter>Rendering\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugDataDisplay.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug_BlockTimer.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphRenderer.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="FontContainer.h">
+      <Filter>Rendering\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="VTuneApi.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectionalLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="FileWatcher.h" />
+    <ClInclude Include="SpotLight.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h" />
+    <ClInclude Include="LightStructs.h">
+      <Filter>Lights</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectListener.h" />
+    <ClInclude Include="FrameTimeDebugger.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemMonitor.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="Instance.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Model2D.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertices.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureContainer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectContainer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Effect.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelLoader.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelProxy.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugMenu.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Precompile">
+      <UniqueIdentifier>{60e037e0-b5db-4ba4-89e7-926b418d4716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DirectX">
+      <UniqueIdentifier>{4e45fc3e-08bd-402b-982d-47db849e325d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lights">
+      <UniqueIdentifier>{66e70d18-ed4b-4b98-9eff-c35077563ee6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FBX">
+      <UniqueIdentifier>{923b2b8b-c8a5-41fb-891a-0d4653b552b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DebugServices">
+      <UniqueIdentifier>{351a3e6e-50d2-43e1-823e-641c1538baa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{bf7322d7-2e84-4f42-a427-99331b06f309}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Text">
+      <UniqueIdentifier>{baf2e884-b972-4bc8-9638-b545b2737981}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
