@@ -2,6 +2,7 @@
 
 #include <D3D11.h>
 #include <d3dx11effect.h>
+#include "Effect2D.h"
 #include "Effect3D.h"
 #include "Font.h"
 #include "FontContainer.h"
@@ -13,15 +14,15 @@ namespace Easy3D
 {
 	void Text::Init(const std::string& aFontPath)
 	{
-		myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/FontEffect.fx");
+		myEffect = Engine::GetInstance()->GetEffectContainer()->Get2DEffect("Data/effect/2D/FontEffect.fx");
 		myFont = Engine::GetInstance()->GetFontContainer()->GetFont(aFontPath);
 		myCharSize = myFont->GetCharSize();
+		myCharSpacing = 17.f;
 
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 		{
 			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
 		D3DX11_PASS_DESC passDesc;
@@ -33,9 +34,9 @@ namespace Easy3D
 		}
 
 
-		InitVertexBuffer<VertexPosColorUV>();
+		InitVertexBuffer<VertexPosUV>();
 		InitIndexBuffer();
-		InitSurface(myFont->GetTexture()->GetFileName());
+		InitSurface("Texture", myFont->GetTexture()->GetFileName());
 		InitBlendState();
 
 		ZeroMemory(myInitData, sizeof(myInitData));
@@ -44,57 +45,21 @@ namespace Easy3D
 		myIndices.Init(16);
 	}
 
-	void Text::Render(const std::string& aString, const float aDrawX, const float aDrawY
-		, const CU::Vector4<float>& aColor, const float aScale)
+	void Text::Render(const std::string& aString, const CU::Vector2<float>& aPosition
+		, const CU::Vector2<float>& aScale, const CU::Vector4<float>& aColor)
 	{
 		if (Engine::GetInstance()->myWireframeShouldShow == true)
 		{
 			Engine::GetInstance()->DisableWireframe();
 		}
 
-		UpdateSentence(aString, aDrawX, aDrawY, aColor, aScale);
-
-		if (myHasText == false)
-			return;
-
-		Engine::GetInstance()->DisableZBuffer();
-
-		float blendFactor[4];
-		blendFactor[0] = 0.f;
-		blendFactor[1] = 0.f;
-		blendFactor[2] = 0.f;
-		blendFactor[3] = 0.f;
-
-		myEffect->SetBlendState(myBlendState, blendFactor);
-		myEffect->SetViewMatrix(CU::Matrix44<float>());
-		myEffect->SetProjectionMatrix(Engine::GetInstance()->GetOrthogonalMatrix());
-		myEffect->SetWorldMatrix(myOrienation);
-
-		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
-		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
-			, myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer
-			, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer
-			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
-
-
-		D3DX11_TECHNIQUE_DESC techDesc;
-		myEffect->GetTechnique()->GetDesc(&techDesc);
-
-		mySurface->Activate();
-
-		for (UINT i = 0; i < techDesc.Passes; ++i)
+		if (myLastText != aString)
 		{
-			myEffect->GetTechnique()->GetPassByIndex(i)->Apply(0, Engine::GetInstance()->GetContex());
-			Engine::GetInstance()->GetContex()->DrawIndexed(mySurface->GetIndexCount(), mySurface->GetVertexStart(), 0);
+			ConstructBuffers(aString);
 		}
 
-		Engine::GetInstance()->EnableZBuffer();
 
-		if (Engine::GetInstance()->myWireframeShouldShow == true)
-		{
-			Engine::GetInstance()->EnableWireframe();
-		}
+		Base2DModel::Render(aPosition, aScale, aColor);
 	}
 
 
@@ -107,41 +72,30 @@ namespace Easy3D
 		size.x += (myCharSize.x - myCharSpacing) * numOfLetters;
 		size.y = myCharSize.y;
 
-		return size;
+		return size * myScale;
 	}
 
 	float Text::GetTextWidth() const
 	{
-		return myTextWidth;
+		return myTextWidth * myScale.x;
 
 	}
-	void Text::UpdateSentence(const std::string& aString, const float aDrawX, const float aDrawY,
-		const CU::Vector4<float>& aColor, const float aScale)
+
+	void Text::ConstructBuffers(const std::string& aString)
 	{
 		TIME_FUNCTION;
 
-		if (strcmp(aString.c_str(), myLastText.c_str()) == 0 && aDrawX == myLastDrawX
-			&& aDrawY == myLastDrawY && aScale == myLastScale)
-		{
-			return;
-		}
-
 		myLastText = aString;
-		myLastDrawX = aDrawX;
-		myLastDrawY = aDrawY;
-		myLastScale = aScale;
-		myTextWidth = aDrawX;
+		myTextWidth = 0;
 
-		myHasText = true;
 		int numOfLetters = aString.length();
-		float drawX = aDrawX;
-		float drawY = aDrawY;
+		float drawX = 0;
+		float drawY = 0;
 		float z = 1.f;
 
 		myVertices.RemoveAll();
 		myIndices.RemoveAll();
-		VertexPosColorUV vert;
-		vert.myCol = aColor;
+		VertexPosUV vert;
 		for (int i = 0; i < numOfLetters; ++i)
 		{
 			Font::CharacterData charData = myFont->GetCharData(aString[i]);
@@ -151,20 +105,20 @@ namespace Easy3D
 			float top = drawY;
 			float bottom = top - myCharSize.y;
 
-			
-			vert.myPos = CU::Vector3<float>(left, top, z) * aScale;
+
+			vert.myPos = CU::Vector3<float>(left, top, z);
 			vert.myUV = charData.myTopLeftUV;
 			myVertices.Add(vert);
 
-			vert.myPos = CU::Vector3<float>(right, bottom, z) * aScale;
+			vert.myPos = CU::Vector3<float>(right, bottom, z);
 			vert.myUV = charData.myBottomRightUV;
 			myVertices.Add(vert);
 
-			vert.myPos = CU::Vector3<float>(left, bottom, z) * aScale;
+			vert.myPos = CU::Vector3<float>(left, bottom, z);
 			vert.myUV = { charData.myTopLeftUV.x, charData.myBottomRightUV.y };
 			myVertices.Add(vert);
 
-			vert.myPos = CU::Vector3<float>(right, top, z) * aScale;
+			vert.myPos = CU::Vector3<float>(right, top, z);
 			vert.myUV = { charData.myBottomRightUV.x, charData.myTopLeftUV.y };
 			myVertices.Add(vert);
 
@@ -173,7 +127,7 @@ namespace Easy3D
 			myIndices.Add(startIndex + 0);
 			myIndices.Add(startIndex + 1);
 			myIndices.Add(startIndex + 2);
-						   
+
 			myIndices.Add(startIndex + 0);
 			myIndices.Add(startIndex + 3);
 			myIndices.Add(startIndex + 1);
@@ -183,7 +137,7 @@ namespace Easy3D
 			z -= 0.001f;
 		}
 
-		SetupVertexBuffer(myVertices.Size(), sizeof(VertexPosColorUV), reinterpret_cast<char*>(&myVertices[0]));
+		SetupVertexBuffer(myVertices.Size(), sizeof(VertexPosUV), reinterpret_cast<char*>(&myVertices[0]));
 		SetupIndexBuffer(myIndices.Size(), reinterpret_cast<char*>(&myIndices[0]));
 
 		mySurface->SetVertexCount(myVertices.Size());
@@ -191,4 +145,5 @@ namespace Easy3D
 
 		myTextWidth = drawX - myTextWidth;
 	}
+
 }

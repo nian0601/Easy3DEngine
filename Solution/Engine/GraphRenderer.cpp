@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include <d3dx11effect.h>
 #include <D3D11.h>
-#include "Effect3D.h"
+#include "Effect2D.h"
 #include "EffectContainer.h"
 #include "GraphRenderer.h"
 #include "IndexBufferWrapper.h"
@@ -26,7 +26,7 @@ Easy3D::GraphRenderer::~GraphRenderer()
 
 void Easy3D::GraphRenderer::Init()
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/GraphEffect.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get2DEffect("Data/effect/2D/GraphEffect.fx");
 
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
@@ -74,9 +74,7 @@ void Easy3D::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
 
 
 	myEffect->SetBlendState(NULL, NULL);
-	myEffect->SetViewMatrix(myIdentityMatrix);
 	myEffect->SetProjectionMatrix(Engine::GetInstance()->GetOrthogonalMatrix());
-	myEffect->SetWorldMatrix(myIdentityMatrix);
 
 	Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
 	Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot

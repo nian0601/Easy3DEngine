@@ -9,14 +9,11 @@ namespace Easy3D
 		Camera();
 		~Camera();
 
-		void ReadXML(const std::string& aFileName);
-
 		void OnResize(const int aWidth, const int aHeight);
 
 		const CU::Matrix44<float>& GetOrientation() const;
 		const CU::Vector3<float>& GetPosition() const;
 		const CU::Matrix44<float>& GetProjection() const;
-		const CU::Matrix44<float>& GetOrthogonal() const;
 
 		void SetOrientation(const CU::Matrix44<float>& aOrientation);
 		void SetPosition(const CU::Vector3<float>& aPosition);
@@ -34,9 +31,7 @@ namespace Easy3D
 
 		CU::Matrix44<float> myOrientation;
 		CU::Matrix44<float> myProjectionMatrix;
-		CU::Matrix44<float> myOrthogonalMatrix;
 		CU::Vector3<float> myPosition;
-		float myFOV;
 	};
 
 }

@@ -2,7 +2,7 @@
 
 #include <D3D11.h>
 #include <d3dx11effect.h>
-#include "Effect3D.h"
+#include "Effect2D.h"
 #include "IndexBufferWrapper.h"
 #include "Sprite.h"
 #include "Surface.h"
@@ -15,7 +15,8 @@ namespace Easy3D
 		: mySize(aSize)
 		, myHotspot(aHotSpot)
 	{
-		myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/SpriteEffect.fx");
+		myEffect = Engine::GetInstance()->GetEffectContainer()->Get2DEffect("Data/effect/2D/SpriteEffect.fx");
+		myEffect->AddListener(this);
 
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 		{
@@ -35,7 +36,7 @@ namespace Easy3D
 
 		InitVertexBuffer<VertexPosUV>();
 		InitIndexBuffer();
-		InitSurface(aSpritePath);
+		InitSurface("Texture", aSpritePath);
 		InitBlendState();
 
 		ZeroMemory(myInitData, sizeof(myInitData));
@@ -43,41 +44,10 @@ namespace Easy3D
 		CreateVertices();
 	}
 
-	void Sprite::Render(float aDrawX, float aDrawY)
+	void Sprite::Render(const CU::Vector2<float>& aPosition, const CU::Vector2<float>& aScale
+		, const CU::Vector4<float>& aColor)
 	{
-		Engine::GetInstance()->DisableZBuffer();
-
-		float blendFactor[4];
-		blendFactor[0] = 0.f;
-		blendFactor[1] = 0.f;
-		blendFactor[2] = 0.f;
-		blendFactor[3] = 0.f;
-
-		myEffect->SetBlendState(myBlendState, blendFactor);
-		myEffect->SetViewMatrix(CU::Matrix44<float>());
-		myEffect->SetProjectionMatrix(Engine::GetInstance()->GetOrthogonalMatrix());
-		myEffect->SetWorldMatrix(myOrienation);
-
-		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
-		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
-			, myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer
-			, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer
-			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
-
-
-		D3DX11_TECHNIQUE_DESC techDesc;
-		myEffect->GetTechnique()->GetDesc(&techDesc);
-
-		mySurface->Activate();
-
-		for (UINT i = 0; i < techDesc.Passes; ++i)
-		{
-			myEffect->GetTechnique()->GetPassByIndex(i)->Apply(0, Engine::GetInstance()->GetContex());
-			Engine::GetInstance()->GetContex()->DrawIndexed(mySurface->GetIndexCount(), mySurface->GetVertexStart(), 0);
-		}
-
-		Engine::GetInstance()->EnableZBuffer();
+		Base2DModel::Render(aPosition, aScale, aColor);
 	}
 
 	void Sprite::CreateVertices()

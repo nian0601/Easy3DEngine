@@ -10,30 +10,34 @@ struct D3D11_SUBRESOURCE_DATA;
 namespace Easy3D
 {
 	class Effect3D;
+	class Effect2D;
 	class Surface;
 	class Camera;
 	struct IndexBufferWrapper;
 	struct VertexBufferWrapper;
 
-	class Base2DModel : EffectListener
+	class Base2DModel : public EffectListener
 	{
 	public:
 		Base2DModel();
 		~Base2DModel();
 
 	protected:
+		void Render(const CU::Vector2<float>& aPosition, const CU::Vector2<float>& aScale = { 1.f, 1.f }
+		, const CU::Vector4<float>& aColor = { 1.f, 1.f, 1.f, 1.f });
+
 		template <typename VertexType>
 		void InitVertexBuffer();
 		void InitIndexBuffer();
-		void InitSurface(const std::string& aFileName);
+		void InitSurface(const std::string& aResourceName, const std::string& aFileName);
 		void InitBlendState();
 
 		void SetupVertexBuffer(int aVertexCount, size_t aVertexSize, char* aVertexData);
 		void SetupIndexBuffer(int aVertexCount, char* aIndexData);
 
-		void OnEffectLoad();
+		virtual void OnEffectLoad();
 
-		Effect3D* myEffect;
+		Effect2D* myEffect;
 		Surface* mySurface;
 		
 		ID3D11InputLayout* myVertexLayout;
@@ -45,7 +49,8 @@ namespace Easy3D
 		VertexBufferWrapper* myVertexBuffer;
 		IndexBufferWrapper* myIndexBuffer;
 
-		CU::Matrix44<float> myOrienation;
+		CU::Vector2<float> myPosition;
+		CU::Vector2<float> myScale;
 	};
 
 	template <typename VertexType>

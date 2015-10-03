@@ -10,30 +10,25 @@ namespace Easy3D
 	public:
 		void Init(const std::string& aFontPath);
 
-		void Render(const std::string& aString, const float aDrawX, const float aDrawY
-			, const CU::Vector4<float>& aColor = CU::Vector4<float>(1.f, 1.f, 1.f, 1.f), const float aScale = 1.f);
+		void Render(const std::string& aString, const CU::Vector2<float>& aPosition
+			, const CU::Vector2<float>& aScale = { 1.f, 1.f }
+			, const CU::Vector4<float>& aColor = { 1.f, 1.f, 1.f, 1.f });
 
 		float GetTextWidth() const;
 		CU::Vector2<float> GetTextSize(const char* aString) const;
 
 	private:
-		void UpdateSentence(const std::string& aString, const float aDrawX, const float aDrawY,
-			const CU::Vector4<float>& aColor, const float aScale);
+		void ConstructBuffers(const std::string& aString);
 
-		CU::GrowingArray<VertexPosColorUV> myVertices;
+		CU::GrowingArray<VertexPosUV> myVertices;
 		CU::GrowingArray<int> myIndices;
 
 		Font* myFont;
 
-		bool myHasText;
 		CU::Vector2<float> myCharSize;
 		float myTextWidth;
+		float myCharSpacing;
 
 		std::string myLastText;
-		float myLastDrawX;
-		float myLastDrawY;
-		float myLastScale;
-
-		float myCharSpacing;
 	};
 }                                                   

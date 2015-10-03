@@ -16,9 +16,6 @@ namespace Easy3D
 	class Effect3D : public BaseEffect
 	{
 	public:
-		Effect3D();
-		~Effect3D();
-
 		bool Init(const std::string& aEffectFile) override;
 		bool ReloadShader(const std::string& aFile) override;
 

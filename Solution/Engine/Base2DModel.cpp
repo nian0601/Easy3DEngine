@@ -1,9 +1,11 @@
 #include "stdafx.h"
 
-#include "Effect3D.h"
 #include "Base2DModel.h"
+#include <D3D11.h>
+#include <d3dx11effect.h>
+#include "Effect2D.h"
+#include "Effect3D.h"
 #include "IndexBufferWrapper.h"
-
 #include "Surface.h"
 
 
@@ -39,6 +41,49 @@ namespace Easy3D
 		delete mySurface;
 	}
 
+	void Base2DModel::Render(const CU::Vector2<float>& aPosition, const CU::Vector2<float>& aScale 
+		, const CU::Vector4<float>& aColor)
+	{
+		Engine::GetInstance()->DisableZBuffer();
+
+		myPosition = aPosition;
+		myScale = aScale;
+
+		float blendFactor[4];
+		blendFactor[0] = 0.f;
+		blendFactor[1] = 0.f;
+		blendFactor[2] = 0.f;
+		blendFactor[3] = 0.f;
+
+		myEffect->SetBlendState(myBlendState, blendFactor);
+		myEffect->SetProjectionMatrix(Engine::GetInstance()->GetOrthogonalMatrix());
+		myEffect->UpdatePosAndScale(aPosition, aScale);
+		myEffect->SetPosAndScale();
+		myEffect->SetColor(aColor);
+
+		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
+		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
+			, myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer
+			, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer
+			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
+
+
+		D3DX11_TECHNIQUE_DESC techDesc;
+		myEffect->GetTechnique()->GetDesc(&techDesc);
+
+		mySurface->Activate();
+
+		for (UINT i = 0; i < techDesc.Passes; ++i)
+		{
+			myEffect->GetTechnique()->GetPassByIndex(i)->Apply(0, Engine::GetInstance()->GetContex());
+			Engine::GetInstance()->GetContex()->DrawIndexed(mySurface->GetIndexCount(), mySurface->GetVertexStart(), 0);
+		}
+
+		Engine::GetInstance()->EnableZBuffer();
+	}
+
+
 	void Base2DModel::InitIndexBuffer()
 	{
 		myIndexBuffer = new IndexBufferWrapper();
@@ -54,7 +99,7 @@ namespace Easy3D
 		myIndexBufferDesc->StructureByteStride = 0;
 	}
 
-	void Base2DModel::InitSurface(const std::string& aFileName)
+	void Base2DModel::InitSurface(const std::string& aResourceName, const std::string& aFileName)
 	{
 		mySurface = new Surface();
 
@@ -64,7 +109,7 @@ namespace Easy3D
 		mySurface->SetVertexCount(0);
 		mySurface->SetVertexStart(0);
 		mySurface->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		mySurface->SetTexture("DiffuseTexture", aFileName, true);
+		mySurface->SetTexture(aResourceName, aFileName, true);
 	}
 
 	void Base2DModel::InitBlendState()

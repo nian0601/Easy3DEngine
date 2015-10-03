@@ -101,7 +101,7 @@ void Easy3D::Model::Init()
 
 void Easy3D::Model::InitPolygon()
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/PolygonEffect.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/3D/PolygonEffect.fx");
 
 	if (myEffect == nullptr)
 	{
@@ -156,7 +156,7 @@ void Easy3D::Model::InitPolygon()
 
 void Easy3D::Model::InitCube(const float aWidth, const float aHeight, const float aDepth)
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/CubeEffect.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/3D/CubeEffect.fx");
 
 	if (myEffect == nullptr)
 	{
@@ -308,7 +308,7 @@ void Easy3D::Model::InitCube(const float aWidth, const float aHeight, const floa
 
 void Easy3D::Model::InitLightCube(const float aWidth, const float aHeight, const float aDepth, CU::Vector4f aColour)
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/CubeColored.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/3D/CubeColored.fx");
 
 	if (myEffect == nullptr)
 	{
@@ -458,7 +458,7 @@ void Easy3D::Model::InitLightCube(const float aWidth, const float aHeight, const
 
 void Easy3D::Model::InitGeometry(const MeshData& aMeshData)
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/GeometryEffect.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/3D/GeometryEffect.fx");
 	
 	if (myEffect == nullptr)
 	{

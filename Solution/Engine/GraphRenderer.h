@@ -11,7 +11,7 @@ struct ID3D11InputLayout;
 namespace Easy3D
 {
 	class Camera;
-	class Effect3D;
+	class Effect2D;
 	class Font;
 	class Surface;
 
@@ -45,7 +45,7 @@ namespace Easy3D
 		void SetupIndexBuffer();
 		CU::Vector4<float> GetColor(const float aHeightCoef);
 
-		Effect3D* myEffect;
+		Effect2D* myEffect;
 		ID3D11InputLayout* myVertexLayout;
 		CU::GrowingArray<VertexPosColor> myVertices;
 		CU::GrowingArray<int> myVerticeIndices;

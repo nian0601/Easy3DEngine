@@ -7,15 +7,6 @@
 
 namespace Easy3D
 {
-	Effect3D::Effect3D()
-	{
-	}
-
-
-	Effect3D::~Effect3D()
-	{
-	}
-
 	bool Effect3D::Init(const std::string& aEffectFile)
 	{
 		if (ReloadShader(aEffectFile) == false)
@@ -54,9 +45,8 @@ namespace Easy3D
 			if (compilationMsgs != nullptr)
 			{
 				DL_MESSAGE_BOX((char*)compilationMsgs->GetBufferPointer(), "Effect Error", MB_ICONWARNING);
-				DL_ASSERT("Need to fix a dummy-shader 3D-Shader");
-				//myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect(
-				//	"Data/effect/SuperUglyDebugEffect.fx")->myEffect;
+				myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect(
+					"Data/effect/3D/SuperUglyDebugEffect.fx")->myEffect;
 			}
 		}
 		if (compilationMsgs != nullptr)

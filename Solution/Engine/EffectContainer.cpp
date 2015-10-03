@@ -2,11 +2,24 @@
 
 #include <d3dx11effect.h>
 #include "Engine.h"
+#include "Effect2D.h"
 #include "Effect3D.h"
 #include "EffectContainer.h"
 #include "FileWatcher.h"
 #include "Texture.h"
 #include "TextureContainer.h"
+
+Easy3D::Effect2D* Easy3D::EffectContainer::Get2DEffect(const std::string& aFilePath)
+{
+	auto it = my2DEffects.find(aFilePath);
+
+	if (it == my2DEffects.end())
+	{
+		Load2DEffect(aFilePath);
+	}
+
+	return my2DEffects[aFilePath];
+}
 
 Easy3D::Effect3D* Easy3D::EffectContainer::Get3DEffect(const std::string& aFilePath)
 {
@@ -20,6 +33,37 @@ Easy3D::Effect3D* Easy3D::EffectContainer::Get3DEffect(const std::string& aFileP
 	return my3DEffects[aFilePath];
 }
 
+
+void Easy3D::EffectContainer::Load2DEffect(const std::string& aFilePath)
+{
+	Effect2D* newEffect = new Effect2D();
+
+	if (newEffect->Init(aFilePath) == false)
+	{
+		std::stringstream ss;
+		ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
+		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load2DEffect", MB_ICONWARNING);
+		return;
+	}
+
+
+	DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
+
+	my2DEffects[aFilePath] = newEffect;
+
+	WATCH_FILE(aFilePath, Easy3D::EffectContainer::Reload2DEffect);
+}
+
+void Easy3D::EffectContainer::Reload2DEffect(const std::string& aFilePath)
+{
+	if (my2DEffects.find(aFilePath) == my2DEffects.end())
+	{
+		return;
+	}
+
+	my2DEffects[aFilePath]->Init(aFilePath);
+}
+
 void Easy3D::EffectContainer::Load3DEffect(const std::string& aFilePath)
 {
 	Effect3D* newEffect = new Effect3D();
@@ -28,7 +72,7 @@ void Easy3D::EffectContainer::Load3DEffect(const std::string& aFilePath)
 	{
 		std::stringstream ss;
 		ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
-		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::LoadEffect", MB_ICONWARNING);
+		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load3DEffect", MB_ICONWARNING);
 		return;
 	}
 

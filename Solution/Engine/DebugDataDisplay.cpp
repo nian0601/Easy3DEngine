@@ -126,7 +126,7 @@ void Easy3D::DebugDataDisplay::RenderMemoryUsage()
 	myStringStream.str(std::string());
 	myStringStream << "Memory: " << Easy3D::SystemMonitor::GetMemoryUsageMB() << "mb" << std::endl;
 
-	myText->Render(myStringStream.str().c_str(), myMemUsageStartPos.x, myMemUsageStartPos.y, myTextScale);
+	myText->Render(myStringStream.str().c_str(), myMemUsageStartPos, { myTextScale, myTextScale });
 }
 
 void Easy3D::DebugDataDisplay::RenderCPUUsage()
@@ -138,7 +138,7 @@ void Easy3D::DebugDataDisplay::RenderCPUUsage()
 	myStringStream << "CPU: "
 		<< Easy3D::SystemMonitor::GetCPUUsage() << "%" << std::endl;;
 
-	myText->Render(myStringStream.str().c_str(), myCPUUSageStartPos.x, myCPUUSageStartPos.y, myTextScale);
+	myText->Render(myStringStream.str().c_str(), myCPUUSageStartPos, { myTextScale, myTextScale });
 }
 
 void Easy3D::DebugDataDisplay::RenderFrameTime()
@@ -150,7 +150,7 @@ void Easy3D::DebugDataDisplay::RenderFrameTime()
 	myStringStream.str(std::string());
 	myStringStream << "FPS: " << FPS << std::endl;
 
-	myText->Render(myStringStream.str().c_str(), myFrameTimeStartPos.x, myFrameTimeStartPos.y, myTextScale);
+	myText->Render(myStringStream.str().c_str(), myFrameTimeStartPos, { myTextScale, myTextScale });
 
 
 	float frameTimeMS = myLastDeltaTime * 1000.f;
@@ -159,5 +159,5 @@ void Easy3D::DebugDataDisplay::RenderFrameTime()
 	myStringStream << "FrameTime: " << frameTimeMS << "ms" << std::endl;
 
 	myText->Render(myStringStream.str().c_str()
-		, myFrameTimeStartPos.x, myFrameTimeStartPos.y - 30.f, myTextScale);
+		, { myFrameTimeStartPos.x, myFrameTimeStartPos.y - 30.f }, { myTextScale, myTextScale });
 }

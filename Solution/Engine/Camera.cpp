@@ -8,8 +8,7 @@ namespace Easy3D
 {
 	Camera::Camera()
 	{
-		WATCH_FILE("Data/script/camera.xml", Camera::ReadXML);
-		ReadXML("Data/script/camera.xml");
+		OnResize(Engine::GetInstance()->GetWindowSize().x, Engine::GetInstance()->GetWindowSize().y);
 	}
 
 
@@ -17,25 +16,9 @@ namespace Easy3D
 	{
 	}
 
-	void Camera::ReadXML(const std::string& aFileName)
-	{
-		Sleep(10);
-		XMLReader reader;
-		reader.OpenDocument(aFileName);
-		tinyxml2::XMLElement* levelElement = reader.ForceFindFirstChild("camera");
-		reader.ForceReadAttribute(levelElement, "fov", myFOV);
-		myFOV *= 3.14159f / 180.f;
-		OnResize(Engine::GetInstance()->GetWindowSize().x, Engine::GetInstance()->GetWindowSize().y);
-	}
-
 	void Camera::OnResize(const int aWidth, const int aHeight)
 	{
-		//myProjectionMatrix = CU::Matrix44<float>::CreateProjectionMatrixLH(0.1f, 1000.f, static_cast<float>(aWidth / aHeight), XM_PI * 0.4f);
-		myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(static_cast<float>(aWidth), static_cast<float>(aHeight), 0.1f, 1000.f);
-
-
-
-		XMMATRIX projection = XMMatrixPerspectiveFovLH(myFOV, static_cast<float>(aWidth) / aHeight, 0.1f, 1000.f);
+		XMMATRIX projection = XMMatrixPerspectiveFovLH(XM_PI / 2.f, static_cast<float>(aWidth) / aHeight, 0.1f, 1000.f);
 		XMFLOAT4X4 proj;
 		XMStoreFloat4x4(&proj, projection);
 		
@@ -55,11 +38,6 @@ namespace Easy3D
 	const CU::Matrix44<float>& Camera::GetProjection() const
 	{
 		return myProjectionMatrix;
-	}
-
-	const CU::Matrix44<float>& Camera::GetOrthogonal() const
-	{
-		return myOrthogonalMatrix;
 	}
 
 	void Camera::SetOrientation(const CU::Matrix44<float>& aOrientation)
@@ -107,7 +85,7 @@ namespace Easy3D
 	{
 		TIME_FUNCTION;
 
-			myPosition += myOrientation.GetForward() * aDistance;
+		myPosition += myOrientation.GetForward() * aDistance;
 		myOrientation.SetPos(myPosition);
 	}
 
@@ -115,7 +93,7 @@ namespace Easy3D
 	{
 		TIME_FUNCTION;
 
-			myPosition += myOrientation.GetRight() * aDistance;
+		myPosition += myOrientation.GetRight() * aDistance;
 		myOrientation.SetPos(myPosition);
 	}
 }

@@ -30,16 +30,21 @@ bool Game::Init(HWND& aHwnd)
 		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 
 
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle FPS", Easy3D::DebugDataDisplay::ToggleFrameTime, Easy3D::Engine::GetInstance()->GetDebugDisplay());
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Graph", Easy3D::DebugDataDisplay::ToggleFunctionTimers, Easy3D::Engine::GetInstance()->GetDebugDisplay());
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Mem", Easy3D::DebugDataDisplay::ToggleMemoryUsage, Easy3D::Engine::GetInstance()->GetDebugDisplay());
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle CPU", Easy3D::DebugDataDisplay::ToggleCPUUsage, Easy3D::Engine::GetInstance()->GetDebugDisplay());
-	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Wireframe", Easy3D::Engine::ToggleWireframe, Easy3D::Engine::GetInstance());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle FPS", Easy3D::DebugDataDisplay::ToggleFrameTime
+		, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Graph", Easy3D::DebugDataDisplay::ToggleFunctionTimers
+		, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Mem", Easy3D::DebugDataDisplay::ToggleMemoryUsage
+		, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle CPU", Easy3D::DebugDataDisplay::ToggleCPUUsage
+		, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Wireframe", Easy3D::Engine::ToggleWireframe
+		, Easy3D::Engine::GetInstance());
 	
 
 	myCamera = new Easy3D::Camera();
 
-	mySprite = new Easy3D::Sprite("Data/resources/texture/seafloor.dds", { 100.f, 100.f }, { 50.f, 50.f });
+	mySprite = new Easy3D::Sprite("Data/resources/texture/seafloor.dds", { 100.f, 100.f });
 	
 	Easy3D::Model* Model = new Easy3D::Model();
 	Model->InitCube();
@@ -47,7 +52,6 @@ bool Game::Init(HWND& aHwnd)
 	Proxy->SetModel(Model);
 	myCube = new Easy3D::Instance(*Proxy);
 	myCube->SetPosition({ 0.f, 0.f, 10.f });
-	myCube->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundZ(3.14f));
 
 	GAME_LOG("Init Successful");
 	return true;
@@ -61,6 +65,7 @@ bool Game::Destroy()
 bool Game::Update()
 {
 	BEGIN_TIME_BLOCK("Game::Update");
+	Easy3D::Engine::GetInstance()->GetFileWatcher()->CheckFiles();
 	myInputWrapper->Update();
 	CU::TimerManager::GetInstance()->Update();
 	float delta = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();
@@ -72,17 +77,23 @@ bool Game::Update()
 
 
 	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*myInputWrapper);
-	Easy3D::Engine::GetInstance()->GetDebugDisplay()->RecordFrameTime(delta);
+	
+
+	myCube->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundY(3.14f * delta));
+	myCube->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundZ(3.14f * delta));
 
 	Render();
+
 	END_TIME_BLOCK("Game::Update");
+
+	Easy3D::Engine::GetInstance()->GetDebugDisplay()->RecordFrameTime(delta);
 	return true;
 }
 
 void Game::Render()
 {
 	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Render();
-	mySprite->Render(0, 0);
+	mySprite->Render({ 500.f, -200.f }, { 3.f, 3.f });
 	myCube->Render(*myCamera);
 }
 
