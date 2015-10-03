@@ -23,7 +23,7 @@ namespace Easy3D
 		myModel = aModel;
 	}
 
-	Effect* ModelProxy::GetEffect()
+	Effect3D* ModelProxy::GetEffect()
 	{
 		if (myModel == nullptr)
 		{
@@ -33,7 +33,7 @@ namespace Easy3D
 		return myModel->GetEffect();
 	}
 
-	void ModelProxy::SetEffect(Effect* aEffect)
+	void ModelProxy::SetEffect(Effect3D* aEffect)
 	{
 		myModel->SetEffect(aEffect);
 	}

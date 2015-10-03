@@ -1,7 +1,7 @@
 #pragma once
-#define TIME_FUNCTION Easy3D::Debug_BlockTimer funcTimer__(__FUNCTION__);
-#define BEGIN_TIME_BLOCK(NAME) Easy3D::Engine::GetInstance()->GetDebugDisplay()->StartFunctionTimer(NAME);
-#define END_TIME_BLOCK(NAME) Easy3D::Engine::GetInstance()->GetDebugDisplay()->EndFunctionTimer(NAME);
+#define TIME_FUNCTION Easy3D::Debug_BlockTimer funcTimer__(__FUNCTION__)
+#define BEGIN_TIME_BLOCK(NAME) Easy3D::Engine::GetInstance()->GetDebugDisplay()->StartFunctionTimer(NAME)
+#define END_TIME_BLOCK(NAME) Easy3D::Engine::GetInstance()->GetDebugDisplay()->EndFunctionTimer(NAME)
 
 
 #include <bitset>

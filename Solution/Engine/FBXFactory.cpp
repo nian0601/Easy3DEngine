@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "Effect3D.h"
 #include "FBXFactory.h"
 #include "FBX/FbxLoader.h"
 #include "Matrix44.h"
@@ -25,7 +26,7 @@ Easy3D::FBXFactory::~FBXFactory()
 	delete myLoader;
 }
 
-void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect* aEffect)
+void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect3D* aEffect)
 {
 	VertexIndexWrapper* indexWrapper = new VertexIndexWrapper();
 	indexWrapper->myFormat = DXGI_FORMAT_R32_UINT;
@@ -137,7 +138,7 @@ void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect* a
 	outData->mySurfaces.Add(new Surface(surface));
 }
 
-Easy3D::Model* Easy3D::FBXFactory::CreateModel(FbxModelData* someModelData, Effect* aEffect)
+Easy3D::Model* Easy3D::FBXFactory::CreateModel(FbxModelData* someModelData, Effect3D* aEffect)
 {
 	Model* tempModel = new Model();
 	tempModel->SetEffect(aEffect);
@@ -156,7 +157,7 @@ Easy3D::Model* Easy3D::FBXFactory::CreateModel(FbxModelData* someModelData, Effe
 	return tempModel;
 }
 
-Easy3D::Model* Easy3D::FBXFactory::LoadModel(const char* aFilePath, Effect* aEffect)
+Easy3D::Model* Easy3D::FBXFactory::LoadModel(const char* aFilePath, Effect3D* aEffect)
 {
 	if (myModels.find(aFilePath) != myModels.end())
 	{

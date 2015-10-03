@@ -4,19 +4,19 @@
 
 namespace Easy3D
 {
-	class Effect;
+	class Effect3D;
+
 	class EffectContainer
 	{
 	public:
-		Effect* GetEffect(const std::string& aFilePath);
+		Effect3D* Get3DEffect(const std::string& aFilePath);
 
-		void Update(const float aDeltaTime);
 		void SetCubeMap(const std::string& aFilePath);	
 	private:
-		void LoadEffect(const std::string& aFilePath);
-		void ReloadEffect(const std::string& aFilePath);
+		void Load3DEffect(const std::string& aFilePath);
+		void Reload3DEffect(const std::string& aFilePath);
 
-		std::unordered_map<std::string, Effect*> myEffects;
+		std::unordered_map<std::string, Effect3D*> my3DEffects;
 		std::string myCubeMap;
 	};
 }

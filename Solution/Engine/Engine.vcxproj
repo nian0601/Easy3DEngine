@@ -103,12 +103,15 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Base2DModel.cpp" />
+    <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugDataDisplay.cpp" />
     <ClCompile Include="DebugMenu.cpp" />
     <ClCompile Include="Debug_BlockTimer.cpp" />
     <ClCompile Include="DirectX.cpp" />
-    <ClCompile Include="Effect.cpp" />
+    <ClCompile Include="Effect2D.cpp" />
+    <ClCompile Include="Effect3D.cpp" />
     <ClCompile Include="EffectContainer.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="FBXFactory.cpp" />
@@ -124,12 +127,12 @@
     <ClCompile Include="GraphRenderer.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="Model2D.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelProxy.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -141,13 +144,16 @@
     <ClCompile Include="TextureContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Base2DModel.h" />
+    <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DebugDataDisplay.h" />
     <ClInclude Include="DebugMenu.h" />
     <ClInclude Include="Debug_BlockTimer.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
-    <ClInclude Include="Effect.h" />
+    <ClInclude Include="Effect2D.h" />
+    <ClInclude Include="Effect3D.h" />
     <ClInclude Include="EffectContainer.h" />
     <ClInclude Include="EffectListener.h" />
     <ClInclude Include="Engine.h" />
@@ -164,13 +170,13 @@
     <ClInclude Include="DirectionalLight.h" />
     <ClInclude Include="LightStructs.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="Model2D.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="ModelProxy.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SetupInfo.h" />
     <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="SystemMonitor.h" />

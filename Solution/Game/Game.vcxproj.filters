@@ -2,10 +2,19 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <Filter>PreCompile</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="stdafx.h">
+      <Filter>PreCompile</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="PreCompile">
+      <UniqueIdentifier>{e7872d04-89b9-40ae-9653-32a422b266f5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

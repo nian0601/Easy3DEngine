@@ -26,7 +26,7 @@ Easy3D::Scene::~Scene()
 
 void Easy3D::Scene::Render()
 {
-	TIME_FUNCTION;
+	TIME_FUNCTION;;
 
 	for (int i = 0; i < myDirectionalLights.Size(); ++i)
 	{

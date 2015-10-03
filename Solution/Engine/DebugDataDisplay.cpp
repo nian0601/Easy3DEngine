@@ -32,7 +32,7 @@ Easy3D::DebugDataDisplay::~DebugDataDisplay()
 void Easy3D::DebugDataDisplay::Init()
 {
 	myText = new Text();
-	myText->Init(Engine::GetInstance()->GetFontContainer()->GetFont("Data/resources/font/font.dds"));
+	myText->Init("Data/resources/font/font.dds");
 
 	myFrameDebugger = new FrameTimeDebugger();
 	myFrameDebugger->Init();
@@ -120,7 +120,7 @@ void Easy3D::DebugDataDisplay::RenderFunctionTimers()
 
 void Easy3D::DebugDataDisplay::RenderMemoryUsage()
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 	myStringStream.clear();
 	myStringStream.str(std::string());
@@ -131,7 +131,7 @@ void Easy3D::DebugDataDisplay::RenderMemoryUsage()
 
 void Easy3D::DebugDataDisplay::RenderCPUUsage()
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 	myStringStream.clear();
 	myStringStream.str(std::string());
@@ -143,7 +143,7 @@ void Easy3D::DebugDataDisplay::RenderCPUUsage()
 
 void Easy3D::DebugDataDisplay::RenderFrameTime()
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 	float FPS = 1.f / myLastDeltaTime;
 	myStringStream.clear();

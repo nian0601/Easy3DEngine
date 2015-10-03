@@ -6,8 +6,7 @@
 
 namespace Easy3D
 {
-	Camera::Camera(CU::Matrix44f& aPlayerMatrix)
-		: myOrientation(aPlayerMatrix)
+	Camera::Camera()
 	{
 		WATCH_FILE("Data/script/camera.xml", Camera::ReadXML);
 		ReadXML("Data/script/camera.xml");
@@ -76,7 +75,7 @@ namespace Easy3D
 
 	void Camera::RotateX(const float aDegrees)
 	{
-		TIME_FUNCTION
+		TIME_FUNCTION;
 
 		myPosition = myOrientation.GetPos();
 		myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
@@ -86,7 +85,7 @@ namespace Easy3D
 
 	void Camera::RotateY(const float aDegrees)
 	{
-		TIME_FUNCTION
+		TIME_FUNCTION;
 
 		myPosition = myOrientation.GetPos();
 		myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
@@ -96,7 +95,7 @@ namespace Easy3D
 
 	void Camera::RotateZ(const float aDegrees)
 	{
-		TIME_FUNCTION
+		TIME_FUNCTION;
 
 		myPosition = myOrientation.GetPos();
 		myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
@@ -106,7 +105,7 @@ namespace Easy3D
 
 	void Camera::MoveForward(const float aDistance)
 	{
-		TIME_FUNCTION
+		TIME_FUNCTION;
 
 			myPosition += myOrientation.GetForward() * aDistance;
 		myOrientation.SetPos(myPosition);
@@ -114,7 +113,7 @@ namespace Easy3D
 
 	void Camera::MoveRight(const float aDistance)
 	{
-		TIME_FUNCTION
+		TIME_FUNCTION;
 
 			myPosition += myOrientation.GetRight() * aDistance;
 		myOrientation.SetPos(myPosition);

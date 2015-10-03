@@ -9,7 +9,7 @@
 
 namespace Easy3D
 {
-	class Effect;
+	class Effect3D;
 	class Surface;
 
 	struct IndexBufferWrapper;
@@ -36,8 +36,8 @@ namespace Easy3D
 		void AddChild(Model* aChild);
 		void InitGeometry(const MeshData& aMeshData);
 
-		Effect* GetEffect();
-		void SetEffect(Effect* aEffect);
+		Effect3D* GetEffect();
+		void SetEffect(Effect3D* aEffect);
 
 		void Render(const CU::Matrix44<float>& aOrientation);
 
@@ -50,7 +50,7 @@ namespace Easy3D
 		bool InitVertexBuffer();
 		bool InitIndexBuffer();
 
-		Effect* myEffect;
+		Effect3D* myEffect;
 		ID3D11InputLayout* myVertexLayout;
 		CU::GrowingArray<VertexPosNormUV> myVertices;
 		CU::GrowingArray<int> myVerticeIndices;

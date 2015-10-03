@@ -6,7 +6,7 @@ namespace Easy3D
 	class Camera
 	{
 	public:
-		Camera(CU::Matrix44f& aPlayerMatrix);
+		Camera();
 		~Camera();
 
 		void ReadXML(const std::string& aFileName);
@@ -32,7 +32,7 @@ namespace Easy3D
 	private:
 		void operator= (const Camera&) = delete;
 
-		CU::Matrix44<float>& myOrientation;
+		CU::Matrix44<float> myOrientation;
 		CU::Matrix44<float> myProjectionMatrix;
 		CU::Matrix44<float> myOrthogonalMatrix;
 		CU::Vector3<float> myPosition;

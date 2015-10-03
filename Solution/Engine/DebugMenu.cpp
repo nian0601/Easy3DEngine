@@ -15,7 +15,7 @@ namespace Easy3D
 		, myInteractRange(150.f)
 	{
 		myText = new Text();
-		myText->Init(Engine::GetInstance()->GetFontContainer()->GetFont("Data/resources/font/font.dds"));
+		myText->Init("Data/resources/font/font.dds");
 
 		myMenuElements.Init(4);
 	}

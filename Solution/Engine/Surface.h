@@ -4,9 +4,10 @@
 
 struct ID3DX11EffectShaderResourceVariable;
 
-namespace Easy3D{
+namespace Easy3D
+{
+	class BaseEffect;
 	class Texture;
-	class Effect;
 
 	class Surface
 	{
@@ -25,7 +26,7 @@ namespace Easy3D{
 		int GetIndexCount() const;
 		void SetIndexCount(int aCount);
 
-		void SetEffect(Effect* aEffect);
+		void SetEffect(BaseEffect* aEffect);
 		void SetPrimitiveTopology(const D3D11_PRIMITIVE_TOPOLOGY aTopology);
 
 		bool SetTexture(const std::string& aResourceName, const std::string& aFileName, bool aUseSRGB);
@@ -46,7 +47,7 @@ namespace Easy3D{
 		int myIndexCount;
 		int myIndexStart;
 
-		Effect* myEffect;
+		BaseEffect* myEffect;
 	};
 }
 
@@ -90,7 +91,7 @@ inline void Easy3D::Surface::SetIndexCount(const int aCount)
 	myIndexCount = aCount;
 }
 
-inline void Easy3D::Surface::SetEffect(Effect* aEffect)
+inline void Easy3D::Surface::SetEffect(BaseEffect* aEffect)
 {
 	myEffect = aEffect;
 }

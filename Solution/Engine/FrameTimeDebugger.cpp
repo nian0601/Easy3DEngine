@@ -92,12 +92,10 @@ namespace Easy3D
 		
 		
 				it->second.myNameText = new Text();
-				it->second.myNameText->Init(
-					Engine::GetInstance()->GetFontContainer()->GetFont("Data/resources/font/font.dds"));
+				it->second.myNameText->Init("Data/resources/font/font.dds");
 		
 				it->second.myTimeText = new Text();
-				it->second.myTimeText->Init(
-					Engine::GetInstance()->GetFontContainer()->GetFont("Data/resources/font/font.dds"));
+				it->second.myTimeText->Init("Data/resources/font/font.dds");
 			}
 		
 			LARGE_INTEGER time;
@@ -196,7 +194,7 @@ namespace Easy3D
 
 	void FrameTimeDebugger::Render()
 	{
-		TIME_FUNCTION
+		TIME_FUNCTION;
 
 		myGraphRenderer->Render(myFrameTimes, myGraphTopLeft, 
 		{ myGraphSize.x, myGraphSize.y }, 16.f, myNewGraphData);

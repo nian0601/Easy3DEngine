@@ -8,13 +8,15 @@
 #include <Font.h>
 #include "Game.h"
 #include <InputWrapper.h>
+#include <Instance.h>
+#include <Model.h>
+#include "ModelProxy.h"
 #include <TimerManager.h>
-
+#include <Sprite.h>
 
 Game::Game()
-	: myLockMouse(true)
+	: myInputWrapper(new CU::InputWrapper())
 {
-	myInputWrapper = new CU::InputWrapper();
 }
 
 Game::~Game()
@@ -33,6 +35,19 @@ bool Game::Init(HWND& aHwnd)
 	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Mem", Easy3D::DebugDataDisplay::ToggleMemoryUsage, Easy3D::Engine::GetInstance()->GetDebugDisplay());
 	ADD_FUNCTION_TO_RADIAL_MENU("Toggle CPU", Easy3D::DebugDataDisplay::ToggleCPUUsage, Easy3D::Engine::GetInstance()->GetDebugDisplay());
 	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Wireframe", Easy3D::Engine::ToggleWireframe, Easy3D::Engine::GetInstance());
+	
+
+	myCamera = new Easy3D::Camera();
+
+	mySprite = new Easy3D::Sprite("Data/resources/texture/seafloor.dds", { 100.f, 100.f }, { 50.f, 50.f });
+	
+	Easy3D::Model* Model = new Easy3D::Model();
+	Model->InitCube();
+	Easy3D::ModelProxy* Proxy = new Easy3D::ModelProxy();
+	Proxy->SetModel(Model);
+	myCube = new Easy3D::Instance(*Proxy);
+	myCube->SetPosition({ 0.f, 0.f, 10.f });
+	myCube->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundZ(3.14f));
 
 	GAME_LOG("Init Successful");
 	return true;
@@ -55,16 +70,6 @@ bool Game::Update()
 		return false;
 	}
 
-	if (myInputWrapper->KeyUp(DIK_O) == true)
-	{
-		myLockMouse = !myLockMouse;
-		ShowCursor(!myLockMouse);
-	}
-
-	if (myLockMouse == true)
-	{
-		SetCursorPos(myWindowSize.x / 2, myWindowSize.y / 2);
-	}
 
 	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*myInputWrapper);
 	Easy3D::Engine::GetInstance()->GetDebugDisplay()->RecordFrameTime(delta);
@@ -77,6 +82,8 @@ bool Game::Update()
 void Game::Render()
 {
 	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Render();
+	mySprite->Render(0, 0);
+	myCube->Render(*myCamera);
 }
 
 void Game::Pause()
@@ -91,6 +98,6 @@ void Game::UnPause()
 
 void Game::OnResize(int aWidth, int aHeight)
 {
-	myWindowSize.x = aWidth;
-	myWindowSize.y = aHeight;
+	aWidth;
+	aHeight;
 }

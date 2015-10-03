@@ -2,7 +2,7 @@
 
 #include <d3dx11effect.h>
 #include "GeometryGenerator.h"
-#include "Effect.h"
+#include "Effect3D.h"
 #include "EffectContainer.h"
 #include "Engine.h"
 #include "IndexBufferWrapper.h"
@@ -101,7 +101,7 @@ void Easy3D::Model::Init()
 
 void Easy3D::Model::InitPolygon()
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/PolygonEffect.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/PolygonEffect.fx");
 
 	if (myEffect == nullptr)
 	{
@@ -156,7 +156,7 @@ void Easy3D::Model::InitPolygon()
 
 void Easy3D::Model::InitCube(const float aWidth, const float aHeight, const float aDepth)
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/CubeEffect.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/CubeEffect.fx");
 
 	if (myEffect == nullptr)
 	{
@@ -308,7 +308,7 @@ void Easy3D::Model::InitCube(const float aWidth, const float aHeight, const floa
 
 void Easy3D::Model::InitLightCube(const float aWidth, const float aHeight, const float aDepth, CU::Vector4f aColour)
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/CubeColored.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/CubeColored.fx");
 
 	if (myEffect == nullptr)
 	{
@@ -458,7 +458,7 @@ void Easy3D::Model::InitLightCube(const float aWidth, const float aHeight, const
 
 void Easy3D::Model::InitGeometry(const MeshData& aMeshData)
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/GeometryEffect.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/GeometryEffect.fx");
 	
 	if (myEffect == nullptr)
 	{
@@ -524,12 +524,12 @@ void Easy3D::Model::AddChild(Model* aChild)
 	myChildTransforms.Add(aChild->myOrientation);
 }
 
-Easy3D::Effect* Easy3D::Model::GetEffect()
+Easy3D::Effect3D* Easy3D::Model::GetEffect()
 {
 	return myEffect;
 }
 
-void Easy3D::Model::SetEffect(Effect* aEffect)
+void Easy3D::Model::SetEffect(Effect3D* aEffect)
 {
 	myEffect = aEffect;
 	myEffect->AddListener(this);
@@ -544,7 +544,7 @@ void Easy3D::Model::Render(const CU::Matrix44<float>& aOrientation)
 {
 	if (myIsNULLObject == false)
 	{
-		TIME_FUNCTION;
+		TIME_FUNCTION;;
 
 		float blendFactor[4];
 		blendFactor[0] = 0.f;

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
+#include "BaseEffect.h"
 #include <d3dx11effect.h>
-#include "Effect.h"
 #include "Surface.h"
 #include "Texture.h"
 #include "TextureContainer.h"
@@ -19,16 +19,11 @@ bool Easy3D::Surface::SetTexture(const std::string& aResourceName, const std::st
 	aUseSRGB;
 
 	Texture* tex = Engine::GetInstance()->GetTextureContainer()->GetTexture(aFileName);
-	ID3DX11EffectShaderResourceVariable* shaderVar = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
-
-	if (shaderVar->IsValid() == false)
+	ID3DX11EffectShaderResourceVariable* shaderVar = nullptr;
+	if (myEffect != nullptr)
 	{
-		std::string errorMsg = "Failed to get ShaderResource: " + aResourceName;
-		//DL_MESSAGE_BOX(errorMsg.c_str(), "Surface Error", MB_ICONWARNING);
-		RESOURCE_LOG(errorMsg.c_str());
-		return false;
+		shaderVar = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
 	}
-
 	myTextures.Add(tex);
 	myShaderViews.Add(shaderVar);
 	myFilePaths.Add(aFileName);
@@ -45,7 +40,11 @@ void Easy3D::Surface::ReloadSurface()
 	for (int i = 0; i < myFilePaths.Size(); ++i)
 	{
 		Texture* tex = Engine::GetInstance()->GetTextureContainer()->GetTexture(myFilePaths[i]);
-		ID3DX11EffectShaderResourceVariable* shaderVar = myEffect->GetEffect()->GetVariableByName(myShaderResourceNames[i].c_str())->AsShaderResource();
+		ID3DX11EffectShaderResourceVariable* shaderVar = nullptr;
+		if (myEffect != nullptr)
+		{
+			shaderVar = myEffect->GetEffect()->GetVariableByName(myShaderResourceNames[i].c_str())->AsShaderResource();
+		}
 
 		if (shaderVar->IsValid() == false)
 		{
@@ -61,7 +60,12 @@ void Easy3D::Surface::ReloadSurface()
 
 bool Easy3D::Surface::SetTexture(const std::string& aResourceName, Texture* aTexture)
 {
-	ID3DX11EffectShaderResourceVariable* shaderVar = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
+	ID3DX11EffectShaderResourceVariable* shaderVar = nullptr;
+	if (myEffect != nullptr)
+	{
+		shaderVar = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
+	}
+	
 	if (shaderVar->IsValid() == false)
 	{
 		//DL_MESSAGE_BOX("Failed to get ShaderResource", "Surface Error", MB_ICONWARNING);

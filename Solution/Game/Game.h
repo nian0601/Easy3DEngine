@@ -8,6 +8,13 @@ namespace CommonUtilities
 	class InputWrapper;
 }
 
+namespace Easy3D
+{
+	class Camera;
+	class Sprite;
+	class Instance;
+}
+
 class BulletManager;
 
 class Game
@@ -33,8 +40,7 @@ private:
 
 	CU::InputWrapper* myInputWrapper;
 
-	bool myLockMouse;
-
-	CU::Vector2<int> myWindowSize;
-
+	Easy3D::Camera* myCamera;
+	Easy3D::Sprite* mySprite;
+	Easy3D::Instance* myCube;
 };

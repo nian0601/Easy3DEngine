@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include <d3dx11effect.h>
 #include <D3D11.h>
-#include "Effect.h"
+#include "Effect3D.h"
 #include "EffectContainer.h"
 #include "GraphRenderer.h"
 #include "IndexBufferWrapper.h"
@@ -26,7 +26,7 @@ Easy3D::GraphRenderer::~GraphRenderer()
 
 void Easy3D::GraphRenderer::Init()
 {
-	myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect("Data/effect/GraphEffect.fx");
+	myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/GraphEffect.fx");
 
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
@@ -57,7 +57,7 @@ void Easy3D::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
 	, const CU::Vector2<float>& aTopLeftDrawPos, const CU::Vector2<float>& aGraphSize
 	, const float aMaxValue, bool aNewData)
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 
 	if (Engine::GetInstance()->myWireframeShouldShow == true)
@@ -152,7 +152,7 @@ void Easy3D::GraphRenderer::InitSurface()
 void Easy3D::GraphRenderer::BuildBuffers(const CU::GrowingArray<float>& aDataArray, const CU::Vector2<float>& aTopLeftDrawPos
 	, const CU::Vector2<float>& aGraphSize, const float aMaxValue)
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 	float widthPerElement = (aGraphSize.x - aDataArray.Size()) / aDataArray.Size();
 
@@ -193,7 +193,7 @@ void Easy3D::GraphRenderer::BuildBuffers(const CU::GrowingArray<float>& aDataArr
 void Easy3D::GraphRenderer::CreateFirstTri(const CU::Vector2<float>& aBotLeft, const CU::Vector2<float>& aColumSize
 	, const int aIndex, const float aHeightCoef)
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 	int index = aIndex;
 
@@ -227,7 +227,7 @@ void Easy3D::GraphRenderer::CreateFirstTri(const CU::Vector2<float>& aBotLeft, c
 void Easy3D::GraphRenderer::CreateSecondTri(const CU::Vector2<float>& aBotLeft, const CU::Vector2<float>& aColumSize
 	, const int aIndex, const float aHeightCoef)
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 	int index = aIndex;
 
@@ -260,7 +260,7 @@ void Easy3D::GraphRenderer::CreateSecondTri(const CU::Vector2<float>& aBotLeft, 
 
 void Easy3D::GraphRenderer::SetupVertexBuffer()
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 	if (myVertexBuffer->myVertexBuffer != nullptr)
 		myVertexBuffer->myVertexBuffer->Release();
@@ -279,7 +279,7 @@ void Easy3D::GraphRenderer::SetupVertexBuffer()
 
 void Easy3D::GraphRenderer::SetupIndexBuffer()
 {
-	TIME_FUNCTION
+	TIME_FUNCTION;
 
 	if (myIndexBuffer->myIndexBuffer != nullptr)
 		myIndexBuffer->myIndexBuffer->Release();

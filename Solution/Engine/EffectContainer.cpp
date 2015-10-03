@@ -2,28 +2,28 @@
 
 #include <d3dx11effect.h>
 #include "Engine.h"
-#include "Effect.h"
+#include "Effect3D.h"
 #include "EffectContainer.h"
 #include "FileWatcher.h"
 #include "Texture.h"
 #include "TextureContainer.h"
 
-Easy3D::Effect* Easy3D::EffectContainer::GetEffect(const std::string& aFilePath)
+Easy3D::Effect3D* Easy3D::EffectContainer::Get3DEffect(const std::string& aFilePath)
 {
-	auto it = myEffects.find(aFilePath);
+	auto it = my3DEffects.find(aFilePath);
 
-	if (it == myEffects.end())
+	if (it == my3DEffects.end())
 	{
-		LoadEffect(aFilePath);
+		Load3DEffect(aFilePath);
 	}
 
-	return myEffects[aFilePath];
+	return my3DEffects[aFilePath];
 }
 
-void Easy3D::EffectContainer::LoadEffect(const std::string& aFilePath)
+void Easy3D::EffectContainer::Load3DEffect(const std::string& aFilePath)
 {
-	Effect* newEffect = new Effect();
-	
+	Effect3D* newEffect = new Effect3D();
+
 	if (newEffect->Init(aFilePath) == false)
 	{
 		std::stringstream ss;
@@ -43,35 +43,27 @@ void Easy3D::EffectContainer::LoadEffect(const std::string& aFilePath)
 
 	DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
 
-	myEffects[aFilePath] = newEffect;
+	my3DEffects[aFilePath] = newEffect;
 
-	WATCH_FILE(aFilePath, Easy3D::EffectContainer::ReloadEffect);
+	WATCH_FILE(aFilePath, Easy3D::EffectContainer::Reload3DEffect);
 }
 
-void Easy3D::EffectContainer::ReloadEffect(const std::string& aFilePath)
+void Easy3D::EffectContainer::Reload3DEffect(const std::string& aFilePath)
 {
-	if (myEffects.find(aFilePath) == myEffects.end())
+	if (my3DEffects.find(aFilePath) == my3DEffects.end())
 	{
 		return;
 	}
 
-	myEffects[aFilePath]->Init(aFilePath);
+	my3DEffects[aFilePath]->Init(aFilePath);
 
 
 	Texture* tex = Engine::GetInstance()->GetTextureContainer()->GetTexture(myCubeMap);
-	ID3DX11EffectShaderResourceVariable* shaderVar = myEffects[aFilePath]->GetEffect()->GetVariableByName("CubeMap")->AsShaderResource();
+	ID3DX11EffectShaderResourceVariable* shaderVar = my3DEffects[aFilePath]->GetEffect()->GetVariableByName("CubeMap")->AsShaderResource();
 
 	if (shaderVar->IsValid())
 	{
 		shaderVar->SetResource(tex->GetShaderView());
-	}
-}
-
-void Easy3D::EffectContainer::Update(const float aDeltaTime)
-{
-	for (auto it = myEffects.begin(); it != myEffects.end(); ++it)
-	{
-		it->second->UpdateTime(aDeltaTime);
 	}
 }
 

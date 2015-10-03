@@ -2,7 +2,7 @@
 
 namespace Easy3D
 {
-	class Effect;
+	class Effect3D;
 	class Model;
 
 	class ModelProxy
@@ -14,8 +14,8 @@ namespace Easy3D
 
 		void SetModel(Model* aModel);
 
-		Effect* GetEffect();
-		void SetEffect(Effect* aEffect);
+		Effect3D* GetEffect();
+		void SetEffect(Effect3D* aEffect);
 
 		bool IsLoaded() const;
 	private:

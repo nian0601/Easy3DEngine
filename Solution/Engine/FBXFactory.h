@@ -9,18 +9,19 @@ class FbxModelData;
 
 namespace Easy3D
 {
-class Model;
-class Effect;
+	class Model;
+	class Effect3D;
+
 	class FBXFactory
 	{
 	public:
 		FBXFactory();
 		~FBXFactory();
 
-		Model* LoadModel(const char* aFilePath, Effect* aEffect);
+		Model* LoadModel(const char* aFilePath, Effect3D* aEffect);
 	private:
-		void FillData(ModelData* someData, Model* outData, Effect* aEffect);
-		Model* CreateModel(FbxModelData* someModelData, Effect* aEffect);
+		void FillData(ModelData* someData, Model* outData, Effect3D* aEffect);
+		Model* CreateModel(FbxModelData* someModelData, Effect3D* aEffect);
 
 		FBXLoader *myLoader;
 

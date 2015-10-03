@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "Camera.h"
-#include "Effect.h"
+#include "Effect3D.h"
 #include "EffectContainer.h"
 #include "Instance.h"
 #include "Model.h"
@@ -84,7 +84,7 @@ void Easy3D::Instance::SetEffect(const std::string& aEffectFile)
 {
 	if (myProxy.IsLoaded())
 	{
-		myProxy.SetEffect(Engine::GetInstance()->GetEffectContainer()->GetEffect(aEffectFile));
+		myProxy.SetEffect(Engine::GetInstance()->GetEffectContainer()->Get3DEffect(aEffectFile));
 	}
 }
 

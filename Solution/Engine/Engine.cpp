@@ -77,7 +77,7 @@ namespace Easy3D
 	{
 		VTUNE_EVENT_BEGIN(VTUNE::RENDER);
 
-		TIME_FUNCTION
+		TIME_FUNCTION;
 
 		myDirectX->Present(0, 0);
 		float clearColor[4] = { myClearColor.myR, myClearColor.myG, myClearColor.myB, myClearColor.myA };
@@ -96,7 +96,7 @@ namespace Easy3D
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);
 	}
 
-	Model* Engine::DLLLoadModel(const std::string& aModelPath, Effect* aEffect)
+	Model* Engine::DLLLoadModel(const std::string& aModelPath, Effect3D* aEffect)
 	{
 		CU::TimerManager::GetInstance()->StartTimer("LoadModel");
 
@@ -145,7 +145,7 @@ namespace Easy3D
 
 
 		myDebugText = new Text();
-		myDebugText->Init(GetFontContainer()->GetFont("Data/resources/font/font.dds"));
+		myDebugText->Init("Data/resources/font/font.dds");
 
 		myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(static_cast<float>(myWindowSize.x)
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);

@@ -63,7 +63,7 @@ namespace Easy3D
 					CU::TimerManager::GetInstance()->StartTimer("LoadModel");
 
 					model = myModelFactory->LoadModel(loadArray[i].myModelPath.c_str(),
-						Engine::GetInstance()->GetEffectContainer()->GetEffect(loadArray[i].myEffectPath));
+						Engine::GetInstance()->GetEffectContainer()->Get3DEffect(loadArray[i].myEffectPath));
 					model->Init();
 
 
