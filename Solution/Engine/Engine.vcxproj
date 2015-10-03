@@ -103,7 +103,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Base2DModel.cpp" />
+    <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugDataDisplay.cpp" />
@@ -144,7 +144,7 @@
     <ClCompile Include="TextureContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Base2DModel.h" />
+    <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DebugDataDisplay.h" />

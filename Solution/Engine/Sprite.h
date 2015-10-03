@@ -1,9 +1,9 @@
 #pragma once
-#include "Base2DModel.h"
+#include "BaseModel.h"
 
 namespace Easy3D
 {
-	class Sprite : public Base2DModel
+	class Sprite : public BaseModel
 	{
 	public:
 		Sprite(const std::string& aSpritePath, const CU::Vector2<float>& aSize

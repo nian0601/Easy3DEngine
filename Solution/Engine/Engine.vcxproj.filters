@@ -48,16 +48,7 @@
     <ClCompile Include="Instance.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Surface.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureContainer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="ModelLoader.cpp">
@@ -69,11 +60,8 @@
     <ClCompile Include="DebugMenu.cpp">
       <Filter>DebugServices</Filter>
     </ClCompile>
-    <ClCompile Include="Base2DModel.cpp">
-      <Filter>Rendering\2DStuff</Filter>
-    </ClCompile>
     <ClCompile Include="Sprite.cpp">
-      <Filter>Rendering\2DStuff</Filter>
+      <Filter>Rendering\RenderableObjects</Filter>
     </ClCompile>
     <ClCompile Include="EffectContainer.cpp">
       <Filter>Rendering\Effects</Filter>
@@ -85,10 +73,22 @@
       <Filter>Rendering\Effects</Filter>
     </ClCompile>
     <ClCompile Include="Text.cpp">
-      <Filter>Rendering\2DStuff</Filter>
+      <Filter>Rendering\RenderableObjects</Filter>
     </ClCompile>
     <ClCompile Include="Effect2D.cpp">
       <Filter>Rendering\Effects</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseModel.cpp">
+      <Filter>Rendering\RenderableObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Rendering\RenderableObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Rendering\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureContainer.cpp">
+      <Filter>Rendering\Textures</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,7 +155,6 @@
     <ClInclude Include="LightStructs.h">
       <Filter>Lights</Filter>
     </ClInclude>
-    <ClInclude Include="EffectListener.h" />
     <ClInclude Include="FrameTimeDebugger.h">
       <Filter>DebugServices</Filter>
     </ClInclude>
@@ -165,19 +164,10 @@
     <ClInclude Include="Instance.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Vertices.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="Surface.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureContainer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="ModelLoader.h">
@@ -189,11 +179,8 @@
     <ClInclude Include="DebugMenu.h">
       <Filter>DebugServices</Filter>
     </ClInclude>
-    <ClInclude Include="Base2DModel.h">
-      <Filter>Rendering\2DStuff</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
-      <Filter>Rendering\2DStuff</Filter>
+      <Filter>Rendering\RenderableObjects</Filter>
     </ClInclude>
     <ClInclude Include="EffectContainer.h">
       <Filter>Rendering\Effects</Filter>
@@ -205,9 +192,24 @@
       <Filter>Rendering\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Text.h">
-      <Filter>Rendering\2DStuff</Filter>
+      <Filter>Rendering\RenderableObjects</Filter>
     </ClInclude>
     <ClInclude Include="Effect2D.h">
+      <Filter>Rendering\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseModel.h">
+      <Filter>Rendering\RenderableObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Rendering\RenderableObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureContainer.h">
+      <Filter>Rendering\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Rendering\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectListener.h">
       <Filter>Rendering\Effects</Filter>
     </ClInclude>
   </ItemGroup>
@@ -233,11 +235,14 @@
     <Filter Include="Rendering\Text">
       <UniqueIdentifier>{baf2e884-b972-4bc8-9638-b545b2737981}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering\2DStuff">
-      <UniqueIdentifier>{410e1a08-5ab8-46c9-8f4f-13ac017ef965}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rendering\Effects">
       <UniqueIdentifier>{f21523f2-8cbd-4c66-97ee-cd89d3df25f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\RenderableObjects">
+      <UniqueIdentifier>{410e1a08-5ab8-46c9-8f4f-13ac017ef965}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Textures">
+      <UniqueIdentifier>{bfd3b425-0375-4cef-afe0-219ff7d16397}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

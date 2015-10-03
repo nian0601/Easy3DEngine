@@ -46,8 +46,6 @@ namespace Easy3D
 		FileWatcher* GetFileWatcher();
 		ModelLoader* GetModelLoader();
 
-		Model* DLLLoadModel(const std::string& aModelPath, Effect3D* aEffect);
-
 		const CU::Vector2<int>& GetWindowSize() const;
 		const CU::Matrix44<float>& GetOrthogonalMatrix() const;
 
@@ -79,7 +77,6 @@ namespace Easy3D
 		SetupInfo* mySetupInfo;
 		TextureContainer* myTextureContainer;
 		EffectContainer* myEffectContainer;
-		FBXFactory* myModelFactory;
 		FontContainer* myFontContainer;
 		DebugDataDisplay* myDebugDataDisplay;
 		FileWatcher* myFileWatcher;

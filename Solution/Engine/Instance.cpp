@@ -94,7 +94,7 @@ void Easy3D::Instance::SetScale(const CU::Vector3<float>& aScaleVector)
 	
 }
 
-void Easy3D::Instance::PerformRotationLocal(CU::Matrix44<float>& aRotation)
+void Easy3D::Instance::PerformRotationLocal(const CU::Matrix44<float>& aRotation)
 {
 	CU::Vector3<float> oldPos = myOrientation.GetPos();
 	myOrientation.SetPos({ 0.f, 0.f, 0.f, 1.f });
@@ -102,12 +102,12 @@ void Easy3D::Instance::PerformRotationLocal(CU::Matrix44<float>& aRotation)
 	myOrientation.SetPos(oldPos);
 }
 
-void Easy3D::Instance::PerformRotationWorld(CU::Matrix44<float>& aRotation)
+void Easy3D::Instance::PerformRotationWorld(const CU::Matrix44<float>& aRotation)
 {
 	myOrientation = myOrientation * aRotation;
 }
 
-void Easy3D::Instance::PerformTransformation(CU::Matrix44<float>& aTransformation)
+void Easy3D::Instance::PerformTransformation(const CU::Matrix44<float>& aTransformation)
 {
 	myOrientation = myOrientation * aTransformation;
 }

@@ -20,11 +20,11 @@ namespace Easy3D
 {
 	Engine* Engine::myInstance = nullptr;
 
-	Engine::Engine() : myClearColor({ 0.8f, 0.125f, 0.8f, 1.0f })
+	Engine::Engine() 
+		: myClearColor({ 0.5f, 0.5f, 0.5f, 1.f })
 	{
 		myTextureContainer = new TextureContainer();
 		myEffectContainer = new EffectContainer();
-		myModelFactory = new FBXFactory();
 		myFontContainer = new FontContainer();
 		myDebugDataDisplay = new DebugDataDisplay();
 		myFileWatcher = new FileWatcher();
@@ -38,7 +38,6 @@ namespace Easy3D
 	{
 		delete myTextureContainer;
 		delete myEffectContainer;
-		delete myModelFactory;
 		delete myFontContainer;
 		delete myDebugDataDisplay;
 		delete myFileWatcher;
@@ -94,20 +93,6 @@ namespace Easy3D
 
 		myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(static_cast<float>(myWindowSize.x)
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);
-	}
-
-	Model* Engine::DLLLoadModel(const std::string& aModelPath, Effect3D* aEffect)
-	{
-		CU::TimerManager::GetInstance()->StartTimer("LoadModel");
-
-		Model* model = myModelFactory->LoadModel(aModelPath.c_str(), aEffect);
-		model->Init();
-
-		int elapsed = static_cast<int>(
-			CU::TimerManager::GetInstance()->StopTimer("LoadModel").GetMilliseconds());
-		RESOURCE_LOG("Model \"%s\" took %d ms to load", aModelPath.c_str(), elapsed);
-
-		return model;
 	}
 
 	ID3D11Device* Engine::GetDevice()

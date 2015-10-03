@@ -1,11 +1,11 @@
 #pragma once
-#include "Base2DModel.h"
+#include "BaseModel.h"
 
 namespace Easy3D
 {
 	class Font;
 
-	class Text : public Base2DModel
+	class Text : public BaseModel
 	{
 	public:
 		void Init(const std::string& aFontPath);

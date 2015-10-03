@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Base2DModel.h"
+#include "BaseModel.h"
 #include <D3D11.h>
 #include <d3dx11effect.h>
 #include "Effect2D.h"
@@ -12,16 +12,18 @@
 namespace Easy3D
 {
 
-	Base2DModel::Base2DModel()
+	BaseModel::BaseModel()
 	{
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
 		myInitData = new D3D11_SUBRESOURCE_DATA();
 
 		myEffect = nullptr;
+
+		mySurfaces.Init(1);
 	}
 
-	Base2DModel::~Base2DModel()
+	BaseModel::~BaseModel()
 	{
 		if (myVertexBuffer->myVertexBuffer != nullptr)
 		{
@@ -38,29 +40,11 @@ namespace Easy3D
 		delete myVertexBufferDesc;
 		delete myIndexBufferDesc;
 		delete myInitData;
-		delete mySurface;
+		mySurfaces.DeleteAll();
 	}
 
-	void Base2DModel::Render(const CU::Vector2<float>& aPosition, const CU::Vector2<float>& aScale 
-		, const CU::Vector4<float>& aColor)
+	void BaseModel::Render()
 	{
-		Engine::GetInstance()->DisableZBuffer();
-
-		myPosition = aPosition;
-		myScale = aScale;
-
-		float blendFactor[4];
-		blendFactor[0] = 0.f;
-		blendFactor[1] = 0.f;
-		blendFactor[2] = 0.f;
-		blendFactor[3] = 0.f;
-
-		myEffect->SetBlendState(myBlendState, blendFactor);
-		myEffect->SetProjectionMatrix(Engine::GetInstance()->GetOrthogonalMatrix());
-		myEffect->UpdatePosAndScale(aPosition, aScale);
-		myEffect->SetPosAndScale();
-		myEffect->SetColor(aColor);
-
 		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
 			, myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer
@@ -72,19 +56,52 @@ namespace Easy3D
 		D3DX11_TECHNIQUE_DESC techDesc;
 		myEffect->GetTechnique()->GetDesc(&techDesc);
 
-		mySurface->Activate();
-
-		for (UINT i = 0; i < techDesc.Passes; ++i)
+		for (int i = 0; i < mySurfaces.Size(); ++i)
 		{
-			myEffect->GetTechnique()->GetPassByIndex(i)->Apply(0, Engine::GetInstance()->GetContex());
-			Engine::GetInstance()->GetContex()->DrawIndexed(mySurface->GetIndexCount(), mySurface->GetVertexStart(), 0);
+			mySurfaces[i]->Activate();
+
+			for (UINT j = 0; j < techDesc.Passes; ++j)
+			{
+				myEffect->GetTechnique()->GetPassByIndex(j)->Apply(0, Engine::GetInstance()->GetContex());
+				Engine::GetInstance()->GetContex()->DrawIndexed(mySurfaces[i]->GetIndexCount()
+					, mySurfaces[i]->GetVertexStart(), 0);
+			}
 		}
+		
 
 		Engine::GetInstance()->EnableZBuffer();
 	}
 
+	void BaseModel::InitInputLayout(D3D11_INPUT_ELEMENT_DESC* aVertexDescArray, int aArraySize)
+	{
+		D3DX11_PASS_DESC passDesc;
+		myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateInputLayout(aVertexDescArray
+			, aArraySize, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+		if (FAILED(hr) != S_OK)
+		{
+			DL_MESSAGE_BOX("Failed to CreateInputLayout", "Model2D::Init", MB_ICONWARNING);
+		}
+	}
 
-	void Base2DModel::InitIndexBuffer()
+	void Easy3D::BaseModel::InitVertexBuffer(int aVertexSize, int aBufferUsage, int aCPUUsage)
+	{
+		myVertexBuffer = new VertexBufferWrapper();
+		myVertexBuffer->myStride = aVertexSize;
+		myVertexBuffer->myByteOffset = 0;
+		myVertexBuffer->myStartSlot = 0;
+		myVertexBuffer->myNumberOfBuffers = 1;
+
+
+		ZeroMemory(myVertexBufferDesc, sizeof(myVertexBufferDesc));
+		myVertexBufferDesc->Usage = static_cast<D3D11_USAGE>(aBufferUsage);
+		myVertexBufferDesc->BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		myVertexBufferDesc->CPUAccessFlags = aCPUUsage;
+		myVertexBufferDesc->MiscFlags = 0;
+		myVertexBufferDesc->StructureByteStride = 0;
+	}
+
+	void BaseModel::InitIndexBuffer()
 	{
 		myIndexBuffer = new IndexBufferWrapper();
 		myIndexBuffer->myIndexBufferFormat = DXGI_FORMAT_R32_UINT;
@@ -99,20 +116,21 @@ namespace Easy3D
 		myIndexBufferDesc->StructureByteStride = 0;
 	}
 
-	void Base2DModel::InitSurface(const std::string& aResourceName, const std::string& aFileName)
+	void BaseModel::InitSurface(const std::string& aResourceName, const std::string& aFileName)
 	{
-		mySurface = new Surface();
-
-		mySurface->SetEffect(myEffect);
-		mySurface->SetIndexCount(0);
-		mySurface->SetIndexStart(0);
-		mySurface->SetVertexCount(0);
-		mySurface->SetVertexStart(0);
-		mySurface->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-		mySurface->SetTexture(aResourceName, aFileName, true);
+		Surface* surface = new Surface();
+		
+		surface->SetEffect(myEffect);
+		surface->SetIndexCount(0);
+		surface->SetIndexStart(0);
+		surface->SetVertexCount(0);
+		surface->SetVertexStart(0);
+		surface->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		surface->SetTexture(aResourceName, aFileName, true);
+		mySurfaces.Add(surface);
 	}
 
-	void Base2DModel::InitBlendState()
+	void BaseModel::InitBlendState()
 	{
 		D3D11_BLEND_DESC blendDesc;
 		blendDesc.AlphaToCoverageEnable = true;
@@ -129,14 +147,13 @@ namespace Easy3D
 		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBlendState(&blendDesc, &myBlendState);
 		if (FAILED(hr) != S_OK)
 		{
-			DL_MESSAGE_BOX("Failed to CreateBlendState", "Text::InitBlendState", MB_ICONWARNING);
+			DL_ASSERT("BaseModel::InitBlendState: Failed to CreateBlendState");
 		}
 	}
 
-	void Base2DModel::SetupVertexBuffer(int aVertexCount, size_t aVertexSize, char* aVertexData)
+	void BaseModel::SetupVertexBuffer(int aVertexCount, int aVertexSize, char* aVertexData)
 	{
 		TIME_FUNCTION;
-
 
 		if (myVertexBuffer->myVertexBuffer != nullptr)
 			myVertexBuffer->myVertexBuffer->Release();
@@ -145,14 +162,15 @@ namespace Easy3D
 		myInitData->pSysMem = aVertexData;
 
 
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData, &myVertexBuffer->myVertexBuffer);
+		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData
+			, &myVertexBuffer->myVertexBuffer);
 		if (FAILED(hr) != S_OK)
 		{
-			DL_MESSAGE_BOX("Failed to SetupVertexBuffer", "Text::SetupVertexBuffer", MB_ICONWARNING);
+			DL_ASSERT("BaseModel::SetupVertexBuffer: Failed to SetupVertexBuffer");
 		}
 	}
 
-	void Base2DModel::SetupIndexBuffer(int aIndexCount, char* aIndexData)
+	void BaseModel::SetupIndexBuffer(int aIndexCount, char* aIndexData)
 	{
 		TIME_FUNCTION;
 
@@ -167,12 +185,15 @@ namespace Easy3D
 			&myIndexBuffer->myIndexBuffer);
 		if (FAILED(hr) != S_OK)
 		{
-			DL_MESSAGE_BOX("Failed to SetupIndexBuffer", "Text::SetupIndexBuffer", MB_ICONWARNING);
+			DL_ASSERT("BaseModel::SetupIndexBuffer: Failed to SetupIndexBuffer");
 		}
 	}
 
-	void Base2DModel::OnEffectLoad()
+	void BaseModel::OnEffectLoad()
 	{
-		mySurface->ReloadSurface();
+		for (int i = 0; i < mySurfaces.Size(); ++i)
+		{
+			mySurfaces[i]->ReloadSurface();
+		}
 	}
 }

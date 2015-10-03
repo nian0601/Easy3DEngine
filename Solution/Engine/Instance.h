@@ -29,9 +29,9 @@ namespace Easy3D
 
 		void SetScale(const CU::Vector3<float>& aScaleVector);
 
-		void PerformRotationLocal(CU::Matrix44<float>& aRotation);
-		void PerformRotationWorld(CU::Matrix44<float>& aRotation);
-		void PerformTransformation(CU::Matrix44<float>& aTransformation);
+		void PerformRotationLocal(const CU::Matrix44<float>& aRotation);
+		void PerformRotationWorld(const CU::Matrix44<float>& aRotation);
+		void PerformTransformation(const CU::Matrix44<float>& aTransformation);
 
 		void UpdateDirectionalLights(
 			const CU::StaticArray<DirectionalLightData, NUMBER_OF_DIRECTIONAL_LIGHTS>& someDirectionalLightData);

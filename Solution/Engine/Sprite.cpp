@@ -24,17 +24,8 @@ namespace Easy3D
 			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		D3DX11_PASS_DESC passDesc;
-		myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateInputLayout(vertexDesc
-			, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
-		if (FAILED(hr) != S_OK)
-		{
-			DL_MESSAGE_BOX("Failed to CreateInputLayout", "Model2D::Init", MB_ICONWARNING);
-		}
-
-
-		InitVertexBuffer<VertexPosUV>();
+		InitInputLayout(vertexDesc, ARRAYSIZE(vertexDesc));
+		InitVertexBuffer(sizeof(VertexPosUV), D3D11_USAGE_IMMUTABLE, 0);
 		InitIndexBuffer();
 		InitSurface("Texture", aSpritePath);
 		InitBlendState();
@@ -47,7 +38,24 @@ namespace Easy3D
 	void Sprite::Render(const CU::Vector2<float>& aPosition, const CU::Vector2<float>& aScale
 		, const CU::Vector4<float>& aColor)
 	{
-		Base2DModel::Render(aPosition, aScale, aColor);
+		Engine::GetInstance()->DisableZBuffer();
+
+		myPosition = aPosition;
+		myScale = aScale;
+
+		float blendFactor[4];
+		blendFactor[0] = 0.f;
+		blendFactor[1] = 0.f;
+		blendFactor[2] = 0.f;
+		blendFactor[3] = 0.f;
+
+		myEffect->SetBlendState(myBlendState, blendFactor);
+		static_cast<Effect2D*>(myEffect)->SetProjectionMatrix(Engine::GetInstance()->GetOrthogonalMatrix());
+		static_cast<Effect2D*>(myEffect)->UpdatePosAndScale(aPosition, aScale);
+		static_cast<Effect2D*>(myEffect)->SetPosAndScale();
+		static_cast<Effect2D*>(myEffect)->SetColor(aColor);
+
+		BaseModel::Render();
 	}
 
 	void Sprite::CreateVertices()
@@ -92,7 +100,7 @@ namespace Easy3D
 		SetupVertexBuffer(vertices.Size(), sizeof(VertexPosUV), reinterpret_cast<char*>(&vertices[0]));
 		SetupIndexBuffer(indices.Size(), reinterpret_cast<char*>(&indices[0]));
 
-		mySurface->SetVertexCount(vertices.Size());
-		mySurface->SetIndexCount(indices.Size());
+		mySurfaces[0]->SetVertexCount(vertices.Size());
+		mySurfaces[0]->SetIndexCount(indices.Size());
 	}
 }
