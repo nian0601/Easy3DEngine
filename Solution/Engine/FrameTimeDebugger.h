@@ -61,7 +61,6 @@ namespace Easy3D
 
 
 		CU::GrowingArray<float> myFrameTimes;
-		float myLastDeltaTime;
 		float mySampleTimer;
 		float myTimeBetweenSamples;
 		int myFrameTimeIndex;

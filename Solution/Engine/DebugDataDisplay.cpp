@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "DebugMenu.h"
+#include "RadialDebugMenu.h"
 #include "DebugDataDisplay.h"
 #include "Font.h"
 #include "FontContainer.h"
@@ -37,7 +37,18 @@ void Easy3D::DebugDataDisplay::Init()
 	myFrameDebugger = new FrameTimeDebugger();
 	myFrameDebugger->Init();
 
-	myDebugMenu = new DebugMenu();
+	myDebugMenu = new RadialDebugMenu();
+
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle FPS", Easy3D::DebugDataDisplay::ToggleFrameTime
+		, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Graph", Easy3D::DebugDataDisplay::ToggleFunctionTimers
+		, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Mem", Easy3D::DebugDataDisplay::ToggleMemoryUsage
+		, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle CPU", Easy3D::DebugDataDisplay::ToggleCPUUsage
+		, Easy3D::Engine::GetInstance()->GetDebugDisplay());
+	ADD_FUNCTION_TO_RADIAL_MENU("Toggle Wireframe", Easy3D::Engine::ToggleWireframe
+		, Easy3D::Engine::GetInstance());
 }
 
 void Easy3D::DebugDataDisplay::StartFunctionTimer(const std::string& aFunc)

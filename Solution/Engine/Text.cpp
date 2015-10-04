@@ -18,6 +18,7 @@ namespace Easy3D
 		myFont = Engine::GetInstance()->GetFontContainer()->GetFont(aFontPath);
 		myCharSize = myFont->GetCharSize();
 		myCharSpacing = 17.f;
+		myScale = { 1.f, 1.f };
 
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 		{
@@ -71,9 +72,9 @@ namespace Easy3D
 	}
 
 
-	CU::Vector2<float> Text::GetTextSize(const char* aString) const
+	CU::Vector2<float> Text::GetTextSize(const std::string& aString) const
 	{
-		int numOfLetters = static_cast<int>(strlen(aString));
+		int numOfLetters = aString.length();
 		CU::Vector2<float> size;
 
 

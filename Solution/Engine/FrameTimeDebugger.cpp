@@ -13,7 +13,6 @@ namespace Easy3D
 		, myFocusedFrameIndex(-1)
 		, myGraphSize(1000.f, 200.f)
 		, myGraphTopLeft( 200.f, -500.f )
-		, myLastDeltaTime(0.f)
 		, mySampleTimer(0.f)
 		, myTimeBetweenSamples(0.05f)
 		, myFrameTimeIndex(0)
@@ -119,7 +118,6 @@ namespace Easy3D
 
 		myNewGraphData = false;
 
-		myLastDeltaTime = aDeltaTime;
 		mySampleTimer += aDeltaTime;
 		++myFrameCounter;
 
@@ -260,7 +258,6 @@ namespace Easy3D
 		{
 			myFrameTimes.Add(frameTime * 1000.f);
 			myFrameTimeIndex;
-
 		}
 		else
 		{

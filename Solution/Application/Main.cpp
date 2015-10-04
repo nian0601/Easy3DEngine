@@ -18,7 +18,6 @@ bool globalIsResizing = false;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 {
-	ShowCursor(false);
 	DL_Debug::Debug::Create();
 	CU::TimerManager::Create();
 

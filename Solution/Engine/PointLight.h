@@ -8,7 +8,7 @@ namespace Easy3D
 	class PointLight
 	{
 	public:
-		void Initiate();
+		void Init();
 		void Render(Camera* aCamera);
 		void Update();
 

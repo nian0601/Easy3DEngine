@@ -11,6 +11,7 @@ namespace CommonUtilities
 namespace Easy3D
 {
 	class Camera;
+	class DebugMenu;
 	class Sprite;
 	class Instance;
 }
@@ -36,11 +37,27 @@ public:
 
 private:
 	void operator=(Game& aApp) = delete;
+	void UpdateSubSystems();
 	void Render();
 
 	CU::InputWrapper* myInputWrapper;
 
 	Easy3D::Camera* myCamera;
 	Easy3D::Sprite* mySprite;
-	Easy3D::Instance* myCube;
+	Easy3D::Instance* myModel;
+	Easy3D::DebugMenu* myDebugMenu;
+
+	CU::Vector4<float> mySpriteColor;
+	CU::Vector2<float> mySpritePos;
+	CU::Vector2<float> mySpriteScale;
+
+	CU::Vector3<float> myCubeRotation;
+	CU::Vector3<float> myCubePosition;
+
+	float myDeltaTime;
+
+	int myFPS;
+	int myMemoryUsage;
+	float myCPUUsage;
+	bool myTestBool;
 };

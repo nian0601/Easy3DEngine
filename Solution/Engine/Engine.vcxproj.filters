@@ -18,7 +18,7 @@
     </ClCompile>
     <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="Font.cpp">
-      <Filter>Rendering\Text</Filter>
+      <Filter>Rendering\Fonts</Filter>
     </ClCompile>
     <ClCompile Include="DebugDataDisplay.cpp">
       <Filter>DebugServices</Filter>
@@ -30,7 +30,7 @@
       <Filter>DebugServices</Filter>
     </ClCompile>
     <ClCompile Include="FontContainer.cpp">
-      <Filter>Rendering\Text</Filter>
+      <Filter>Rendering\Fonts</Filter>
     </ClCompile>
     <ClCompile Include="PointLight.cpp">
       <Filter>Lights</Filter>
@@ -56,9 +56,6 @@
     </ClCompile>
     <ClCompile Include="ModelProxy.cpp">
       <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugMenu.cpp">
-      <Filter>DebugServices</Filter>
     </ClCompile>
     <ClCompile Include="Sprite.cpp">
       <Filter>Rendering\RenderableObjects</Filter>
@@ -90,6 +87,10 @@
     <ClCompile Include="TextureContainer.cpp">
       <Filter>Rendering\Textures</Filter>
     </ClCompile>
+    <ClCompile Include="RadialDebugMenu.cpp">
+      <Filter>DebugServices</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugMenu.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -124,7 +125,7 @@
     </ClInclude>
     <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="Font.h">
-      <Filter>Rendering\Text</Filter>
+      <Filter>Rendering\Fonts</Filter>
     </ClInclude>
     <ClInclude Include="DebugDataDisplay.h">
       <Filter>DebugServices</Filter>
@@ -136,7 +137,7 @@
       <Filter>DebugServices</Filter>
     </ClInclude>
     <ClInclude Include="FontContainer.h">
-      <Filter>Rendering\Text</Filter>
+      <Filter>Rendering\Fonts</Filter>
     </ClInclude>
     <ClInclude Include="VTuneApi.h">
       <Filter>DebugServices</Filter>
@@ -176,9 +177,6 @@
     <ClInclude Include="ModelProxy.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="DebugMenu.h">
-      <Filter>DebugServices</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Rendering\RenderableObjects</Filter>
     </ClInclude>
@@ -212,6 +210,10 @@
     <ClInclude Include="EffectListener.h">
       <Filter>Rendering\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="RadialDebugMenu.h">
+      <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugMenu.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompile">
@@ -232,9 +234,6 @@
     <Filter Include="Rendering">
       <UniqueIdentifier>{bf7322d7-2e84-4f42-a427-99331b06f309}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering\Text">
-      <UniqueIdentifier>{baf2e884-b972-4bc8-9638-b545b2737981}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rendering\Effects">
       <UniqueIdentifier>{f21523f2-8cbd-4c66-97ee-cd89d3df25f6}</UniqueIdentifier>
     </Filter>
@@ -243,6 +242,9 @@
     </Filter>
     <Filter Include="Rendering\Textures">
       <UniqueIdentifier>{bfd3b425-0375-4cef-afe0-219ff7d16397}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Fonts">
+      <UniqueIdentifier>{baf2e884-b972-4bc8-9638-b545b2737981}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

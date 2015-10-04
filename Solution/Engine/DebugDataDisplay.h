@@ -18,7 +18,7 @@ namespace CommonUtilities
 namespace Easy3D
 {
 	class Camera;
-	class DebugMenu;
+	class RadialDebugMenu;
 	class Font;
 	class FrameTimeDebugger;
 	class Text;
@@ -38,14 +38,9 @@ namespace Easy3D
 		void RecordFrameTime(const float aDeltaTime);
 		void Render();
 
-		void ToggleFunctionTimers();
-		void ToggleMemoryUsage();
-		void ToggleCPUUsage();
-		void ToggleFrameTime();
-
 		void Update(CU::InputWrapper& aInputWrapper);
 
-		DebugMenu* GetDebugMenu();
+		RadialDebugMenu* GetDebugMenu();
 
 	private:
 		enum eBitSetEnum
@@ -58,6 +53,10 @@ namespace Easy3D
 			count
 		};
 
+		void ToggleFunctionTimers();
+		void ToggleMemoryUsage();
+		void ToggleCPUUsage();
+		void ToggleFrameTime();
 
 		void RenderFunctionTimers();
 		void RenderMemoryUsage();
@@ -77,7 +76,7 @@ namespace Easy3D
 		std::stringstream myStringStream;
 
 		FrameTimeDebugger* myFrameDebugger;
-		DebugMenu* myDebugMenu;
+		RadialDebugMenu* myDebugMenu;
 	};
 }
 
@@ -101,7 +100,7 @@ inline void Easy3D::DebugDataDisplay::ToggleFrameTime()
 	myBoolContainer[eBitSetEnum::FRAME_TIME].flip();
 }
 
-inline Easy3D::DebugMenu* Easy3D::DebugDataDisplay::GetDebugMenu()
+inline Easy3D::RadialDebugMenu* Easy3D::DebugDataDisplay::GetDebugMenu()
 {
 	return myDebugMenu;
 }

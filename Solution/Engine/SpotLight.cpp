@@ -9,7 +9,7 @@
 namespace Easy3D
 {
 
-	void SpotLight::Initiate()
+	void SpotLight::Init()
 	{
 		ModelProxy* model = Engine::GetInstance()->GetModelLoader()->LoadLightCube(1, 1, 1);
 		myInstance = new Instance(*model);

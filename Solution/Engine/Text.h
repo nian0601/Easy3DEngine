@@ -15,7 +15,8 @@ namespace Easy3D
 			, const CU::Vector4<float>& aColor = { 1.f, 1.f, 1.f, 1.f });
 
 		float GetTextWidth() const;
-		CU::Vector2<float> GetTextSize(const char* aString) const;
+		CU::Vector2<float> GetTextSize(const std::string& aString) const;
+		const CU::Vector2<float>& GetCharSize() const;
 
 	private:
 		void ConstructBuffers(const std::string& aString);
@@ -31,4 +32,9 @@ namespace Easy3D
 
 		std::string myLastText;
 	};
+
+	inline const CU::Vector2<float>& Text::GetCharSize() const
+	{
+		return myCharSize;
+	}
 }                                                   
