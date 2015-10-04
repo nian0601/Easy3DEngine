@@ -38,9 +38,10 @@ bool Game::Init(HWND& aHwnd)
 	mySpriteScale = { 1.f, 1.f };
 	mySprite = new Easy3D::Sprite("Data/resources/texture/seafloor.dds", { 100.f, 100.f }, { 50.f, 50.f });
 
-	myModel = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadCube());
-
-	myModel->SetPosition({ 0.f, 0.f, 10.f });
+	myInstances.Init(16);
+	//InstanceStruct newInst;
+	//newInst.myInstance = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadCube());
+	//myInstances.Add(newInst);
 
 	myDebugMenu->StartGroup("SystemInfo");
 	myDebugMenu->AddVariable("FPS", myFPS);
@@ -54,10 +55,13 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("Scale", mySpriteScale);
 	myDebugMenu->EndGroup();
 
-	myDebugMenu->StartGroup("Cube");
-	myDebugMenu->AddVariable("Position", myCubePosition);
-	myDebugMenu->AddVariable("Rotation", myCubeRotation);
-	myDebugMenu->EndGroup();
+	myDebugMenu->AddVariable("Create Cube", std::bind(&Game::CreateCube, this));
+	//myDebugMenu->StartGroup("Cube");
+	//myDebugMenu->AddVariable("Position", myCubePosition);
+	//myDebugMenu->AddVariable("Rotation", myCubeRotation);
+	//myDebugMenu->EndGroup();
+
+	CreateCube();
 
 	GAME_LOG("Init Successful");
 	return true;
@@ -82,10 +86,15 @@ bool Game::Update()
 	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*myInputWrapper);
 	
 
-	myModel->SetPosition(myCubePosition);
-	myModel->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundX(myCubeRotation.x * myDeltaTime));
-	myModel->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundY(myCubeRotation.y * myDeltaTime));
-	myModel->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundZ(myCubeRotation.z * myDeltaTime));
+	for (int i = 0; i < myInstances.Size(); ++i)
+	{
+		Easy3D::Instance* inst = myInstances[i].myInstance;
+		inst->SetPosition(myInstances[i].myPosition);
+		inst->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundX(myInstances[i].myRotationSpeed.x * myDeltaTime));
+		inst->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundY(myInstances[i].myRotationSpeed.y * myDeltaTime));
+		inst->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundZ(myInstances[i].myRotationSpeed.z * myDeltaTime));
+	}
+	
 
 	Render();
 
@@ -112,8 +121,29 @@ void Game::Render()
 {
 	//Easy3D::Engine::GetInstance()->GetDebugDisplay()->Render();
 	mySprite->Render(mySpritePos, mySpriteScale, mySpriteColor);
-	myModel->Render(*myCamera);
+	
+	for (int i = 0; i < myInstances.Size(); ++i)
+	{
+		myInstances[i].myInstance->Render(*myCamera);
+	}
+
 	myDebugMenu->Render(*myInputWrapper);
+}
+
+
+void Game::CreateCube()
+{
+	InstanceStruct newInst;
+	newInst.myInstance = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadCube());
+	newInst.myPosition = { 0.f, 0.f, 0.f };
+	newInst.myRotationSpeed = { 0.f, 0.f, 0.f };
+	myInstances.Add(newInst);
+
+	std::string name = "Cube" + std::to_string(myInstances.Size());
+	myDebugMenu->StartGroup(name);
+	myDebugMenu->AddVariable("Position", myInstances.GetLast().myPosition);
+	myDebugMenu->AddVariable("Rotation", myInstances.GetLast().myRotationSpeed);
+	myDebugMenu->EndGroup();
 }
 
 void Game::Pause()

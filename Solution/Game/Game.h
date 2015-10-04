@@ -36,15 +36,22 @@ public:
 
 
 private:
+	struct InstanceStruct
+	{
+		Easy3D::Instance* myInstance;
+		CU::Vector3<float> myRotationSpeed;
+		CU::Vector3<float> myPosition;
+	};
 	void operator=(Game& aApp) = delete;
 	void UpdateSubSystems();
 	void Render();
+	void CreateCube();
 
 	CU::InputWrapper* myInputWrapper;
 
 	Easy3D::Camera* myCamera;
 	Easy3D::Sprite* mySprite;
-	Easy3D::Instance* myModel;
+	CU::GrowingArray<InstanceStruct> myInstances;
 	Easy3D::DebugMenu* myDebugMenu;
 
 	CU::Vector4<float> mySpriteColor;

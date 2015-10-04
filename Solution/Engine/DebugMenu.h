@@ -2,6 +2,7 @@
 
 #include <GrowingArray.h>
 #include <Vector.h>
+#include <functional>
 
 namespace CommonUtilities
 {
@@ -16,6 +17,7 @@ namespace Easy3D
 		FLOAT,
 		BOOL,
 		GROUP,
+		FUNCTION,
 	};
 
 	struct DebugGroup;
@@ -23,8 +25,10 @@ namespace Easy3D
 	{
 		std::string myName;
 		eDebugVariableType myType;
+		CU::Vector2<float> myPosition;
 		Text* myText;
 
+		DebugVariable* myPrev = nullptr;
 		DebugVariable* myNext = nullptr;
 		DebugVariable* myParent = nullptr;
 
@@ -34,7 +38,10 @@ namespace Easy3D
 			float* myFloat;
 			bool* myBool;
 			DebugGroup* myGroup;
+			
 		};
+
+		std::function<void()> myFunction;
 	};
 
 	struct DebugGroup
@@ -46,6 +53,12 @@ namespace Easy3D
 		bool myIsClosed;
 	};
 
+	struct DebugGroupStructure
+	{
+		DebugVariable* myGroup = nullptr;
+		DebugGroupStructure* myNext = nullptr;
+	};
+
 	class Text;
 	class DebugMenu
 	{
@@ -53,7 +66,7 @@ namespace Easy3D
 		DebugMenu();
 		~DebugMenu();
 
-		void Render(const CU::InputWrapper& aInputWrapper);
+		void Render(const CU::InputWrapper& aInput);
 
 		void StartGroup(const std::string& aString);
 		void EndGroup();
@@ -64,8 +77,12 @@ namespace Easy3D
 		void AddVariable(const std::string& aString, CU::Vector2<float>& aVector, bool aUseRGB = false);
 		void AddVariable(const std::string& aString, CU::Vector3<float>& aVector, bool aUseRGB = false);
 		void AddVariable(const std::string& aString, CU::Vector4<float>& aVector, bool aUseRGB = false);
+		void AddVariable(const std::string& aString, std::function<void()> aFunction);
 
 	private:
+		void RenderGroup(DebugVariable* aGroup, const CU::Vector2<float>& aStartPosition
+			, const CU::InputWrapper& aInput);
+
 		void LinkVariable(DebugVariable* aGroup, DebugVariable* aVar);
 		CU::Vector4<float> HandleIteraction(const CU::InputWrapper& aInput, DebugVariable* aVar
 			, const std::string& aVarText, const CU::Vector2<float>& aVarPos);
@@ -74,10 +91,17 @@ namespace Easy3D
 		void FloatInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
 		void BoolInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
 		void GroupInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
+		void FunctionInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
+
+		void DetatchVariable(DebugVariable* aVariable);
+		void UpdateMovingVariable(const CU::InputWrapper& aInput);
 
 		Text* myText;
-		DebugVariable* myRootGroup;
 		DebugVariable* myCurrentGroup;
+		DebugGroupStructure* myGroups;
+
+		DebugVariable* myCurrentMovingVariable;
+
 
 		CU::Vector2<float> myTextScale;
 	};

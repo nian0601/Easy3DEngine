@@ -13,108 +13,28 @@ namespace Easy3D
 		myText = new Text();
 		myText->Init("Data/resources/font/font.dds");
 
-		myRootGroup = nullptr;
 		myCurrentGroup = nullptr;
-
+		myGroups = new DebugGroupStructure();
+		myGroups->myNext = nullptr;
+		myGroups->myGroup = nullptr;
 		myTextScale = { 1.f, 1.f };
+		myCurrentMovingVariable = nullptr;
 		AddVariable("TextScale", myTextScale);
 	}
 
-	void DebugMenu::Render(const CU::InputWrapper& aInputWrapper)
+	void DebugMenu::Render(const CU::InputWrapper& aInput)
 	{
-		CU::Vector2<float> drawPos;
-		CU::Vector2<float> charSize;
-		CU::Vector2<float> textSize;
-		CU::Vector4<float> color;
-		DebugVariable* var = myRootGroup;
-
-		while (var != nullptr)
+		if (myCurrentMovingVariable != nullptr)
 		{
-			std::stringstream ss;
-			switch (var->myType)
-			{
-			case eDebugVariableType::INT:
-				ss << var->myName << ": " << std::to_string(*var->myInt) << std::endl;
-				break;
-			case eDebugVariableType::FLOAT:
-				ss << var->myName << ": " << std::to_string(*var->myFloat) << std::endl;
-				break;
-			case eDebugVariableType::BOOL:
-				ss << var->myName << ": " << (*var->myFloat ? "true" : "false") << std::endl;
-				break;
-			case eDebugVariableType::GROUP:
-				ss << (var->myGroup->myIsExpanded ? "- " : "+ ") << var->myName << std::endl;
-				break;
-			default:
-				DL_ASSERT("Tried to render a debugvariable with invalid type.");
-				break;
-			}
+			UpdateMovingVariable(aInput);
+		}
 
-			color = HandleIteraction(aInputWrapper, var, ss.str(), drawPos);
+		DebugGroupStructure* group = myGroups;
 
-			textSize = myText->GetTextSize(ss.str());
-			charSize = var->myText->GetCharSize();
-			var->myText->Render(ss.str(), drawPos, myTextScale, color);
-			drawPos.y -= textSize.y;
-
-
-			if (var->myType == eDebugVariableType::GROUP)
-			{
-				if (var->myGroup->myIsExpanded == true && var->myGroup->myFirstVar != nullptr)
-				{
-					var = var->myGroup->myFirstVar;
-					drawPos.x += charSize.x;
-				}
-				else
-				{
-					if (var->myNext != nullptr)
-					{
-						var = var->myNext;
-					}
-					else
-					{
-						var = var->myParent;
-						drawPos.x -= charSize.x;
-
-						while (var != nullptr)
-						{
-							if (var->myNext != nullptr)
-							{
-								var = var->myNext;
-								break;
-							}
-
-							var = var->myParent;
-							drawPos.x -= charSize.x;
-						}
-					}
-				}
-			}
-			else
-			{
-				if (var->myNext != nullptr)
-				{
-					var = var->myNext;
-				}
-				else
-				{
-					var = var->myParent;
-					drawPos.x -= charSize.x;
-
-					while (var != nullptr)
-					{
-						if (var->myNext != nullptr)
-						{
-							var = var->myNext;
-							break;
-						}
-
-						var = var->myParent;
-						drawPos.x -= charSize.x;
-					}
-				}
-			}
-			
+		while (group != nullptr)
+		{
+			RenderGroup(group->myGroup, group->myGroup->myPosition, aInput);
+			group = group->myNext;
 		}
 	}
 
@@ -123,6 +43,7 @@ namespace Easy3D
 		DebugVariable* newGroup = new DebugVariable();
 		newGroup->myName = aString;
 		newGroup->myType = eDebugVariableType::GROUP;
+		newGroup->myPrev = nullptr;
 		newGroup->myNext = nullptr;
 		newGroup->myGroup = new DebugGroup();
 		newGroup->myText = new Text();
@@ -133,10 +54,10 @@ namespace Easy3D
 		newGroup->myGroup->myFirstVar = nullptr;
 		newGroup->myGroup->myLastVar = nullptr;
 
-		if (myRootGroup == nullptr)
+		if (myGroups->myGroup == nullptr)
 		{
-			myRootGroup = newGroup;
-			myCurrentGroup = myRootGroup;
+			myGroups->myGroup = newGroup;
+			myCurrentGroup = myGroups->myGroup;
 		}
 
 		else
@@ -165,10 +86,10 @@ namespace Easy3D
 		var->myText = new Text();
 		var->myText->Init("Data/resources/font/font.dds");
 
-		if (myRootGroup == nullptr)
+		if (myGroups->myGroup == nullptr)
 		{
-			myRootGroup = var;
-			myCurrentGroup = myRootGroup;
+			myGroups->myGroup = var;
+			myCurrentGroup = myGroups->myGroup;
 		}
 		else
 		{
@@ -185,10 +106,10 @@ namespace Easy3D
 		var->myText = new Text();
 		var->myText->Init("Data/resources/font/font.dds");
 
-		if (myRootGroup == nullptr)
+		if (myGroups->myGroup == nullptr)
 		{
-			myRootGroup = var;
-			myCurrentGroup = myRootGroup;
+			myGroups->myGroup = var;
+			myCurrentGroup = myGroups->myGroup;
 		}
 		else
 		{
@@ -205,10 +126,10 @@ namespace Easy3D
 		var->myText = new Text();
 		var->myText->Init("Data/resources/font/font.dds");
 
-		if (myRootGroup == nullptr)
+		if (myGroups->myGroup == nullptr)
 		{
-			myRootGroup = var;
-			myCurrentGroup = myRootGroup;
+			myGroups->myGroup = var;
+			myCurrentGroup = myGroups->myGroup;
 		}
 		else
 		{
@@ -276,27 +197,125 @@ namespace Easy3D
 		EndGroup();
 	}
 
+	void DebugMenu::AddVariable(const std::string& aString, std::function<void()> aFunction)
+	{
+		DebugVariable* var = new DebugVariable();
+		var->myName = aString;
+		var->myType = eDebugVariableType::FUNCTION;
+		var->myFunction = aFunction;
+		var->myText = new Text();
+		var->myText->Init("Data/resources/font/font.dds");
+
+		if (myGroups->myGroup == nullptr)
+		{
+			myGroups->myGroup = var;
+			myCurrentGroup = myGroups->myGroup;
+		}
+		else
+		{
+			LinkVariable(myCurrentGroup, var);
+		}
+	}
+
+	void DebugMenu::RenderGroup(DebugVariable* aGroup, const CU::Vector2<float>& aStartPosition
+		, const CU::InputWrapper& aInput)
+	{
+		CU::Vector2<float> drawPos = aStartPosition;
+		CU::Vector2<float> charSize;
+		CU::Vector2<float> textSize;
+		CU::Vector4<float> color;
+		DebugVariable* var = aGroup;
+
+		while (var != nullptr)
+		{
+			std::stringstream ss;
+			switch (var->myType)
+			{
+			case eDebugVariableType::INT:
+				ss << var->myName << ": " << std::to_string(*var->myInt) << std::endl;
+				break;
+			case eDebugVariableType::FLOAT:
+				ss << var->myName << ": " << std::to_string(*var->myFloat) << std::endl;
+				break;
+			case eDebugVariableType::BOOL:
+				ss << var->myName << ": " << (*var->myFloat ? "true" : "false") << std::endl;
+				break;
+			case eDebugVariableType::GROUP:
+				ss << (var->myGroup->myIsExpanded ? "- " : "+ ") << var->myName << std::endl;
+				break;
+			case eDebugVariableType::FUNCTION:
+				ss << var->myName << "()" << std::endl;
+				break;
+			default:
+				DL_ASSERT("Tried to render a debugvariable with invalid type.");
+				break;
+			}
+
+			color = HandleIteraction(aInput, var, ss.str(), drawPos);
+
+			textSize = myText->GetTextSize(ss.str());
+			charSize = var->myText->GetCharSize();
+			var->myText->Render(ss.str(), drawPos, myTextScale, color);
+			drawPos.y -= textSize.y;
+
+
+			if (var->myType == eDebugVariableType::GROUP
+				&& var->myGroup->myIsExpanded == true && var->myGroup->myFirstVar != nullptr)
+			{
+				var = var->myGroup->myFirstVar;
+				drawPos.x += charSize.x;
+			}
+			else
+			{
+				if (var->myNext != nullptr)
+				{
+					var = var->myNext;
+				}
+				else
+				{
+					var = var->myParent;
+					drawPos.x -= charSize.x;
+
+					while (var != nullptr)
+					{
+						if (var->myNext != nullptr)
+						{
+							var = var->myNext;
+							break;
+						}
+
+						var = var->myParent;
+						drawPos.x -= charSize.x;
+					}
+				}
+			}
+
+		}
+	}
 
 	void DebugMenu::LinkVariable(DebugVariable* aGroup, DebugVariable* aVar)
 	{
 		if (aGroup != nullptr && aGroup->myType == eDebugVariableType::GROUP && aGroup->myGroup->myIsClosed == false)
 		{
 			aVar->myParent = aGroup;
-			DebugGroup* grup = aGroup->myGroup;
+			DebugGroup* group = aGroup->myGroup;
 
-			if (grup->myFirstVar == nullptr)
+			if (group->myFirstVar == nullptr)
 			{
-				grup->myFirstVar = grup->myLastVar = aVar;
-				grup->myFirstVar->myNext = nullptr;
+				aVar->myPrev = nullptr;
+				aVar->myNext = nullptr;
+				group->myFirstVar = group->myLastVar = aVar;
 			}
 			else
 			{
-				grup->myLastVar->myNext = aVar;
-				grup->myLastVar = aVar;
+				aVar->myPrev = group->myLastVar;
+				group->myLastVar->myNext = aVar;
+				group->myLastVar = aVar;
 			}
 		}
 		else
 		{
+			aVar->myPrev = aGroup;
 			aGroup->myNext = aVar;
 			myCurrentGroup = aVar;
 		}
@@ -323,6 +342,9 @@ namespace Easy3D
 				break;
 			case eDebugVariableType::GROUP:
 				GroupInteraction(aInput, aVar);
+				break;
+			case eDebugVariableType::FUNCTION:
+				FunctionInteraction(aInput, aVar);
 				break;
 			default:
 				break;
@@ -382,8 +404,79 @@ namespace Easy3D
 	{
 		if (aInput.MouseDown(0))
 		{
-			aVar->myGroup->myIsExpanded = !aVar->myGroup->myIsExpanded;
+			if (aInput.KeyIsPressed(DIK_LSHIFT))
+			{
+				DetatchVariable(aVar);
+			}
+			else
+			{
+				aVar->myGroup->myIsExpanded = !aVar->myGroup->myIsExpanded;
+			}
 		}
+	}
+
+	void DebugMenu::FunctionInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar)
+	{
+		if (aInput.MouseDown(0))
+		{
+			aVar->myFunction();
+		}
+	}
+
+	void DebugMenu::DetatchVariable(DebugVariable* aVariable)
+	{
+		DebugVariable* prev = aVariable->myPrev;
+		DebugVariable* next = aVariable->myNext;
+
+		if (prev != nullptr)
+		{
+			prev->myNext = next;
+		}
+		else
+		{
+			DebugVariable* parent = aVariable->myParent;
+			if (parent != nullptr && parent->myType == eDebugVariableType::GROUP)
+			{
+				parent->myGroup->myFirstVar = next;
+			}
+		}
+		if (next != nullptr)
+		{
+			next->myPrev = prev;
+		}
+
+		aVariable->myPosition = { 400.f, -100.f };
+		aVariable->myNext = nullptr;
+		aVariable->myPrev = nullptr;
+		aVariable->myParent = nullptr;
+
+		DebugGroupStructure* newGroup = new DebugGroupStructure();
+		newGroup->myNext = nullptr;
+		newGroup->myGroup = aVariable;
+
+
+		DebugGroupStructure* parent = myGroups;
+		while (parent->myNext != nullptr)
+		{
+			parent = parent->myNext;
+		}
+		parent->myNext = newGroup;
+
+			myCurrentMovingVariable = aVariable;
+	}
+
+	void DebugMenu::UpdateMovingVariable(const CU::InputWrapper& aInput)
+	{
+		if (aInput.MouseIsPressed(0))
+		{
+			myCurrentMovingVariable->myPosition = aInput.GetMousePosition();
+			myCurrentMovingVariable->myPosition.y *= -1.f;
+		}
+		else
+		{
+			myCurrentMovingVariable = nullptr;
+		}
+		
 	}
 
 }
