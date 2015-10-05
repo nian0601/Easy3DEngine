@@ -21,6 +21,7 @@ namespace Easy3D
 	};
 
 	struct DebugGroup;
+	struct DebugGroupStructure;
 	struct DebugVariable
 	{
 		std::string myName;
@@ -31,6 +32,7 @@ namespace Easy3D
 		DebugVariable* myPrev = nullptr;
 		DebugVariable* myNext = nullptr;
 		DebugVariable* myParent = nullptr;
+		DebugGroupStructure* mySuperGroup = nullptr;
 
 		union
 		{
@@ -87,6 +89,8 @@ namespace Easy3D
 		CU::Vector4<float> HandleIteraction(const CU::InputWrapper& aInput, DebugVariable* aVar
 			, const std::string& aVarText, const CU::Vector2<float>& aVarPos);
 
+		int GetNextVar(DebugVariable* &aVar);
+
 		void IntInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
 		void FloatInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
 		void BoolInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
@@ -94,7 +98,6 @@ namespace Easy3D
 		void FunctionInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
 
 		void DeAttachVariable(DebugVariable* aVariable);
-		bool ReAttachVariable(DebugVariable* aVariable);
 		void UpdateMovingVariable(const CU::InputWrapper& aInput);
 
 		Text* myText;

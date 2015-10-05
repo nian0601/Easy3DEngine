@@ -257,38 +257,8 @@ namespace Easy3D
 			var->myText->Render(ss.str(), drawPos, myTextScale, color);
 			drawPos.y -= textSize.y;
 
-
-			if (var->myType == eDebugVariableType::GROUP
-				&& var->myGroup->myIsExpanded == true && var->myGroup->myFirstVar != nullptr)
-			{
-				var = var->myGroup->myFirstVar;
-				drawPos.x += charSize.x;
-			}
-			else
-			{
-				if (var->myNext != nullptr)
-				{
-					var = var->myNext;
-				}
-				else
-				{
-					var = var->myParent;
-					drawPos.x -= charSize.x;
-
-					while (var != nullptr)
-					{
-						if (var->myNext != nullptr)
-						{
-							var = var->myNext;
-							break;
-						}
-
-						var = var->myParent;
-						drawPos.x -= charSize.x;
-					}
-				}
-			}
-
+			int xStep = GetNextVar(var);
+			drawPos.x += xStep * charSize.x;
 		}
 	}
 
@@ -328,26 +298,34 @@ namespace Easy3D
 
 		if (CU::Intersection::PointVsRect(aInput.GetMousePosition(), topLeft, botRight))
 		{
-			switch (aVar->myType)
+			if (aInput.MouseDown(0) && aInput.KeyIsPressed(DIK_LSHIFT))
 			{
-			case eDebugVariableType::INT:
-				IntInteraction(aInput, aVar);
-				break;
-			case eDebugVariableType::FLOAT:
-				FloatInteraction(aInput, aVar);
-				break;
-			case eDebugVariableType::BOOL:
-				BoolInteraction(aInput, aVar);
-				break;
-			case eDebugVariableType::GROUP:
-				GroupInteraction(aInput, aVar);
-				break;
-			case eDebugVariableType::FUNCTION:
-				FunctionInteraction(aInput, aVar);
-				break;
-			default:
-				break;
+				DeAttachVariable(aVar);
 			}
+			else
+			{
+				switch (aVar->myType)
+				{
+				case eDebugVariableType::INT:
+					IntInteraction(aInput, aVar);
+					break;
+				case eDebugVariableType::FLOAT:
+					FloatInteraction(aInput, aVar);
+					break;
+				case eDebugVariableType::BOOL:
+					BoolInteraction(aInput, aVar);
+					break;
+				case eDebugVariableType::GROUP:
+					GroupInteraction(aInput, aVar);
+					break;
+				case eDebugVariableType::FUNCTION:
+					FunctionInteraction(aInput, aVar);
+					break;
+				default:
+					break;
+				}
+			}
+			
 
 			return{ 1.f, 0.f, 0.f, 1.f };
 		}
@@ -355,6 +333,43 @@ namespace Easy3D
 		return{ 1.f, 1.f, 1.f, 1.f };
 	}
 
+
+	int DebugMenu::GetNextVar(DebugVariable* &aVar)
+	{
+		int xStepCount = 0;
+		if (aVar->myType == eDebugVariableType::GROUP
+			&& aVar->myGroup->myIsExpanded == true && aVar->myGroup->myFirstVar != nullptr)
+		{
+			aVar = aVar->myGroup->myFirstVar;
+			++xStepCount;
+		}
+		else
+		{
+			if (aVar->myNext != nullptr)
+			{
+				aVar = aVar->myNext;
+			}
+			else
+			{
+				aVar = aVar->myParent;
+				--xStepCount;
+
+				while (aVar != nullptr)
+				{
+					if (aVar->myNext != nullptr)
+					{
+						aVar = aVar->myNext;
+						break;
+					}
+
+					aVar = aVar->myParent;
+					--xStepCount;
+				}
+			}
+		}
+
+		return xStepCount;
+	}
 
 	void DebugMenu::IntInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar)
 	{
@@ -427,6 +442,12 @@ namespace Easy3D
 		DebugVariable* prev = aVariable->myPrev;
 		DebugVariable* next = aVariable->myNext;
 
+		if (prev == nullptr && next == nullptr)
+		{
+			myCurrentMovingVariable = aVariable;
+			return;
+		}
+
 		if (prev != nullptr)
 		{
 			prev->myNext = next;
@@ -444,7 +465,6 @@ namespace Easy3D
 			next->myPrev = prev;
 		}
 
-		aVariable->myPosition = { 400.f, -100.f };
 		aVariable->myNext = nullptr;
 		aVariable->myPrev = nullptr;
 		aVariable->myParent = nullptr;
@@ -452,6 +472,7 @@ namespace Easy3D
 		DebugGroupStructure* newGroup = new DebugGroupStructure();
 		newGroup->myNext = nullptr;
 		newGroup->myGroup = aVariable;
+		aVariable->mySuperGroup = newGroup;
 
 
 		DebugGroupStructure* parent = myGroups;
@@ -464,73 +485,6 @@ namespace Easy3D
 		myCurrentMovingVariable = aVariable;
 	}
 
-	bool DebugMenu::ReAttachVariable(DebugVariable* aVariable)
-	{
-		CU::Vector2<float> pos = aVariable->myPosition;
-		CU::Vector2<float> varPos;
-		CU::Vector2<float> charSize = myGroups->myGroup->myText->GetCharSize();
-		CU::Vector2<float> textSize;
-		DebugGroupStructure* superGroup = myGroups;
-
-		while (superGroup != nullptr)
-		{
-			DebugVariable* var = superGroup->myGroup;
-			varPos = var->myPosition;
-
-			while (var != nullptr)
-			{
-				CU::Vector2<float> topLeft = { varPos.x, varPos.y };
-				CU::Vector2<float> botRight = topLeft + myText->GetTextSize(var->myName);
-
-				if (var != aVariable && CU::Intersection::PointVsRect(pos, topLeft, botRight))
-				{
-					LinkVariable(var, aVariable);
-					return true;
-				}
-				else
-				{
-					textSize = var->myText->GetTextSize(var->myName);
-					varPos.y -= textSize.y;
-					if (var->myType == eDebugVariableType::GROUP
-						&& var->myGroup->myIsExpanded == true && var->myGroup->myFirstVar != nullptr)
-					{
-						var = var->myGroup->myFirstVar;
-						varPos.x += charSize.x;
-					}
-					else
-					{
-						if (var->myNext != nullptr)
-						{
-							var = var->myNext;
-						}
-						else
-						{
-							var = var->myParent;
-							varPos.x -= charSize.x;
-
-							while (var != nullptr)
-							{
-								if (var->myNext != nullptr)
-								{
-									var = var->myNext;
-									break;
-								}
-
-								var = var->myParent;
-								varPos.x -= charSize.x;
-							}
-						}
-					}
-				}
-				
-			}
-
-			superGroup = superGroup->myNext;
-		}
-
-		return false;
-	}
-
 	void DebugMenu::UpdateMovingVariable(const CU::InputWrapper& aInput)
 	{
 		if (aInput.MouseIsPressed(0))
@@ -540,7 +494,6 @@ namespace Easy3D
 		}
 		else
 		{
-			ReAttachVariable(myCurrentMovingVariable);
 			myCurrentMovingVariable = nullptr;
 		}
 		
