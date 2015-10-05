@@ -146,14 +146,9 @@ namespace Easy3D
 		myDebugText->Render(aText.c_str(), aPosition.x, aPosition.y, aScale);
 	}
 
-	void Engine::EnableZBuffer()
+	void Engine::SetDepthBufferState(eDepthStencilType aState)
 	{
-		myDirectX->EnableZBuffer();
-	}
-
-	void Engine::DisableZBuffer()
-	{
-		myDirectX->DisableZBuffer();
+		myDirectX->SetDepthBufferState(aState);
 	}
 
 	void Engine::ToggleWireframe()
@@ -181,6 +176,16 @@ namespace Easy3D
 	void Engine::DisableWireframe()
 	{
 		myDirectX->DisableWireframe();
+	}
+
+	void Engine::EnableAlphaBlending()
+	{
+		myDirectX->EnableAlphaBlending();
+	}
+
+	void Engine::DisableAlphaBlending()
+	{
+		myDirectX->DisableAlpaBlending();
 	}
 
 	bool Engine::WindowSetup(HWND& aHwnd, WNDPROC aWindowProc)

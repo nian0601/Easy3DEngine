@@ -36,5 +36,26 @@ namespace CommonUtilities
 		{
 			return CapValue(0.f, 1.f, aValue);
 		}
+
+		Vector2<float> RandomVector(const Vector2<float>& aMin, const Vector2<float>& aMax)
+		{
+			return Vector2<float>(RandomRange<float>(aMin.x, aMax.x)
+				, RandomRange<float>(aMin.y, aMax.y));
+		}
+
+		Vector3<float> RandomVector(const Vector3<float>& aMin, const Vector3<float>& aMax)
+		{
+			return Vector3<float>(RandomRange<float>(aMin.x, aMax.x)
+				, RandomRange<float>(aMin.y, aMax.y)
+				, RandomRange<float>(aMin.z, aMax.z));
+		}
+
+		Vector4<float> RandomVector(const Vector4<float>& aMin, const Vector4<float>& aMax)
+		{
+			return Vector4<float>(RandomRange<float>(aMin.x, aMax.x)
+				, RandomRange<float>(aMin.y, aMax.y)
+				, RandomRange<float>(aMin.z, aMax.z)
+				, RandomRange<float>(aMin.w, aMax.w));
+		}
 	}
 }

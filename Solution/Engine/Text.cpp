@@ -4,6 +4,7 @@
 #include <d3dx11effect.h>
 #include "Effect2D.h"
 #include "Effect3D.h"
+#include "Enums.h"
 #include "Font.h"
 #include "FontContainer.h"
 #include "IndexBufferWrapper.h"
@@ -51,7 +52,7 @@ namespace Easy3D
 			ConstructBuffers(aString);
 		}
 
-		Engine::GetInstance()->DisableZBuffer();
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
 
 		myPosition = aPosition;
 		myScale = aScale;

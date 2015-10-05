@@ -5,6 +5,7 @@
 #include <D3D11.h>
 #include "Effect2D.h"
 #include "EffectContainer.h"
+#include "Enums.h"
 #include "GraphRenderer.h"
 #include "IndexBufferWrapper.h"
 #include "Surface.h"
@@ -70,7 +71,7 @@ void Easy3D::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
 		BuildBuffers(aDataArray, aTopLeftDrawPos, aGraphSize, aMaxValue);
 	}
 
-	Engine::GetInstance()->DisableZBuffer();
+	Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
 
 
 	myEffect->SetBlendState(NULL, NULL);
@@ -95,7 +96,7 @@ void Easy3D::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
 		Engine::GetInstance()->GetContex()->DrawIndexed(mySurface->GetIndexCount(), mySurface->GetVertexStart(), 0);
 	}
 
-	Engine::GetInstance()->EnableZBuffer();
+	Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 
 	if (Engine::GetInstance()->myWireframeShouldShow == true)
 	{

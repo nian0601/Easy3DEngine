@@ -58,14 +58,20 @@ void Easy3D::DirectX::CleanD3D()
 	myContext = nullptr;
 }
 
-void Easy3D::DirectX::EnableZBuffer()
+void Easy3D::DirectX::SetDepthBufferState(eDepthStencilType aState)
 {
-	myContext->OMSetDepthStencilState(myEnabledDepthStencilState, 1);
-}
-
-void Easy3D::DirectX::DisableZBuffer()
-{
-	myContext->OMSetDepthStencilState(myDisabledDepthStencilState, 1);
+	switch (aState)
+	{
+	case Easy3D::eDepthStencilType::Z_ENABLED:
+		myContext->OMSetDepthStencilState(myDepthStencilStates[0], 1);
+		break;
+	case Easy3D::eDepthStencilType::Z_DISABLED:
+		myContext->OMSetDepthStencilState(myDepthStencilStates[1], 1);
+		break;
+	case Easy3D::eDepthStencilType::PARTICLES:
+		myContext->OMSetDepthStencilState(myDepthStencilStates[2], 0);
+		break;
+	}
 }
 
 bool Easy3D::DirectX::D3DSetup()
@@ -94,21 +100,9 @@ bool Easy3D::DirectX::D3DSetup()
 		return false;
 	}
 
-	if (D3DEnabledStencilStateSetup() == false)
+	if (D3DDepthStencilStatesSetup() == false)
 	{
-		DIRECTX_LOG("Failed to Setup EnabledStencilBuffer");
-		return false;
-	}
-
-	if (D3DDisabledStencilStateSetup() == false)
-	{
-		DIRECTX_LOG("Failed to Setup DisabledStencilBuffer");
-		return false;
-	}
-
-	if (D3DStencilBufferSetup(mySetupInfo.myScreenWidth, mySetupInfo.myScreenHeight) == false)
-	{
-		DIRECTX_LOG("Failed to Setup DisabledStencilBuffer");
+		DIRECTX_LOG("Failed to Setup D3DDepthStencilStates");
 		return false;
 	}
 
@@ -124,8 +118,14 @@ bool Easy3D::DirectX::D3DSetup()
 		return false;
 	}
 
+	if (D3DSetupBlendStates() == false)
+	{
+		DIRECTX_LOG("Failed to Setup SolidRasterizerState");
+		return false;
+	}
+
 	DisableWireframe();
-	EnableZBuffer();
+	SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 	
 	DIRECTX_LOG("DirectX Setup Successful");
 	return true;
@@ -237,11 +237,13 @@ bool Easy3D::DirectX::D3DStencilBufferSetup(int aWidth, int aHeight)
 	return true;
 }
 
-bool Easy3D::DirectX::D3DEnabledStencilStateSetup()
+bool Easy3D::DirectX::D3DDepthStencilStatesSetup()
 {
-	HRESULT hr = S_OK;
-
+	HRESULT hr;
 	D3D11_DEPTH_STENCIL_DESC  stencilDesc;
+
+#pragma region EnabledState
+	hr = S_OK;
 	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
 
 	stencilDesc.DepthEnable = true;
@@ -259,22 +261,18 @@ bool Easy3D::DirectX::D3DEnabledStencilStateSetup()
 	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myEnabledDepthStencilState);
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStencilStates[0]);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+#pragma endregion
 
-	return true;
-}
 
-bool Easy3D::DirectX::D3DDisabledStencilStateSetup()
-{
-	HRESULT hr = S_OK;
-
-	D3D11_DEPTH_STENCIL_DESC  stencilDesc;
+#pragma region DisabledState
+	hr = S_OK;
 	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-	
+
 	stencilDesc.DepthEnable = false;
 	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
@@ -290,11 +288,40 @@ bool Easy3D::DirectX::D3DDisabledStencilStateSetup()
 	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDisabledDepthStencilState);
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStencilStates[1]);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+#pragma endregion
+
+
+#pragma region ParticlesState
+	hr = S_OK;
+	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
+
+	stencilDesc.DepthEnable = true;
+	stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	stencilDesc.StencilEnable = true;
+	stencilDesc.StencilReadMask = 0xFF;
+	stencilDesc.StencilWriteMask = 0xFF;
+	stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+	stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStencilStates[2]);
+	if (FAILED(hr))
+	{
+		return false;
+	}
+#pragma endregion
 
 	return true;
 }
@@ -342,6 +369,40 @@ bool Easy3D::DirectX::D3DSolidRasterizerStateSetup()
 	return true;
 }
 
+bool Easy3D::DirectX::D3DSetupBlendStates()
+{
+	D3D11_BLEND_DESC blendDesc;
+	blendDesc.AlphaToCoverageEnable = false;
+	blendDesc.IndependentBlendEnable = false;
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	HRESULT hr = myDevice->CreateBlendState(&blendDesc, &myAlphaBlendState);
+	if (FAILED(hr) != S_OK)
+	{
+		DL_ASSERT("BaseModel::InitBlendState: Failed to CreateAlphaBlendState");
+	}
+
+	blendDesc.AlphaToCoverageEnable = true;
+	blendDesc.IndependentBlendEnable = false;
+	blendDesc.RenderTarget[0].BlendEnable = FALSE;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
+
+	hr = myDevice->CreateBlendState(&blendDesc, &myNoAlphaBlendState);
+	if (FAILED(hr) != S_OK)
+	{
+		DL_ASSERT("BaseModel::InitBlendState: Failed to CreateNoAlphaBlendState");
+	}
+
+	return true;
+}
+
 void Easy3D::DirectX::EnableWireframe()
 {
 	myContext->RSSetState(myWireframeRasterizer);
@@ -350,4 +411,26 @@ void Easy3D::DirectX::EnableWireframe()
 void Easy3D::DirectX::DisableWireframe()
 {
 	myContext->RSSetState(mySolidRasterizer);
+}
+
+void Easy3D::DirectX::EnableAlphaBlending()
+{
+	float blendFactor[4];
+	blendFactor[0] = 0.f;
+	blendFactor[1] = 0.f;
+	blendFactor[2] = 0.f;
+	blendFactor[3] = 0.f;
+
+	myContext->OMSetBlendState(myAlphaBlendState, blendFactor, 0xFFFFFFFF);
+}
+
+void Easy3D::DirectX::DisableAlpaBlending()
+{
+	float blendFactor[4];
+	blendFactor[0] = 0.f;
+	blendFactor[1] = 0.f;
+	blendFactor[2] = 0.f;
+	blendFactor[3] = 0.f;
+
+	myContext->OMSetBlendState(myNoAlphaBlendState, blendFactor, 0xFFFFFFFF);
 }

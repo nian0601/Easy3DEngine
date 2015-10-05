@@ -11,12 +11,5 @@ namespace Easy3D
 		int myStride;
 		VertexType myType;
 		char* myVertexData;
-
-		VertexPosColor* GetDataAsVertexPosColor();
 	};
-}
-
-inline Easy3D::VertexPosColor* Easy3D::VertexDataWrapper::GetDataAsVertexPosColor()
-{
-	return reinterpret_cast<VertexPosColor*>(myVertexData);
 }

@@ -108,6 +108,9 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugDataDisplay.cpp" />
     <ClCompile Include="DebugMenu.cpp" />
+    <ClCompile Include="ParticleEffect.cpp" />
+    <ClCompile Include="ParticleEmitterInstance.cpp" />
+    <ClCompile Include="ParticleEmitterData.cpp" />
     <ClCompile Include="RadialDebugMenu.cpp" />
     <ClCompile Include="Debug_BlockTimer.cpp" />
     <ClCompile Include="DirectX.cpp" />
@@ -150,6 +153,12 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DebugDataDisplay.h" />
     <ClInclude Include="DebugMenu.h" />
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="ParticleEffect.h" />
+    <ClInclude Include="ParticleEmitterInstance.h" />
+    <ClInclude Include="ParticleInstance.h" />
+    <ClInclude Include="ParticleData.h" />
+    <ClInclude Include="ParticleEmitterData.h" />
     <ClInclude Include="RadialDebugMenu.h" />
     <ClInclude Include="Debug_BlockTimer.h" />
     <ClInclude Include="Defines.h" />

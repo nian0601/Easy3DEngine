@@ -24,6 +24,10 @@ namespace CommonUtilities
 			aAlpha = Saturate(aAlpha);
 			return static_cast<T>(aStartValue + (aEndValue - aStartValue) * aAlpha);
 		}
+
+		Vector2<float> RandomVector(const Vector2<float>& aMin, const Vector2<float>& aMax);
+		Vector3<float> RandomVector(const Vector3<float>& aMin, const Vector3<float>& aMax);
+		Vector4<float> RandomVector(const Vector4<float>& aMin, const Vector4<float>& aMax);
 	}
 }
 namespace CU = CommonUtilities;

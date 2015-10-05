@@ -19,7 +19,6 @@ namespace Easy3D
 		myGroups->myGroup = nullptr;
 		myTextScale = { 1.f, 1.f };
 		myCurrentMovingVariable = nullptr;
-		AddVariable("TextScale", myTextScale);
 	}
 
 	void DebugMenu::Render(const CU::InputWrapper& aInput)
@@ -406,7 +405,7 @@ namespace Easy3D
 		{
 			if (aInput.KeyIsPressed(DIK_LSHIFT))
 			{
-				DetatchVariable(aVar);
+				DeAttachVariable(aVar);
 			}
 			else
 			{
@@ -423,7 +422,7 @@ namespace Easy3D
 		}
 	}
 
-	void DebugMenu::DetatchVariable(DebugVariable* aVariable)
+	void DebugMenu::DeAttachVariable(DebugVariable* aVariable)
 	{
 		DebugVariable* prev = aVariable->myPrev;
 		DebugVariable* next = aVariable->myNext;
@@ -462,7 +461,74 @@ namespace Easy3D
 		}
 		parent->myNext = newGroup;
 
-			myCurrentMovingVariable = aVariable;
+		myCurrentMovingVariable = aVariable;
+	}
+
+	bool DebugMenu::ReAttachVariable(DebugVariable* aVariable)
+	{
+		CU::Vector2<float> pos = aVariable->myPosition;
+		CU::Vector2<float> varPos;
+		CU::Vector2<float> charSize = myGroups->myGroup->myText->GetCharSize();
+		CU::Vector2<float> textSize;
+		DebugGroupStructure* superGroup = myGroups;
+
+		while (superGroup != nullptr)
+		{
+			DebugVariable* var = superGroup->myGroup;
+			varPos = var->myPosition;
+
+			while (var != nullptr)
+			{
+				CU::Vector2<float> topLeft = { varPos.x, varPos.y };
+				CU::Vector2<float> botRight = topLeft + myText->GetTextSize(var->myName);
+
+				if (var != aVariable && CU::Intersection::PointVsRect(pos, topLeft, botRight))
+				{
+					LinkVariable(var, aVariable);
+					return true;
+				}
+				else
+				{
+					textSize = var->myText->GetTextSize(var->myName);
+					varPos.y -= textSize.y;
+					if (var->myType == eDebugVariableType::GROUP
+						&& var->myGroup->myIsExpanded == true && var->myGroup->myFirstVar != nullptr)
+					{
+						var = var->myGroup->myFirstVar;
+						varPos.x += charSize.x;
+					}
+					else
+					{
+						if (var->myNext != nullptr)
+						{
+							var = var->myNext;
+						}
+						else
+						{
+							var = var->myParent;
+							varPos.x -= charSize.x;
+
+							while (var != nullptr)
+							{
+								if (var->myNext != nullptr)
+								{
+									var = var->myNext;
+									break;
+								}
+
+								var = var->myParent;
+								varPos.x -= charSize.x;
+							}
+						}
+					}
+				}
+				
+			}
+
+			superGroup = superGroup->myNext;
+		}
+
+		return false;
 	}
 
 	void DebugMenu::UpdateMovingVariable(const CU::InputWrapper& aInput)
@@ -474,6 +540,7 @@ namespace Easy3D
 		}
 		else
 		{
+			ReAttachVariable(myCurrentMovingVariable);
 			myCurrentMovingVariable = nullptr;
 		}
 		

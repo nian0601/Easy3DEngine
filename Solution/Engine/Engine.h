@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Enums.h"
 #include <Matrix.h>
 #include <Vector.h>
 #include <string>
@@ -24,6 +26,7 @@ namespace Easy3D
 	class ModelProxy;
 	class TextureContainer;
 	class Text;
+
 
 	struct SetupInfo;
 
@@ -51,13 +54,15 @@ namespace Easy3D
 
 		void PrintDebugText(const std::string& aText, const CU::Vector2<float>& aPosition, float aScale = 1.f);
 
-		void EnableZBuffer();
-		void DisableZBuffer();
+		void SetDepthBufferState(eDepthStencilType aState);
 
 		void ToggleWireframe();
 
 		void EnableWireframe();
 		void DisableWireframe();
+
+		void EnableAlphaBlending();
+		void DisableAlphaBlending();
 
 
 		void SetClearColor(const CU::Vector4<float>& aClearColor);

@@ -93,7 +93,8 @@ namespace Easy3D
 		void GroupInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
 		void FunctionInteraction(const CU::InputWrapper& aInput, DebugVariable* aVar);
 
-		void DetatchVariable(DebugVariable* aVariable);
+		void DeAttachVariable(DebugVariable* aVariable);
+		bool ReAttachVariable(DebugVariable* aVariable);
 		void UpdateMovingVariable(const CU::InputWrapper& aInput);
 
 		Text* myText;

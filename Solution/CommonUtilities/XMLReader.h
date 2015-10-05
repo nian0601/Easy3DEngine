@@ -3,7 +3,7 @@
 #include "..\DL_Debug\DL_Debug.h"
 #include <string>
 
-//#define tinyxml2::XMLElement* tinyxml2::tinyxml2::XMLElement**
+#define XMLELEMENT tinyxml2::XMLElement*
 
 class XMLReader
 {

@@ -3,6 +3,7 @@
 #include <D3D11.h>
 #include <d3dx11effect.h>
 #include "Effect2D.h"
+#include "Enums.h"
 #include "IndexBufferWrapper.h"
 #include "Sprite.h"
 #include "Surface.h"
@@ -38,7 +39,7 @@ namespace Easy3D
 	void Sprite::Render(const CU::Vector2<float>& aPosition, const CU::Vector2<float>& aScale
 		, const CU::Vector4<float>& aColor)
 	{
-		Engine::GetInstance()->DisableZBuffer();
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
 
 		myPosition = aPosition;
 		myScale = aScale;

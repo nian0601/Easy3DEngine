@@ -8,6 +8,7 @@
 #include "FileWatcher.h"
 #include "Texture.h"
 #include "TextureContainer.h"
+#include "ParticleEffect.h"
 
 Easy3D::Effect2D* Easy3D::EffectContainer::Get2DEffect(const std::string& aFilePath)
 {
@@ -31,6 +32,18 @@ Easy3D::Effect3D* Easy3D::EffectContainer::Get3DEffect(const std::string& aFileP
 	}
 
 	return my3DEffects[aFilePath];
+}
+
+Easy3D::ParticleEffect* Easy3D::EffectContainer::GetParticleEffect(const std::string& aFilePath)
+{
+	auto it = myParticleEffects.find(aFilePath);
+
+	if (it == myParticleEffects.end())
+	{
+		LoadParticleEffect(aFilePath);
+	}
+
+	return myParticleEffects[aFilePath];
 }
 
 
@@ -63,6 +76,7 @@ void Easy3D::EffectContainer::Reload2DEffect(const std::string& aFilePath)
 
 	my2DEffects[aFilePath]->Init(aFilePath);
 }
+
 
 void Easy3D::EffectContainer::Load3DEffect(const std::string& aFilePath)
 {
@@ -109,6 +123,37 @@ void Easy3D::EffectContainer::Reload3DEffect(const std::string& aFilePath)
 	{
 		shaderVar->SetResource(tex->GetShaderView());
 	}
+}
+
+
+void Easy3D::EffectContainer::LoadParticleEffect(const std::string& aFilePath)
+{
+	ParticleEffect* newEffect = new ParticleEffect();
+
+	if (newEffect->Init(aFilePath) == false)
+	{
+		std::stringstream ss;
+		ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
+		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load3DEffect", MB_ICONWARNING);
+		return;
+	}
+
+
+	DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
+
+	myParticleEffects[aFilePath] = newEffect;
+
+	WATCH_FILE(aFilePath, Easy3D::EffectContainer::ReloadParticleEffect);
+}
+
+void Easy3D::EffectContainer::ReloadParticleEffect(const std::string& aFilePath)
+{
+	if (myParticleEffects.find(aFilePath) == myParticleEffects.end())
+	{
+		return;
+	}
+
+	myParticleEffects[aFilePath]->Init(aFilePath);
 }
 
 void Easy3D::EffectContainer::SetCubeMap(const std::string& aFilePath)

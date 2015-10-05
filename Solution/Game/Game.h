@@ -14,6 +14,9 @@ namespace Easy3D
 	class DebugMenu;
 	class Sprite;
 	class Instance;
+
+	class ParticleEmitterData;
+	class ParticleEmitterInstance;
 }
 
 class BulletManager;
@@ -36,30 +39,17 @@ public:
 
 
 private:
-	struct InstanceStruct
-	{
-		Easy3D::Instance* myInstance;
-		CU::Vector3<float> myRotationSpeed;
-		CU::Vector3<float> myPosition;
-	};
 	void operator=(Game& aApp) = delete;
 	void UpdateSubSystems();
 	void Render();
-	void CreateCube();
 
 	CU::InputWrapper* myInputWrapper;
 
 	Easy3D::Camera* myCamera;
-	Easy3D::Sprite* mySprite;
-	CU::GrowingArray<InstanceStruct> myInstances;
 	Easy3D::DebugMenu* myDebugMenu;
-
-	CU::Vector4<float> mySpriteColor;
-	CU::Vector2<float> mySpritePos;
-	CU::Vector2<float> mySpriteScale;
-
-	CU::Vector3<float> myCubeRotation;
-	CU::Vector3<float> myCubePosition;
+	Easy3D::ParticleEmitterData* myEmitterData;
+	Easy3D::ParticleEmitterInstance* myEmitterInstance;
+	Easy3D::Instance* myArm;
 
 	float myDeltaTime;
 
@@ -67,4 +57,7 @@ private:
 	int myMemoryUsage;
 	float myCPUUsage;
 	bool myTestBool;
+	CU::Vector3<float> myEmitterPosition;
+
+
 };

@@ -69,7 +69,7 @@ namespace Easy3D
 		}
 		
 
-		Engine::GetInstance()->EnableZBuffer();
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 	}
 
 	void BaseModel::InitInputLayout(D3D11_INPUT_ELEMENT_DESC* aVertexDescArray, int aArraySize)

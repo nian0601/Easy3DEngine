@@ -91,6 +91,15 @@
       <Filter>DebugServices</Filter>
     </ClCompile>
     <ClCompile Include="DebugMenu.cpp" />
+    <ClCompile Include="ParticleEmitterData.cpp">
+      <Filter>Rendering\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEmitterInstance.cpp">
+      <Filter>Rendering\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleEffect.cpp">
+      <Filter>Rendering\Effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -214,6 +223,22 @@
       <Filter>DebugServices</Filter>
     </ClInclude>
     <ClInclude Include="DebugMenu.h" />
+    <ClInclude Include="ParticleData.h">
+      <Filter>Rendering\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleInstance.h">
+      <Filter>Rendering\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitterData.h">
+      <Filter>Rendering\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEmitterInstance.h">
+      <Filter>Rendering\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleEffect.h">
+      <Filter>Rendering\Effects</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompile">
@@ -245,6 +270,9 @@
     </Filter>
     <Filter Include="Rendering\Fonts">
       <UniqueIdentifier>{baf2e884-b972-4bc8-9638-b545b2737981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Particles">
+      <UniqueIdentifier>{7bb8a63b-f87a-4561-b6d1-cf29a0161329}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

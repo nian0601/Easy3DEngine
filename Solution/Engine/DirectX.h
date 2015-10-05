@@ -1,4 +1,6 @@
 #pragma once
+
+#include "Enums.h"
 #include "SetupInfo.h"
 
 struct ID3D11DepthStencilState;
@@ -15,6 +17,8 @@ struct SetupInfo;
 
 namespace Easy3D
 {
+	
+
 	class DirectX
 	{
 	public:
@@ -29,11 +33,13 @@ namespace Easy3D
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContex();
 
-		void EnableZBuffer();
-		void DisableZBuffer();
+		void SetDepthBufferState(eDepthStencilType aState);
 
 		void EnableWireframe();
 		void DisableWireframe();
+
+		void EnableAlphaBlending();
+		void DisableAlpaBlending();
 
 	private:
 		void operator=(const DirectX&) = delete;
@@ -43,10 +49,10 @@ namespace Easy3D
 		bool D3DRenderTargetSetup();
 		bool D3DViewPortSetup(int aWidth, int aHeight);
 		bool D3DStencilBufferSetup(int aWidth, int aHeight);
-		bool D3DEnabledStencilStateSetup();
-		bool D3DDisabledStencilStateSetup();
+		bool D3DDepthStencilStatesSetup();
 		bool D3DWireframeRasterizerStateSetup();
 		bool D3DSolidRasterizerStateSetup();
+		bool D3DSetupBlendStates();
 
 
 
@@ -55,11 +61,12 @@ namespace Easy3D
 		IDXGISwapChain* mySwapChain;
 		ID3D11RenderTargetView* myRenderTargetView;
 		ID3D11DepthStencilView* myDepthBufferView;
-		ID3D11DepthStencilState* myEnabledDepthStencilState;
-		ID3D11DepthStencilState* myDisabledDepthStencilState;
+		ID3D11DepthStencilState* myDepthStencilStates[3];
 		ID3D11Texture2D* myDepthBuffer;
 		ID3D11RasterizerState* mySolidRasterizer;
 		ID3D11RasterizerState* myWireframeRasterizer;
+		ID3D11BlendState* myAlphaBlendState;
+		ID3D11BlendState* myNoAlphaBlendState;
 
 		HWND& myHWND;
 		SetupInfo mySetupInfo;

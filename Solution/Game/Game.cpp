@@ -15,6 +15,9 @@
 #include <Sprite.h>
 #include <SystemMonitor.h>
 
+#include <ParticleEmitterData.h>
+#include <ParticleEmitterInstance.h>
+
 Game::Game()
 	: myInputWrapper(new CU::InputWrapper())
 	, myDebugMenu(new Easy3D::DebugMenu())
@@ -32,36 +35,22 @@ bool Game::Init(HWND& aHwnd)
 		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 
 	myCamera = new Easy3D::Camera();
+	myCamera->SetPosition({ 0.f, 0.f, -10.f });
 
-	mySpriteColor = { 1.f, 1.f, 1.f, 1.f };
-	mySpritePos = { 0.f, 0.f };
-	mySpriteScale = { 1.f, 1.f };
-	mySprite = new Easy3D::Sprite("Data/resources/texture/seafloor.dds", { 100.f, 100.f }, { 50.f, 50.f });
-
-	myInstances.Init(16);
-	//InstanceStruct newInst;
-	//newInst.myInstance = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadCube());
-	//myInstances.Add(newInst);
-
+	myArm = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadCube(10.f, 10.f, 1.f));
+	myArm->SetPosition({ 0.f, 0.f, 2.f });
 	myDebugMenu->StartGroup("SystemInfo");
 	myDebugMenu->AddVariable("FPS", myFPS);
 	myDebugMenu->AddVariable("Memory (MB)", myMemoryUsage);
 	myDebugMenu->AddVariable("CPU", myCPUUsage);
 	myDebugMenu->EndGroup();
+	myDebugMenu->AddVariable("Emitter Position", myEmitterPosition);
 
-	myDebugMenu->StartGroup("Sprite");
-	myDebugMenu->AddVariable("Position", mySpritePos);
-	myDebugMenu->AddVariable("Color", mySpriteColor, true);
-	myDebugMenu->AddVariable("Scale", mySpriteScale);
-	myDebugMenu->EndGroup();
 
-	myDebugMenu->AddVariable("Create Cube", std::bind(&Game::CreateCube, this));
-	//myDebugMenu->StartGroup("Cube");
-	//myDebugMenu->AddVariable("Position", myCubePosition);
-	//myDebugMenu->AddVariable("Rotation", myCubeRotation);
-	//myDebugMenu->EndGroup();
+	myEmitterData = new Easy3D::ParticleEmitterData();
+	myEmitterData->Init("Data/script/particle.xml");
 
-	CreateCube();
+	myEmitterInstance = new Easy3D::ParticleEmitterInstance(*myEmitterData);
 
 	GAME_LOG("Init Successful");
 	return true;
@@ -83,18 +72,48 @@ bool Game::Update()
 		return false;
 	}
 
-	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*myInputWrapper);
-	
-
-	for (int i = 0; i < myInstances.Size(); ++i)
+	if (myInputWrapper->KeyIsPressed(DIK_W))
 	{
-		Easy3D::Instance* inst = myInstances[i].myInstance;
-		inst->SetPosition(myInstances[i].myPosition);
-		inst->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundX(myInstances[i].myRotationSpeed.x * myDeltaTime));
-		inst->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundY(myInstances[i].myRotationSpeed.y * myDeltaTime));
-		inst->PerformRotationLocal(CU::Matrix44<float>::CreateRotateAroundZ(myInstances[i].myRotationSpeed.z * myDeltaTime));
+		myCamera->MoveForward(100.f * myDeltaTime);
+	}
+	if (myInputWrapper->KeyIsPressed(DIK_S))
+	{
+		myCamera->MoveForward(-100.f * myDeltaTime);
+	}
+	if (myInputWrapper->KeyIsPressed(DIK_A))
+	{
+		myCamera->MoveRight(-100.f * myDeltaTime);
+	}
+	if (myInputWrapper->KeyIsPressed(DIK_D))
+	{
+		myCamera->MoveRight(100.f * myDeltaTime);
+	}
+
+
+	if (myInputWrapper->KeyIsPressed(DIK_UP))
+	{
+		myCamera->RotateX((3.14f * 10) * myDeltaTime);
+	}
+	if (myInputWrapper->KeyIsPressed(DIK_DOWN))
+	{
+		myCamera->RotateX((-3.14f * 10) * myDeltaTime);
+	}
+	if (myInputWrapper->KeyIsPressed(DIK_LEFT))
+	{
+		myCamera->RotateY(-(3.14f * 10) * myDeltaTime);
+	}
+	if (myInputWrapper->KeyIsPressed(DIK_RIGHT))
+	{
+		myCamera->RotateY((3.14f * 10) * myDeltaTime);
 	}
 	
+
+
+
+	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*myInputWrapper);
+	
+	myEmitterInstance->SetPosition(myEmitterPosition);
+	myEmitterInstance->Update(myDeltaTime);
 
 	Render();
 
@@ -119,31 +138,14 @@ void Game::UpdateSubSystems()
 
 void Game::Render()
 {
-	//Easy3D::Engine::GetInstance()->GetDebugDisplay()->Render();
-	mySprite->Render(mySpritePos, mySpriteScale, mySpriteColor);
-	
-	for (int i = 0; i < myInstances.Size(); ++i)
-	{
-		myInstances[i].myInstance->Render(*myCamera);
-	}
+	myArm->Render(*myCamera);
 
+	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::PARTICLES);
+	Easy3D::Engine::GetInstance()->EnableAlphaBlending();
+	myEmitterInstance->Render(*myCamera);
+	Easy3D::Engine::GetInstance()->DisableAlphaBlending();
+	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::Z_ENABLED);
 	myDebugMenu->Render(*myInputWrapper);
-}
-
-
-void Game::CreateCube()
-{
-	InstanceStruct newInst;
-	newInst.myInstance = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadCube());
-	newInst.myPosition = { 0.f, 0.f, 0.f };
-	newInst.myRotationSpeed = { 0.f, 0.f, 0.f };
-	myInstances.Add(newInst);
-
-	std::string name = "Cube" + std::to_string(myInstances.Size());
-	myDebugMenu->StartGroup(name);
-	myDebugMenu->AddVariable("Position", myInstances.GetLast().myPosition);
-	myDebugMenu->AddVariable("Rotation", myInstances.GetLast().myRotationSpeed);
-	myDebugMenu->EndGroup();
 }
 
 void Game::Pause()
