@@ -1,57 +1,107 @@
 #include "stdafx.h"
 
 #include <Camera.h>
+#include "CollisionManager.h"
 #include <DebugDataDisplay.h>
 #include <DebugMenu.h>
 #include <Engine.h>
 #include <FileWatcher.h>
 #include "Game.h"
+#include "GraphicsComponent.h"
 #include <InputWrapper.h>
 #include <Instance.h>
 #include <Model.h>
 #include <ModelLoader.h>
 #include "ModelProxy.h"
 #include <TimerManager.h>
+#include <Scene.h>
 #include <Sprite.h>
 #include <SystemMonitor.h>
 
 #include <ParticleEmitterData.h>
 #include <ParticleEmitterInstance.h>
 
+#include "Entity.h"
+#include <XMLReader.h>
+
 Game::Game()
-	: myInputWrapper(new CU::InputWrapper())
-	, myDebugMenu(new Easy3D::DebugMenu())
+	: myDebugMenu(new Easy3D::DebugMenu())
 {
 }
 
 Game::~Game()
 {
-	delete myInputWrapper;
 }
 
 bool Game::Init(HWND& aHwnd)
 {
-	myInputWrapper->Init(aHwnd, GetModuleHandle(NULL)
+	CU::InputWrapper::Create(aHwnd, GetModuleHandle(NULL)
 		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 
 	myCamera = new Easy3D::Camera();
-	myCamera->SetPosition({ 0.f, 0.f, -10.f });
+	myCamera->SetPosition({ 0.f, 0.f, 0.f });
 
-	myArm = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadCube(10.f, 10.f, 1.f));
-	myArm->SetPosition({ 0.f, 0.f, 2.f });
 	myDebugMenu->StartGroup("SystemInfo");
 	myDebugMenu->AddVariable("FPS", myFPS);
 	myDebugMenu->AddVariable("Memory (MB)", myMemoryUsage);
 	myDebugMenu->AddVariable("CPU", myCPUUsage);
 	myDebugMenu->EndGroup();
-	myDebugMenu->AddVariable("Emitter Position", myEmitterPosition);
 
 
-	myEmitterData = new Easy3D::ParticleEmitterData();
-	myEmitterData->Init("Data/script/particle.xml");
+	myEntities.Init(4);
+	XMLReader reader;
+	reader.OpenDocument("Data/script/entities.xml");
+	XMLELEMENT entityElem = reader.FindFirstChild("entity");
+	while (entityElem != nullptr)
+	{
+		std::string file;
+		reader.ForceReadAttribute(entityElem, "file", file);
 
-	myEmitterInstance = new Easy3D::ParticleEmitterInstance(*myEmitterData);
+		XMLELEMENT pos = reader.ForceFindFirstChild(entityElem, "position");
+		CU::Vector3<float> position;
+		reader.ForceReadAttribute(pos, "x", position.x);
+		reader.ForceReadAttribute(pos, "y", position.y);
+		reader.ForceReadAttribute(pos, "z", position.z);
 
+		XMLELEMENT rot = reader.ForceFindFirstChild(entityElem, "rotation");
+		CU::Vector3<float> rotation;
+		reader.ForceReadAttribute(rot, "x", rotation.x);
+		reader.ForceReadAttribute(rot, "y", rotation.y);
+		reader.ForceReadAttribute(rot, "z", rotation.z);
+
+		Entity* newEntity = new Entity();
+		newEntity->LoadFromScript(file);
+
+		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundX(rotation.x));
+		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundY(rotation.y));
+		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundZ(rotation.z));
+		newEntity->SetPosition(position);
+
+		myEntities.Add(newEntity);
+		entityElem = reader.FindNextElement(entityElem, "entity");
+	}
+
+	myCollisionManager = new CollisionManager();
+	myScene = new Easy3D::Scene();
+	myScene->SetCamera(myCamera);
+	for (int i = 0; i < myEntities.Size(); ++i)
+	{
+		CollisionComponent* comp = reinterpret_cast<CollisionComponent*>(myEntities[i]->GetComponent(eComponent::COLLISION));
+		if (comp != nullptr)
+		{
+			myCollisionManager->Add(comp);
+		}
+
+		GraphicsComponent* gfx = reinterpret_cast<GraphicsComponent*>(myEntities[i]->GetComponent(eComponent::GRAPHIC));
+		if (gfx != nullptr)
+		{
+			if (gfx->GetInstance() != nullptr)
+			{
+				myScene->AddInstance(gfx->GetInstance());
+			}
+		}
+	}
+	
 	GAME_LOG("Init Successful");
 	return true;
 }
@@ -67,53 +117,30 @@ bool Game::Update()
 	
 	UpdateSubSystems();
 
-	if (myInputWrapper->KeyDown(DIK_ESCAPE))
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE))
 	{
 		return false;
 	}
 
-	if (myInputWrapper->KeyIsPressed(DIK_W))
-	{
-		myCamera->MoveForward(100.f * myDeltaTime);
-	}
-	if (myInputWrapper->KeyIsPressed(DIK_S))
-	{
-		myCamera->MoveForward(-100.f * myDeltaTime);
-	}
-	if (myInputWrapper->KeyIsPressed(DIK_A))
-	{
-		myCamera->MoveRight(-100.f * myDeltaTime);
-	}
-	if (myInputWrapper->KeyIsPressed(DIK_D))
-	{
-		myCamera->MoveRight(100.f * myDeltaTime);
-	}
+	myCollisionManager->CleanUp();
 
-
-	if (myInputWrapper->KeyIsPressed(DIK_UP))
-	{
-		myCamera->RotateX((3.14f * 10) * myDeltaTime);
-	}
-	if (myInputWrapper->KeyIsPressed(DIK_DOWN))
-	{
-		myCamera->RotateX((-3.14f * 10) * myDeltaTime);
-	}
-	if (myInputWrapper->KeyIsPressed(DIK_LEFT))
-	{
-		myCamera->RotateY(-(3.14f * 10) * myDeltaTime);
-	}
-	if (myInputWrapper->KeyIsPressed(DIK_RIGHT))
-	{
-		myCamera->RotateY((3.14f * 10) * myDeltaTime);
-	}
 	
 
+	for (int i = myEntities.Size() - 1; i >= 0; --i)
+	{
+		if (myEntities[i]->IsAlive() == false)
+		{
+			myEntities.DeleteCyclicAtIndex(i);
+			continue;
+		}
+
+		myEntities[i]->Update(myDeltaTime);
+	}
+
+	myCollisionManager->CheckCollisions();
 
 
-	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*myInputWrapper);
-	
-	myEmitterInstance->SetPosition(myEmitterPosition);
-	myEmitterInstance->Update(myDeltaTime);
+	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*CU::InputWrapper::GetInstance());
 
 	Render();
 
@@ -127,7 +154,7 @@ bool Game::Update()
 void Game::UpdateSubSystems()
 {
 	Easy3D::Engine::GetInstance()->GetFileWatcher()->CheckFiles();
-	myInputWrapper->Update();
+	CU::InputWrapper::GetInstance()->Update();
 	CU::TimerManager::GetInstance()->Update();
 	myDeltaTime = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();
 
@@ -138,14 +165,8 @@ void Game::UpdateSubSystems()
 
 void Game::Render()
 {
-	myArm->Render(*myCamera);
-
-	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::PARTICLES);
-	Easy3D::Engine::GetInstance()->EnableAlphaBlending();
-	myEmitterInstance->Render(*myCamera);
-	Easy3D::Engine::GetInstance()->DisableAlphaBlending();
-	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::Z_ENABLED);
-	myDebugMenu->Render(*myInputWrapper);
+	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
+	myScene->Render();
 }
 
 void Game::Pause()

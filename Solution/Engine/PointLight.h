@@ -8,8 +8,6 @@ namespace Easy3D
 	class PointLight
 	{
 	public:
-		void Init();
-		void Render(Camera* aCamera);
 		void Update();
 
 		const CU::Vector4<float>& GetColor() const;
@@ -33,8 +31,6 @@ namespace Easy3D
 		CU::Matrix44<float> myOrientation;
 
 		float myRange;
-
-		Instance* myInstance;
 	};
 }
 

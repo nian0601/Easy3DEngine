@@ -1,8 +1,34 @@
 #include "InputWrapper.h"
 
+CommonUtilities::InputWrapper* CommonUtilities::InputWrapper::myInstance = nullptr;
+bool CommonUtilities::InputWrapper::Create(HWND aHwnd, HINSTANCE aHInstance, DWORD aKeyCoopFlags, DWORD aMouseCoopFlags)
+{
+	myInstance = new InputWrapper();
+	myInstance->Init(aHwnd, aHInstance, aKeyCoopFlags, aMouseCoopFlags);
+
+	return true;
+}
+
+void CommonUtilities::InputWrapper::Destroy()
+{
+	delete myInstance;
+}
+CommonUtilities::InputWrapper* CommonUtilities::InputWrapper::GetInstance()
+{
+	return myInstance;
+}
+
+
+
 CommonUtilities::InputWrapper::InputWrapper()
 {
 
+}
+
+CommonUtilities::InputWrapper::~InputWrapper()
+{
+	myKeyboardDevice->Unacquire();
+	myMouseDevice->Unacquire();
 }
 
 void CommonUtilities::InputWrapper::Init(HWND aHwnd, HINSTANCE aHInstance, DWORD aKeyCoopFlags, DWORD aMouseCoopFlags)
@@ -31,11 +57,6 @@ void CommonUtilities::InputWrapper::Init(HWND aHwnd, HINSTANCE aHInstance, DWORD
 
 
 
-CommonUtilities::InputWrapper::~InputWrapper()
-{
-	myKeyboardDevice->Unacquire();
-	myMouseDevice->Unacquire();
-}
 
 void CommonUtilities::InputWrapper::Update()
 {

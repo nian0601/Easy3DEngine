@@ -66,19 +66,6 @@ void Easy3D::Scene::Render()
 
 }
 
-void Easy3D::Scene::Render(CU::GrowingArray<Instance*>& someBulletInstances)
-{
-	Render();
-
-	for (int i = 0; i < someBulletInstances.Size(); ++i)
-	{
-		someBulletInstances[i]->UpdateDirectionalLights(myDirectionalLightData);
-		someBulletInstances[i]->UpdatePointLights(myPointLightData);
-		someBulletInstances[i]->UpdateSpotLights(mySpotLightData);
-		someBulletInstances[i]->Render(*myCamera);
-	}
-}
-
 void Easy3D::Scene::AddInstance(Instance* aInstance)
 {
 	myInstances.Add(aInstance);

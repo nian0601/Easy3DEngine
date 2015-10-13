@@ -8,9 +8,9 @@
 #include "ModelProxy.h"
 
 
-Easy3D::Instance::Instance(ModelProxy& aModel)
+Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation)
 	: myProxy(aModel)
-	, myOrientationPointer(nullptr)
+	, myOrientation(aOrientation)
 	, myScale({1,1,1})
 {
 
@@ -29,14 +29,7 @@ void Easy3D::Instance::Render(Camera& aCamera)
 		myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
 		myProxy.GetEffect()->SetScaleVector(myScale);
 
-		if (myOrientationPointer != nullptr)
-		{
-			myProxy.Render(*myOrientationPointer);
-		}
-		else
-		{
-			myProxy.Render(myOrientation);
-		}
+		myProxy.Render(myOrientation);
 	}
 }
 
@@ -48,36 +41,8 @@ void Easy3D::Instance::Render(const CU::Matrix44<float>& aParentMatrix, Camera& 
 		myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
 		myProxy.GetEffect()->SetScaleVector(myScale);
 
-		if (myOrientationPointer != nullptr)
-		{
-			myProxy.Render(*myOrientationPointer * aParentMatrix);
-		}
-		else
-		{
-			myProxy.Render(myOrientation * aParentMatrix);
-		}
+		myProxy.Render(myOrientation * aParentMatrix);
 	}
-}
-
-void Easy3D::Instance::SetPosition(const CU::Vector3<float>& aPosition)
-{
-	myPosition = aPosition;
-	myOrientation.SetPos(aPosition);
-}
-
-CU::Vector3<float>& Easy3D::Instance::GetPosition()
-{
-	return myPosition;
-}
-
-CU::Matrix44<float>& Easy3D::Instance::GetOrientation()
-{
-	return myOrientation;
-}
-
-void Easy3D::Instance::SetOrientation(const CU::Matrix44<float>& aOrientation)
-{
-	myOrientation = aOrientation;
 }
 
 void Easy3D::Instance::SetEffect(const std::string& aEffectFile)
@@ -92,24 +57,6 @@ void Easy3D::Instance::SetScale(const CU::Vector3<float>& aScaleVector)
 {
 	myScale = aScaleVector;
 	
-}
-
-void Easy3D::Instance::PerformRotationLocal(const CU::Matrix44<float>& aRotation)
-{
-	CU::Vector3<float> oldPos = myOrientation.GetPos();
-	myOrientation.SetPos({ 0.f, 0.f, 0.f, 1.f });
-	myOrientation = myOrientation * aRotation;
-	myOrientation.SetPos(oldPos);
-}
-
-void Easy3D::Instance::PerformRotationWorld(const CU::Matrix44<float>& aRotation)
-{
-	myOrientation = myOrientation * aRotation;
-}
-
-void Easy3D::Instance::PerformTransformation(const CU::Matrix44<float>& aTransformation)
-{
-	myOrientation = myOrientation * aTransformation;
 }
 
 void Easy3D::Instance::UpdateDirectionalLights(
@@ -137,9 +84,4 @@ void Easy3D::Instance::UpdateSpotLights(
 	{
 		myProxy.GetEffect()->UpdateSpotLights(someSpotLightData);
 	}
-}
-
-void Easy3D::Instance::SetOrientationPointer(CU::Matrix44<float>& aOrientation)
-{
-	myOrientationPointer = &aOrientation;
 }

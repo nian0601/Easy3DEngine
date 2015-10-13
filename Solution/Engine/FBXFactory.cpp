@@ -34,6 +34,7 @@ void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect3D*
 	memcpy(indexData, someData->myIndicies, someData->myIndexCount*sizeof(unsigned int));
 	indexWrapper->myIndexData = (char*)indexData;
 	indexWrapper->mySize = someData->myIndexCount*sizeof(unsigned int);
+	indexWrapper->myNumberOfIndices = someData->myIndexCount;
 	outData->myIndexBaseData = indexWrapper;
 
 	VertexDataWrapper* vertexData = new VertexDataWrapper();
@@ -47,6 +48,7 @@ void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect3D*
 	vertexData->myStride = someData->myVertexStride*sizeof(float);
 
 	outData->myVertexBaseData = vertexData;
+	outData->myVertexFormat.Init(5);
 
 	for (int i = 0; i < someData->myLayout.Size(); ++i)
 	{

@@ -8,8 +8,6 @@ namespace Easy3D
 	class SpotLight
 	{
 	public:
-		void Init();
-		void Render(Camera* aCamera);
 		void Update();
 
 		const CU::Vector4<float>& GetColor() const;
@@ -42,8 +40,6 @@ namespace Easy3D
 
 		float myRange;
 		float myCone;
-
-		Instance* myInstance;
 	};
 
 	inline void SpotLight::Update()

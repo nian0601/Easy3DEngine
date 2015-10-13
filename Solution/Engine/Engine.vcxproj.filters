@@ -32,13 +32,7 @@
     <ClCompile Include="FontContainer.cpp">
       <Filter>Rendering\Fonts</Filter>
     </ClCompile>
-    <ClCompile Include="PointLight.cpp">
-      <Filter>Lights</Filter>
-    </ClCompile>
     <ClCompile Include="FileWatcher.cpp" />
-    <ClCompile Include="SpotLight.cpp">
-      <Filter>Lights</Filter>
-    </ClCompile>
     <ClCompile Include="FrameTimeDebugger.cpp">
       <Filter>DebugServices</Filter>
     </ClCompile>

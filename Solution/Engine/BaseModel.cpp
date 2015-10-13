@@ -21,6 +21,9 @@ namespace Easy3D
 		myEffect = nullptr;
 
 		mySurfaces.Init(1);
+
+		myVertexBuffer = nullptr;
+		myIndexBuffer = nullptr;
 	}
 
 	BaseModel::~BaseModel()

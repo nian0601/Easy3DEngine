@@ -13,6 +13,11 @@ namespace Easy3D
 
 	Model::Model()
 		: BaseModel()
+		, myChilds(2)
+		, myChildTransforms(2)
+		, myIsNULLObject(true)
+		, myVertexBaseData(nullptr)
+		, myIndexBaseData(nullptr)
 	{
 
 	}
@@ -35,8 +40,8 @@ namespace Easy3D
 			}
 
 			InitInputLayout(vertexDesc, size);
-			delete vertexDesc;
-			myVertexFormat.DeleteAll();
+			//delete vertexDesc;
+			//myVertexFormat.DeleteAll();
 
 			InitVertexBuffer(myVertexBaseData->myStride, D3D11_USAGE_IMMUTABLE, 0);
 			InitIndexBuffer();

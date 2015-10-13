@@ -11,8 +11,10 @@ namespace CommonUtilities
 	class InputWrapper
 	{
 	public:
-		InputWrapper();
-		~InputWrapper();
+		static bool Create(HWND aHwnd, HINSTANCE aHInstance, DWORD aKeyCoopFlags, DWORD aMouseCoopFlags);
+		static void Destroy();
+		static InputWrapper* GetInstance();
+		
 
 		void Init(HWND aHwnd, HINSTANCE aHInstance, DWORD aKeyCoopFlags, DWORD aMouseCoopFlags);
 
@@ -35,6 +37,9 @@ namespace CommonUtilities
 		void ResumeDeltaRecording();
 
 	private:
+		InputWrapper();
+		~InputWrapper();
+
 		void CapturePreviousState();
 
 		LPDIRECTINPUT8 myDirectInput;
@@ -51,5 +56,7 @@ namespace CommonUtilities
 		HWND myWindowHandler;
 
 		bool myIsRecordingDeltas;
+
+		static InputWrapper* myInstance;
 	};
 }

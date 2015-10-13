@@ -7,6 +7,7 @@
 #include <TimerManager.h>
 //#include <vld.h>
 
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 void ReadSetup(Easy3D::SetupInfo& aSetup, const std::string& aFilePath);
 void OnResize();
@@ -18,6 +19,7 @@ bool globalIsResizing = false;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 {
+
 	DL_Debug::Debug::Create();
 	CU::TimerManager::Create();
 
