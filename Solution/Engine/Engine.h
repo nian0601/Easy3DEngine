@@ -10,6 +10,8 @@
 
 struct ID3D11Device;
 struct ID3D11DeviceContext;
+struct ID3D11DepthStencilView;
+struct ID3D11RenderTargetView;
 
 namespace Easy3D
 {
@@ -42,6 +44,9 @@ namespace Easy3D
 
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContex();
+		ID3D11DepthStencilView* GetDepthStencilView();
+		ID3D11RenderTargetView* GetBackbuffer();
+
 		TextureContainer* GetTextureContainer();
 		EffectContainer* GetEffectContainer();
 		FontContainer* GetFontContainer();
@@ -64,6 +69,7 @@ namespace Easy3D
 		void EnableAlphaBlending();
 		void DisableAlphaBlending();
 
+		void RestoreViewPort();
 
 		void SetClearColor(const CU::Vector4<float>& aClearColor);
 

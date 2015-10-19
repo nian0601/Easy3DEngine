@@ -16,11 +16,11 @@ namespace Easy3D
 		BaseEffect();
 		virtual ~BaseEffect();
 
-		virtual bool Init(const std::string& aEffectFile) = 0;
+		virtual bool Init(const std::string& aEffectFile);
 
 		void SetBlendState(ID3D11BlendState* aBlendState, float aBlendFactor[4], const unsigned int aSampleMask = 0xFFFFFFFF);
 		void AddListener(EffectListener* aListener);
-		virtual bool ReloadShader(const std::string& aFile) = 0;
+		virtual bool ReloadShader(const std::string& aFile);
 
 		ID3DX11Effect* GetEffect();
 		ID3DX11EffectTechnique* GetTechnique();

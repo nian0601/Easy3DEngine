@@ -7,6 +7,7 @@ namespace Easy3D
 	class Camera;
 	class DebugMenu;
 	class Scene;
+	class Renderer;
 }
 
 namespace luabridge
@@ -42,6 +43,7 @@ private:
 	Easy3D::Camera* myCamera;
 	Easy3D::DebugMenu* myDebugMenu;
 	Easy3D::Scene* myScene;
+	Easy3D::Renderer* myRenderer;
 
 	float myDeltaTime;
 

@@ -94,6 +94,12 @@
     <ClCompile Include="ParticleEffect.cpp">
       <Filter>Rendering\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Rendering\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="FullScreenHelper.cpp">
+      <Filter>Rendering\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -233,6 +239,13 @@
       <Filter>Rendering\Effects</Filter>
     </ClInclude>
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="Renderer.h">
+      <Filter>Rendering\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Structs.h" />
+    <ClInclude Include="FullScreenHelper.h">
+      <Filter>Rendering\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompile">
@@ -267,6 +280,9 @@
     </Filter>
     <Filter Include="Rendering\Particles">
       <UniqueIdentifier>{7bb8a63b-f87a-4561-b6d1-cf29a0161329}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Renderer">
+      <UniqueIdentifier>{5e0835bf-55cb-44b5-9977-2565d2b201e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

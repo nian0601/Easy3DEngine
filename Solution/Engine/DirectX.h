@@ -12,6 +12,7 @@ struct ID3D11RasterizerState;
 struct ID3D11RenderTargetView;
 struct ID3D11Texture2D;
 struct IDXGISwapChain;
+struct D3D11_VIEWPORT;
 struct SetupInfo;
 
 
@@ -32,6 +33,8 @@ namespace Easy3D
 
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContex();
+		ID3D11DepthStencilView* GetDepthStencilView();
+		ID3D11RenderTargetView* GetBackbuffer();
 
 		void SetDepthBufferState(eDepthStencilType aState);
 
@@ -40,6 +43,8 @@ namespace Easy3D
 
 		void EnableAlphaBlending();
 		void DisableAlpaBlending();
+
+		void RestoreViewPort();
 
 	private:
 		void operator=(const DirectX&) = delete;
@@ -67,20 +72,10 @@ namespace Easy3D
 		ID3D11RasterizerState* myWireframeRasterizer;
 		ID3D11BlendState* myAlphaBlendState;
 		ID3D11BlendState* myNoAlphaBlendState;
+		D3D11_VIEWPORT* myViewPort;
+
 
 		HWND& myHWND;
 		SetupInfo mySetupInfo;
 	};
-}
-
-inline ID3D11Device* Easy3D::DirectX::GetDevice()
-{
-	DL_ASSERT_EXP(myDevice != nullptr, "DirectX: myDevice is nullptr, HOW?!");
-	return myDevice;
-}
-
-inline ID3D11DeviceContext* Easy3D::DirectX::GetContex()
-{
-	DL_ASSERT_EXP(myContext != nullptr, "DirectX: myContex is nullptr, HOW?!");
-	return myContext;
 }

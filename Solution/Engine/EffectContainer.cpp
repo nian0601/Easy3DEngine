@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "BaseEffect.h"
 #include <d3dx11effect.h>
 #include "Engine.h"
 #include "Effect2D.h"
@@ -9,6 +10,18 @@
 #include "Texture.h"
 #include "TextureContainer.h"
 #include "ParticleEffect.h"
+
+Easy3D::BaseEffect* Easy3D::EffectContainer::GetBaseEffect(const std::string& aFilePath)
+{
+	auto it = myBaseEffects.find(aFilePath);
+
+	if (it == myBaseEffects.end())
+	{
+		LoadBaseEffect(aFilePath);
+	}
+
+	return myBaseEffects[aFilePath];
+}
 
 Easy3D::Effect2D* Easy3D::EffectContainer::Get2DEffect(const std::string& aFilePath)
 {
@@ -46,6 +59,36 @@ Easy3D::ParticleEffect* Easy3D::EffectContainer::GetParticleEffect(const std::st
 	return myParticleEffects[aFilePath];
 }
 
+
+void Easy3D::EffectContainer::LoadBaseEffect(const std::string& aFilePath)
+{
+	BaseEffect* newEffect = new BaseEffect();
+
+	if (newEffect->Init(aFilePath) == false)
+	{
+		std::stringstream ss;
+		ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
+		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::LoadBaseEffect", MB_ICONWARNING);
+		return;
+	}
+
+
+	DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
+
+	myBaseEffects[aFilePath] = newEffect;
+
+	WATCH_FILE(aFilePath, Easy3D::EffectContainer::ReloadBaseEffect);
+}
+
+void Easy3D::EffectContainer::ReloadBaseEffect(const std::string& aFilePath)
+{
+	if (myBaseEffects.find(aFilePath) == myBaseEffects.end())
+	{
+		return;
+	}
+
+	myBaseEffects[aFilePath]->Init(aFilePath);
+}
 
 void Easy3D::EffectContainer::Load2DEffect(const std::string& aFilePath)
 {

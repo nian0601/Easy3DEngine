@@ -108,6 +108,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugDataDisplay.cpp" />
     <ClCompile Include="DebugMenu.cpp" />
+    <ClCompile Include="FullScreenHelper.cpp" />
     <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="ParticleEmitterInstance.cpp" />
     <ClCompile Include="ParticleEmitterData.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelProxy.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -152,6 +154,7 @@
     <ClInclude Include="DebugDataDisplay.h" />
     <ClInclude Include="DebugMenu.h" />
     <ClInclude Include="Enums.h" />
+    <ClInclude Include="FullScreenHelper.h" />
     <ClInclude Include="ParticleEffect.h" />
     <ClInclude Include="ParticleEmitterInstance.h" />
     <ClInclude Include="ParticleInstance.h" />
@@ -182,11 +185,13 @@
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="ModelProxy.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SetupInfo.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Structs.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="SystemMonitor.h" />
     <ClInclude Include="Text.h" />

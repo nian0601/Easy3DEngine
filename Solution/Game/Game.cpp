@@ -4,25 +4,19 @@
 #include "CollisionManager.h"
 #include <DebugDataDisplay.h>
 #include <DebugMenu.h>
+#include <DirectionalLight.h>
+#include "Entity.h"
 #include <Engine.h>
 #include <FileWatcher.h>
 #include "Game.h"
 #include "GraphicsComponent.h"
 #include <InputWrapper.h>
-#include <Instance.h>
-#include <Model.h>
-#include <ModelLoader.h>
-#include "ModelProxy.h"
-#include <TimerManager.h>
+#include <Renderer.h>
 #include <Scene.h>
-#include <Sprite.h>
 #include <SystemMonitor.h>
-
-#include <ParticleEmitterData.h>
-#include <ParticleEmitterInstance.h>
-
-#include "Entity.h"
+#include <TimerManager.h>
 #include <XMLReader.h>
+
 
 Game::Game()
 	: myDebugMenu(new Easy3D::DebugMenu())
@@ -39,7 +33,8 @@ bool Game::Init(HWND& aHwnd)
 		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 
 	myCamera = new Easy3D::Camera();
-	myCamera->SetPosition({ 0.f, 0.f, 0.f });
+	myCamera->SetPosition({ 0.f, 25.f, -10.f });
+	myCamera->RotateX(45);
 
 	myDebugMenu->StartGroup("SystemInfo");
 	myDebugMenu->AddVariable("FPS", myFPS);
@@ -47,6 +42,7 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("CPU", myCPUUsage);
 	myDebugMenu->EndGroup();
 
+	myRenderer = new Easy3D::Renderer();
 
 	myEntities.Init(4);
 	XMLReader reader;
@@ -101,6 +97,12 @@ bool Game::Init(HWND& aHwnd)
 			}
 		}
 	}
+
+
+	Easy3D::DirectionalLight* dirLight = new Easy3D::DirectionalLight();
+	dirLight->SetColor({ 1.f, 0.5f, 0.5f, 1.f });
+	dirLight->SetDir({ 0.f, -1.f, -1.f });
+	myScene->AddLight(dirLight);
 	
 	GAME_LOG("Init Successful");
 	return true;
@@ -166,7 +168,10 @@ void Game::UpdateSubSystems()
 void Game::Render()
 {
 	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
-	myScene->Render();
+
+	myRenderer->ProcessScene(myScene, Easy3D::ePostProcess::BLOOM);
+	myRenderer->FinalRender();
+	//myScene->Render();
 }
 
 void Game::Pause()

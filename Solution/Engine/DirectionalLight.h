@@ -60,6 +60,6 @@ inline void Easy3D::DirectionalLight::SetColor(const CU::Vector4<float>& aVector
 
 inline void Easy3D::DirectionalLight::SetDir(const CU::Vector3<float>& aVector)
 {
-	myOriginalDirection = aVector;
+	myOriginalDirection = CU::GetNormalized(aVector);
 	myDirection = aVector;
 }

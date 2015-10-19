@@ -34,7 +34,7 @@ void CollisionComponent::LoadFromScript(luabridge::LuaRef& aTableRef)
 
 		if (xRef.isNil() == true || yRef.isNil() == true || zRef.isNil() == true)
 		{
-			DL_ASSERT("Failed to Load CollisionComponent from script. Did not find \"x\y\z\" in offset in lua.");
+			DL_ASSERT("Failed to Load CollisionComponent from script. Did not find \"x\\y\\z\" in offset in lua.");
 		}
 
 		myPositionOffset.x = xRef.cast<float>();

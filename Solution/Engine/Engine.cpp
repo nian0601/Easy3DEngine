@@ -105,6 +105,16 @@ namespace Easy3D
 		return myDirectX->GetContex();
 	}
 
+	ID3D11DepthStencilView* Engine::GetDepthStencilView()
+	{
+		return myDirectX->GetDepthStencilView();
+	}
+
+	ID3D11RenderTargetView* Engine::GetBackbuffer()
+	{
+		return myDirectX->GetBackbuffer();
+	}
+
 	bool Engine::Init(HWND& aHwnd, WNDPROC aWndProc)
 	{
 		myWindowSize.x = mySetupInfo->myScreenWidth;
@@ -186,6 +196,11 @@ namespace Easy3D
 	void Engine::DisableAlphaBlending()
 	{
 		myDirectX->DisableAlpaBlending();
+	}
+
+	void Engine::RestoreViewPort()
+	{
+		myDirectX->RestoreViewPort();
 	}
 
 	bool Engine::WindowSetup(HWND& aHwnd, WNDPROC aWindowProc)

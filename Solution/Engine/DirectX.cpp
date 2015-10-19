@@ -8,6 +8,7 @@ Easy3D::DirectX::DirectX(HWND& aHwnd, SetupInfo& aSetupInfo)
 	: myHWND(aHwnd)
 	, mySetupInfo(aSetupInfo)
 {
+	myViewPort = new D3D11_VIEWPORT();
 	D3DSetup();
 }
 
@@ -56,6 +57,30 @@ void Easy3D::DirectX::CleanD3D()
 
 	myContext->Release();
 	myContext = nullptr;
+}
+
+ID3D11Device* Easy3D::DirectX::GetDevice()
+{
+	DL_ASSERT_EXP(myDevice != nullptr, "DirectX: myDevice is nullptr, HOW?!");
+	return myDevice;
+}
+
+ID3D11DeviceContext* Easy3D::DirectX::GetContex()
+{
+	DL_ASSERT_EXP(myContext != nullptr, "DirectX: myContex is nullptr, HOW?!");
+	return myContext;
+}
+
+ID3D11DepthStencilView*Easy3D::DirectX::GetDepthStencilView()
+{
+	DL_ASSERT_EXP(myDepthBufferView != nullptr, "DirectX: myDepthBufferView is nullptr, HOW?!");
+	return myDepthBufferView;
+}
+
+ID3D11RenderTargetView* Easy3D::DirectX::GetBackbuffer()
+{
+	DL_ASSERT_EXP(myRenderTargetView != nullptr, "DirectX: myRenderTargetView is nullptr, HOW?!");
+	return myRenderTargetView;
 }
 
 void Easy3D::DirectX::SetDepthBufferState(eDepthStencilType aState)
@@ -183,17 +208,16 @@ bool Easy3D::DirectX::D3DSwapChainSetup()
 
 bool Easy3D::DirectX::D3DViewPortSetup(int aWidth, int aHeight)
 {
-	D3D11_VIEWPORT viewPort;
-	ZeroMemory(&viewPort, sizeof(D3D11_VIEWPORT));
+	ZeroMemory(myViewPort, sizeof(D3D11_VIEWPORT));
 
-	viewPort.TopLeftX = 0;
-	viewPort.TopLeftY = 0;
-	viewPort.Width = static_cast<FLOAT>(aWidth);
-	viewPort.Height = static_cast<FLOAT>(aHeight);
-	viewPort.MinDepth = 0.f;
-	viewPort.MaxDepth = 1.f;
+	myViewPort->TopLeftX = 0;
+	myViewPort->TopLeftY = 0;
+	myViewPort->Width = static_cast<FLOAT>(aWidth);
+	myViewPort->Height = static_cast<FLOAT>(aHeight);
+	myViewPort->MinDepth = 0.f;
+	myViewPort->MaxDepth = 1.f;
 
-	myContext->RSSetViewports(1, &viewPort);
+	myContext->RSSetViewports(1, myViewPort);
 
 	return true;
 }
@@ -433,4 +457,9 @@ void Easy3D::DirectX::DisableAlpaBlending()
 	blendFactor[3] = 0.f;
 
 	myContext->OMSetBlendState(myNoAlphaBlendState, blendFactor, 0xFFFFFFFF);
+}
+
+void Easy3D::DirectX::RestoreViewPort()
+{
+	myContext->RSSetViewports(1, myViewPort);
 }

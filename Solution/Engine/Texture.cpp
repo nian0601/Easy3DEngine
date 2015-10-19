@@ -10,6 +10,33 @@ Easy3D::Texture::~Texture()
 	myTexture->Release();
 }
 
+
+void Easy3D::Texture::Init(float aWidth, float aHeight, unsigned int aBindFlag, unsigned int aFormat)
+{
+	D3D11_TEXTURE2D_DESC tempBufferInfo;
+	tempBufferInfo.Width = static_cast<unsigned int>(aWidth);
+	tempBufferInfo.Height = static_cast<unsigned int>(aHeight);
+	tempBufferInfo.MipLevels = 1;
+	tempBufferInfo.ArraySize = 1;
+	tempBufferInfo.Format = static_cast<DXGI_FORMAT>(aFormat);
+	tempBufferInfo.SampleDesc.Count = 1;
+	tempBufferInfo.SampleDesc.Quality = 0;
+	tempBufferInfo.Usage = D3D11_USAGE_DEFAULT;
+	tempBufferInfo.BindFlags = aBindFlag;
+	tempBufferInfo.CPUAccessFlags = 0;
+	tempBufferInfo.MiscFlags = 0;
+
+	ID3D11Texture2D* tempBuffer;
+	HRESULT hr = Engine::GetInstance()->GetDevice()->CreateTexture2D(&tempBufferInfo, NULL, &tempBuffer);
+
+	hr = Engine::GetInstance()->GetDevice()->CreateRenderTargetView(tempBuffer, NULL, &myRenderTargetView);
+	if (FAILED(hr))
+		assert(0);
+	hr = Engine::GetInstance()->GetDevice()->CreateShaderResourceView(tempBuffer, NULL, &myTexture);
+	if (FAILED(hr))
+		assert(0);
+}
+
 bool Easy3D::Texture::LoadTexture(const std::string& aFilePath)
 {
 	HRESULT hr = D3DX11CreateShaderResourceViewFromFile(Engine::GetInstance()->GetDevice(), aFilePath.c_str()
@@ -38,4 +65,9 @@ const std::string& Easy3D::Texture::GetFileName() const
 ID3D11ShaderResourceView* Easy3D::Texture::GetShaderView()
 {
 	return myTexture;
+}
+
+ID3D11RenderTargetView* Easy3D::Texture::GetRenderTargetView()
+{
+	return myRenderTargetView;
 }

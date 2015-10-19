@@ -8,75 +8,16 @@ namespace Easy3D
 {
 	bool Effect2D::Init(const std::string& aEffectFile)
 	{
+		BaseEffect::Init(aEffectFile);
+
 		myPosAndScale = CU::Vector4<float>(0.f, 0.f, 1.f, 1.f);
-
-		if (ReloadShader(aEffectFile) == false)
-		{
-			return false;
-		}
-
-		for (int i = 0; i < myEffectListeners.Size(); ++i)
-		{
-			myEffectListeners[i]->OnEffectLoad();
-		}
 
 		return true;
 	}
 
 	bool Effect2D::ReloadShader(const std::string& aFile)
 	{
-		Sleep(100);
-
-		myFileName = aFile;
-
-		HRESULT hr;
-		unsigned int shaderFlags = 0;
-
-#if defined (DEBUG) || defined(_DEBUG)
-		shaderFlags |= D3D10_SHADER_DEBUG;
-#endif
-
-		ID3D10Blob* compiledShader = nullptr;
-		ID3D10Blob* compilationMsgs = nullptr;
-
-		hr = D3DX11CompileFromFile(myFileName.c_str(), 0, 0, 0, "fx_5_0", shaderFlags, 0, 0, &compiledShader
-			, &compilationMsgs, 0);
-		if (hr != S_OK)
-		{
-			if (compilationMsgs != nullptr)
-			{
-				DL_MESSAGE_BOX((char*)compilationMsgs->GetBufferPointer(), "Effect Error", MB_ICONWARNING);
-				DL_ASSERT("Need to fix a dummy-shader 3D-Shader");
-				//myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect(
-				//	"Data/effect/SuperUglyDebugEffect.fx")->myEffect;
-			}
-		}
-		if (compilationMsgs != nullptr)
-		{
-			compilationMsgs->Release();
-		}
-
-		if (hr == S_OK)
-		{
-			hr = D3DX11CreateEffectFromMemory(compiledShader->GetBufferPointer(), compiledShader->GetBufferSize(), NULL
-				, Engine::GetInstance()->GetDevice(), &myEffect);
-
-			if (FAILED(hr))
-			{
-				DL_MESSAGE_BOX("Cant Create Effect", "Effect Error", MB_ICONWARNING);
-				return false;
-			}
-
-			compiledShader->Release();
-		}
-
-
-		myTechnique = myEffect->GetTechniqueByName("Render");
-		if (myTechnique->IsValid() == false)
-		{
-			DL_MESSAGE_BOX("Failed to get Technique", "Effect Error", MB_ICONWARNING);
-			return false;
-		}
+		BaseEffect::ReloadShader(aFile);
 
 
 		myProjectionMatrixVariable = myEffect->GetVariableByName("Projection")->AsMatrix();

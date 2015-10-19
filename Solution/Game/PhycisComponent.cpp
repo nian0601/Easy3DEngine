@@ -55,6 +55,7 @@ void PhycisComponent::Update(float aDelta)
 		myMoveSpeed = 0.f;
 	}
 
+
 	CU::Vector3<float> position = myEntity.GetPosition();
 	position += myDirection * myMoveSpeed * aDelta;
 	myEntity.SetPosition(position);
