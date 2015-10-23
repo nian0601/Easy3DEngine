@@ -70,8 +70,14 @@ namespace Easy3D
 		Engine::GetInstance()->RestoreViewPort();
 		ActivateBuffers();
 
-		HDRDownSample(aSceneData->myScene);
-		HDREffect(aSceneData->myScene, aSceneData->myFinished);
+		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myProcessedTexture->GetRenderTargetView(), myClearColor);
+		Combine(aSceneData->myScene, myProcessedTexture);
+
+		if (aEffect & ePostProcess::HDR)
+		{
+			HDRDownSample(aSceneData->myScene);
+			HDREffect(aSceneData->myScene, aSceneData->myFinished);
+		}
 
 		//if (aEffect & ePostProcess::MOTION_BLUR)
 		//{
@@ -91,6 +97,9 @@ namespace Easy3D
 
 	void FullScreenHelper::Combine(Texture* aSource, Texture* aTarget)
 	{
+		DL_ASSERT_EXP(aSource != aTarget, "[Combine]: Cant use Texture as both Source and Target");
+
+
 		myRenderToTextureData.mySource->SetResource(aSource->GetShaderView());
 
 		ID3D11RenderTargetView* target = aTarget->GetRenderTargetView();
@@ -102,6 +111,9 @@ namespace Easy3D
 
 	void FullScreenHelper::Combine(Texture* aSourceA, Texture* aSourceB, Texture* aTarget)
 	{
+		DL_ASSERT_EXP(aSourceA != aTarget, "[Combine]: Cant use Texture as both Source and Target");
+		DL_ASSERT_EXP(aSourceB != aTarget, "[Combine]: Cant use Texture as both Source and Target");
+
 		myCombineData.mySourceA->SetResource(aSourceA->GetShaderView());
 		myCombineData.mySourceB->SetResource(aSourceB->GetShaderView());
 
@@ -274,7 +286,7 @@ namespace Easy3D
 	void FullScreenHelper::Render(BaseEffect* aEffect, const std::string& aTechnique)
 	{
 		ID3DX11EffectTechnique* tech = aEffect->GetEffect()->GetTechniqueByName(aTechnique.c_str());
-		DL_ASSERT_EXP(tech->IsValid(), "[FullScreenHelper]: Tried to use invalid EffectTechnique");
+		DL_ASSERT_EXP(tech->IsValid() != 0, "[FullScreenHelper]: Tried to use invalid EffectTechnique");
 
 		D3DX11_TECHNIQUE_DESC techDesc;
 		tech->GetDesc(&techDesc);
@@ -347,6 +359,7 @@ namespace Easy3D
 		Render(myHDRData.myEffect);
 
 
+		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myProcessedTexture->GetRenderTargetView(), myClearColor);
 		target = myProcessedTexture->GetRenderTargetView();
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
 			, Engine::GetInstance()->GetDepthStencilView());
@@ -381,8 +394,6 @@ namespace Easy3D
 	void FullScreenHelper::DoBloom(Texture* aSource, Texture* aTarget)
 	{
 		Engine::GetInstance()->RestoreViewPort();
-		ID3DX11EffectTechnique* tech = nullptr;
-
 
 		ID3D11RenderTargetView* target = myBloomData.myMiddleMan->GetRenderTargetView();
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target

@@ -42,6 +42,26 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("CPU", myCPUUsage);
 	myDebugMenu->EndGroup();
 
+	myDebugMenu->StartGroup("Rendering");
+
+	myDebugMenu->StartGroup("Scene One");
+	myDebugMenu->AddVariable("Toggle Rendering", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_RENDER));
+	myDebugMenu->AddVariable("Toggle HDR", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_HDR));
+	myDebugMenu->AddVariable("Toggle Bloom", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_BLOOM));
+	myDebugMenu->AddVariable("Toggle Motion Blur", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_MOTION_BLUR));
+	myDebugMenu->AddVariable("Effect Value", mySceneEffect);
+	myDebugMenu->EndGroup();
+
+	myDebugMenu->StartGroup("Scene Two");
+	myDebugMenu->AddVariable("Toggle Rendering", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_RENDER));
+	myDebugMenu->AddVariable("Toggle HDR", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_HDR));
+	myDebugMenu->AddVariable("Toggle Bloom", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_BLOOM));
+	myDebugMenu->AddVariable("Toggle Motion Blur", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_MOTION_BLUR));
+	myDebugMenu->AddVariable("Effect Value", mySecondSceneEffect);
+	myDebugMenu->EndGroup();
+
+	myDebugMenu->EndGroup();
+
 	myRenderer = new Easy3D::Renderer();
 
 	myEntities.Init(4);
@@ -80,6 +100,16 @@ bool Game::Init(HWND& aHwnd)
 	myCollisionManager = new CollisionManager();
 	myScene = new Easy3D::Scene();
 	myScene->SetCamera(myCamera);
+	mySceneEffect = 0;
+
+	mySecondScene = new Easy3D::Scene();
+	mySecondScene->SetCamera(myCamera);
+	mySecondSceneEffect = 0;
+
+	mySettings.set(eGameSettings::SCENE_ONE_RENDER, true);
+	mySettings.set(eGameSettings::SCENE_TWO_RENDER, true);
+
+	bool addToFirstScene = true;
 	for (int i = 0; i < myEntities.Size(); ++i)
 	{
 		CollisionComponent* comp = reinterpret_cast<CollisionComponent*>(myEntities[i]->GetComponent(eComponent::COLLISION));
@@ -93,7 +123,16 @@ bool Game::Init(HWND& aHwnd)
 		{
 			if (gfx->GetInstance() != nullptr)
 			{
-				myScene->AddInstance(gfx->GetInstance());
+				if (addToFirstScene == true)
+				{
+					myScene->AddInstance(gfx->GetInstance());
+				}
+				else
+				{
+					mySecondScene->AddInstance(gfx->GetInstance());
+				}
+
+				addToFirstScene = !addToFirstScene;
 			}
 		}
 	}
@@ -167,11 +206,49 @@ void Game::UpdateSubSystems()
 
 void Game::Render()
 {
+	myRenderer->StartFontRendering();
 	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
+	myRenderer->EndFontRendering();
 
-	myRenderer->ProcessScene(myScene, Easy3D::ePostProcess::BLOOM);
+	if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
+	{
+		myRenderer->ProcessScene(myScene, mySceneEffect);
+	}
+
+	if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
+	{
+		myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
+	}
+
 	myRenderer->FinalRender();
-	//myScene->Render();
+}
+
+void Game::ToggleSetting(eGameSettings aSetting)
+{
+	switch (aSetting)
+	{
+	case SCENE_ONE_HDR:
+		mySceneEffect ^= Easy3D::ePostProcess::HDR;
+		break;
+	case SCENE_ONE_BLOOM:
+		mySceneEffect ^= Easy3D::ePostProcess::BLOOM;
+		break;
+	case SCENE_ONE_MOTION_BLUR:
+		mySceneEffect ^= Easy3D::ePostProcess::MOTION_BLUR;
+		break;
+	case SCENE_TWO_HDR:
+		mySecondSceneEffect ^= Easy3D::ePostProcess::HDR;
+		break;
+	case SCENE_TWO_BLOOM:
+		mySecondSceneEffect ^= Easy3D::ePostProcess::BLOOM;
+		break;
+	case SCENE_TWO_MOTION_BLUR:
+		mySecondSceneEffect ^= Easy3D::ePostProcess::MOTION_BLUR;
+		break;
+	default:
+		mySettings.flip(aSetting);
+		break;
+	}
 }
 
 void Game::Pause()

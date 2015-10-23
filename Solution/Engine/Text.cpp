@@ -65,8 +65,7 @@ namespace Easy3D
 
 		myEffect->SetBlendState(myBlendState, blendFactor);
 		static_cast<Effect2D*>(myEffect)->SetProjectionMatrix(Engine::GetInstance()->GetOrthogonalMatrix());
-		static_cast<Effect2D*>(myEffect)->UpdatePosAndScale(aPosition, aScale);
-		static_cast<Effect2D*>(myEffect)->SetPosAndScale();
+		static_cast<Effect2D*>(myEffect)->SetPosAndScale(aPosition, aScale);
 		static_cast<Effect2D*>(myEffect)->SetColor(aColor);
 
 		BaseModel::Render();

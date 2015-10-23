@@ -1,6 +1,10 @@
 #pragma once
+
+#include <bitset>
 #include <Matrix.h>
 #include <GrowingArray.h>
+
+struct D3D11_VIEWPORT;
 
 namespace Easy3D
 {
@@ -18,6 +22,18 @@ namespace luabridge
 class CollisionManager;
 class Entity;
 
+enum eGameSettings
+{
+	SCENE_ONE_RENDER,
+	SCENE_ONE_HDR,
+	SCENE_ONE_BLOOM,
+	SCENE_ONE_MOTION_BLUR,
+	SCENE_TWO_RENDER,
+	SCENE_TWO_HDR,
+	SCENE_TWO_BLOOM,
+	SCENE_TWO_MOTION_BLUR,
+	_COUNT
+};
 
 class Game
 {
@@ -40,10 +56,17 @@ private:
 	void UpdateSubSystems();
 	void Render();
 
+	void ToggleSetting(eGameSettings aSetting);
+
 	Easy3D::Camera* myCamera;
 	Easy3D::DebugMenu* myDebugMenu;
 	Easy3D::Scene* myScene;
+	int mySceneEffect;
+	Easy3D::Scene* mySecondScene;
+	int mySecondSceneEffect;
+
 	Easy3D::Renderer* myRenderer;
+	std::bitset<eGameSettings::_COUNT> mySettings;
 
 	float myDeltaTime;
 

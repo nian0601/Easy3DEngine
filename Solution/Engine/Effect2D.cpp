@@ -42,20 +42,17 @@ namespace Easy3D
 		return true;
 	}
 		
-
-	void Effect2D::UpdatePosAndScale(const CU::Vector2<float>& aPos, const CU::Vector2<float>& aScale)
+	void Effect2D::SetPosAndScale(const CU::Vector2<float>& aPos
+		, const CU::Vector2<float>& aScale)
 	{
+		DL_ASSERT_EXP(myPosAndScaleVariable != nullptr
+			, "Effect2D: Tried to SetPosAndScale but myPosAndScaleVariable is nullptr");
+
 		myPosAndScale.x = aPos.x;
 		myPosAndScale.y = aPos.y;
 
 		myPosAndScale.z = aScale.x;
 		myPosAndScale.w = aScale.y;
-	}
-
-	void Effect2D::SetPosAndScale()
-	{
-		DL_ASSERT_EXP(myPosAndScaleVariable != nullptr
-			, "Effect2D: Tried to SetPosAndScale but myPosAndScaleVariable is nullptr");
 
 		myPosAndScaleVariable->SetFloatVector(&myPosAndScale.x);
 	}

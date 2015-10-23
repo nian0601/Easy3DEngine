@@ -36,7 +36,7 @@ extern "C" {
 # include "lualib.h"
 
 }
-using namespace luabridge;
+//using namespace luabridge;
 #if LUA_VERSION_NUM < 502
 inline int lua_absindex (lua_State* L, int idx)
 {

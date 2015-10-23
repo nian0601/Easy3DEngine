@@ -41,7 +41,7 @@ void InputComponent::LoadFromScript(luabridge::LuaRef& aTableRef)
 	}
 }
 
-void InputComponent::Update(float aDelta)
+void InputComponent::Update(float)
 {
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
 	{

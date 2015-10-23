@@ -11,8 +11,10 @@ namespace Easy3D
 
 	enum ePostProcess
 	{
-		BLOOM = 1,
-		MOTION_BLUR = 2,
+		NONE = 0,
+		HDR = 1,
+		BLOOM = 2,
+		MOTION_BLUR = 4,
 	};
 
 	enum eRendererTextures
