@@ -37,9 +37,7 @@ namespace Easy3D
 		ID3D11RenderTargetView* GetBackbuffer();
 
 		void SetDepthBufferState(eDepthStencilType aState);
-
-		void EnableWireframe();
-		void DisableWireframe();
+		void SetRasterizeState(eRasterizerType aState);
 
 		void EnableAlphaBlending();
 		void DisableAlpaBlending();
@@ -57,6 +55,7 @@ namespace Easy3D
 		bool D3DDepthStencilStatesSetup();
 		bool D3DWireframeRasterizerStateSetup();
 		bool D3DSolidRasterizerStateSetup();
+		bool D3DNoCullingRasterizerStateSetup();
 		bool D3DSetupBlendStates();
 
 
@@ -70,6 +69,7 @@ namespace Easy3D
 		ID3D11Texture2D* myDepthBuffer;
 		ID3D11RasterizerState* mySolidRasterizer;
 		ID3D11RasterizerState* myWireframeRasterizer;
+		ID3D11RasterizerState* myNoCullingRasterizer;
 		ID3D11BlendState* myAlphaBlendState;
 		ID3D11BlendState* myNoAlphaBlendState;
 		D3D11_VIEWPORT* myViewPort;

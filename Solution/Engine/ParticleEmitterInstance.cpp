@@ -22,7 +22,6 @@ namespace Easy3D
 		CreateVertexBuffer();
 	}
 	
-	
 	ParticleEmitterInstance::~ParticleEmitterInstance()
 	{
 		delete myVertexBufferWrapper;
@@ -59,7 +58,15 @@ namespace Easy3D
 		myEmitterData.myEffect->SetTexture(myEmitterData.myTexture);
 
 		Engine::GetInstance()->GetContex()->IASetInputLayout(myEmitterData.myParticleInputLayout);
-		Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
+		if (myEmitterData.myType == eEmitterType::PARTICLE)
+		{
+			Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_POINTLIST);
+		}
+		else if (myEmitterData.myType == eEmitterType::STREAK)
+		{
+			Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
+		}
+		
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBufferWrapper->myStartSlot
 			, myVertexBufferWrapper->myNumberOfBuffers, &myVertexBufferWrapper->myVertexBuffer
 			, &myVertexBufferWrapper->myStride, &myVertexBufferWrapper->myByteOffset);
@@ -168,7 +175,7 @@ namespace Easy3D
 			myParticles[i].myTime -= aDelta;
 			if (myParticles[i].myTime <= 0.f)
 			{
-				myParticles.RemoveCyclicAtIndex(i);
+				myParticles.RemoveNonCyclicAtIndex(i);
 				continue;
 			}
 

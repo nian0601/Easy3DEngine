@@ -60,11 +60,9 @@ namespace Easy3D
 		void PrintDebugText(const std::string& aText, const CU::Vector2<float>& aPosition, float aScale = 1.f);
 
 		void SetDepthBufferState(eDepthStencilType aState);
+		void SetRasterizeState(eRasterizerType aState);
 
 		void ToggleWireframe();
-
-		void EnableWireframe();
-		void DisableWireframe();
 
 		void EnableAlphaBlending();
 		void DisableAlphaBlending();

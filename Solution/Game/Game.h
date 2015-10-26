@@ -10,6 +10,7 @@ namespace Easy3D
 {
 	class Camera;
 	class DebugMenu;
+	class ParticleEmitterInstance;
 	class Scene;
 	class Renderer;
 }
@@ -76,4 +77,6 @@ private:
 
 	CU::GrowingArray<Entity*> myEntities;
 	CollisionManager* myCollisionManager;
+
+	Easy3D::ParticleEmitterInstance* myEmitter;
 };

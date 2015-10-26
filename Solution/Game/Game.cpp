@@ -11,6 +11,8 @@
 #include "Game.h"
 #include "GraphicsComponent.h"
 #include <InputWrapper.h>
+#include <ParticleEmitterData.h>
+#include <ParticleEmitterInstance.h>
 #include <Renderer.h>
 #include <Scene.h>
 #include <SystemMonitor.h>
@@ -33,8 +35,8 @@ bool Game::Init(HWND& aHwnd)
 		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 
 	myCamera = new Easy3D::Camera();
-	myCamera->SetPosition({ 0.f, 25.f, -10.f });
-	myCamera->RotateX(45);
+	myCamera->RotateX(90);
+	myCamera->SetPosition({ 0.f, 30.f, 0.f });
 
 	myDebugMenu->StartGroup("SystemInfo");
 	myDebugMenu->AddVariable("FPS", myFPS);
@@ -42,7 +44,7 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("CPU", myCPUUsage);
 	myDebugMenu->EndGroup();
 
-	myDebugMenu->StartGroup("Rendering");
+	/*myDebugMenu->StartGroup("Rendering");
 
 	myDebugMenu->StartGroup("Scene One");
 	myDebugMenu->AddVariable("Toggle Rendering", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_RENDER));
@@ -60,7 +62,7 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("Effect Value", mySecondSceneEffect);
 	myDebugMenu->EndGroup();
 
-	myDebugMenu->EndGroup();
+	myDebugMenu->EndGroup();*/
 
 	myRenderer = new Easy3D::Renderer();
 
@@ -100,7 +102,7 @@ bool Game::Init(HWND& aHwnd)
 	myCollisionManager = new CollisionManager();
 	myScene = new Easy3D::Scene();
 	myScene->SetCamera(myCamera);
-	mySceneEffect = 0;
+	mySceneEffect = Easy3D::ePostProcess::HDR;
 
 	mySecondScene = new Easy3D::Scene();
 	mySecondScene->SetCamera(myCamera);
@@ -123,16 +125,7 @@ bool Game::Init(HWND& aHwnd)
 		{
 			if (gfx->GetInstance() != nullptr)
 			{
-				if (addToFirstScene == true)
-				{
-					myScene->AddInstance(gfx->GetInstance());
-				}
-				else
-				{
-					mySecondScene->AddInstance(gfx->GetInstance());
-				}
-
-				addToFirstScene = !addToFirstScene;
+				myScene->AddInstance(gfx->GetInstance());
 			}
 		}
 	}
@@ -143,6 +136,10 @@ bool Game::Init(HWND& aHwnd)
 	dirLight->SetDir({ 0.f, -1.f, -1.f });
 	myScene->AddLight(dirLight);
 	
+	Easy3D::ParticleEmitterData* particleData = new Easy3D::ParticleEmitterData();
+	particleData->Init("Data/script/streak.xml");
+
+	myEmitter = new Easy3D::ParticleEmitterInstance(*particleData);
 	GAME_LOG("Init Successful");
 	return true;
 }
@@ -176,12 +173,15 @@ bool Game::Update()
 		}
 
 		myEntities[i]->Update(myDeltaTime);
+		myEmitter->SetPosition(myEntities[i]->GetPosition());
 	}
 
 	myCollisionManager->CheckCollisions();
 
 
 	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*CU::InputWrapper::GetInstance());
+
+	myEmitter->Update(myDeltaTime);
 
 	Render();
 
@@ -202,25 +202,73 @@ void Game::UpdateSubSystems()
 	myFPS = static_cast<int>(1.f / myDeltaTime);
 	myMemoryUsage = Easy3D::SystemMonitor::GetMemoryUsageMB();
 	myCPUUsage = Easy3D::SystemMonitor::GetCPUUsage();
+
+
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+	{
+		myCamera->MoveForward(100.f * myDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
+	{
+		myCamera->MoveForward(-100.f * myDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
+	{
+		myCamera->MoveRight(-100.f * myDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
+	{
+		myCamera->MoveRight(100.f * myDeltaTime);
+	}
+
+
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_UP))
+	{
+		myCamera->RotateX(-45.f * myDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_DOWN))
+	{
+		myCamera->RotateX(45.f * myDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_LEFT))
+	{
+		myCamera->RotateY(-45.f * myDeltaTime);
+	}
+	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_RIGHT))
+	{
+		myCamera->RotateY(45.f * myDeltaTime);
+	}
 }
 
 void Game::Render()
 {
-	myRenderer->StartFontRendering();
+	//myRenderer->StartFontRendering();
+	//myDebugMenu->Render(*CU::InputWrapper::GetInstance());
+	//myRenderer->EndFontRendering();
+
+	//if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
+	//{
+	//	myRenderer->ProcessScene(myScene, mySceneEffect);
+	//}
+
+	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::Z_ENABLED);
+	myScene->Render();
 	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
-	myRenderer->EndFontRendering();
 
-	if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
-	{
-		myRenderer->ProcessScene(myScene, mySceneEffect);
-	}
+	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::PARTICLES);
+	Easy3D::Engine::GetInstance()->EnableAlphaBlending();
+	Easy3D::Engine::GetInstance()->SetRasterizeState(Easy3D::eRasterizerType::NO_CULLING);
+	myEmitter->Render(*myCamera);
+	Easy3D::Engine::GetInstance()->SetRasterizeState(Easy3D::eRasterizerType::CULL_FRONT);
+	Easy3D::Engine::GetInstance()->DisableAlphaBlending();
+	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::Z_ENABLED);
 
-	if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
-	{
-		myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
-	}
+	//if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
+	//{
+	//	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
+	//}
 
-	myRenderer->FinalRender();
+	//myRenderer->FinalRender();
 }
 
 void Game::ToggleSetting(eGameSettings aSetting)

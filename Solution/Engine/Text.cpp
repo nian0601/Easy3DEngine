@@ -44,7 +44,7 @@ namespace Easy3D
 	{
 		if (Engine::GetInstance()->myWireframeShouldShow == true)
 		{
-			Engine::GetInstance()->DisableWireframe();
+			Engine::GetInstance()->SetRasterizeState(eRasterizerType::CULL_FRONT);
 		}
 
 		if (myLastText != aString)

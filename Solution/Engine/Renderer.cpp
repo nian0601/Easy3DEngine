@@ -111,7 +111,7 @@ namespace Easy3D
 	
 	void Easy3D::Renderer::FinalRender()
 	{
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
+		
 		float clearcolor[4] = { 0.3f, 0.3f, 0.3f, 1 };
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myCombinedScenes->GetRenderTargetView(), clearcolor);
 
@@ -130,9 +130,10 @@ namespace Easy3D
 			}
 		}
 
-		myFullScreenHelper->Combine(myCombinedScenes, myFontTexture, myFinalTexture);
-
-		myFullScreenHelper->RenderToScreen(myFinalTexture);
+		//myFullScreenHelper->Combine(myCombinedScenes, myFontTexture, myFinalTexture);
+		//myFullScreenHelper->Combine(myCombinedScenes, myFinalTexture);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
+		myFullScreenHelper->RenderToScreen(myCombinedScenes);
 		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 
 		mySceneIndex = 0;
@@ -140,7 +141,7 @@ namespace Easy3D
 
 	void Renderer::StartFontRendering()
 	{
-		float clearcolor[4] = { 0.f, 0.f, 0.f, 1 };
+		float clearcolor[4] = { 0.3f, 0.3f, 0.3f, 1 };
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myFontTexture->GetRenderTargetView(), clearcolor);
 
 		ID3D11RenderTargetView* target = myFontTexture->GetRenderTargetView();

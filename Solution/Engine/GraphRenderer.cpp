@@ -63,7 +63,7 @@ void Easy3D::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
 
 	if (Engine::GetInstance()->myWireframeShouldShow == true)
 	{
-		Engine::GetInstance()->DisableWireframe();
+		Engine::GetInstance()->SetRasterizeState(eRasterizerType::CULL_FRONT);
 	}
 
 	if (aNewData == true)
@@ -100,7 +100,7 @@ void Easy3D::GraphRenderer::Render(const CU::GrowingArray<float>& aDataArray
 
 	if (Engine::GetInstance()->myWireframeShouldShow == true)
 	{
-		Engine::GetInstance()->EnableWireframe();
+		Engine::GetInstance()->SetRasterizeState(eRasterizerType::WIRE_FRAME);
 	}
 }
 

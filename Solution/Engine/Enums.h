@@ -9,6 +9,13 @@ namespace Easy3D
 		PARTICLES,
 	};
 
+	enum class eRasterizerType
+	{
+		CULL_FRONT,
+		WIRE_FRAME,
+		NO_CULLING,
+	};
+
 	enum ePostProcess
 	{
 		NONE = 0,

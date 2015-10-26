@@ -10,6 +10,13 @@ namespace Easy3D
 	class ParticleEffect;
 	class Texture;
 
+
+	enum class eEmitterType
+	{
+		PARTICLE,
+		STREAK
+	};
+
 	class ParticleEmitterData
 	{
 		friend class ParticleEmitterInstance;
@@ -35,6 +42,7 @@ namespace Easy3D
 		ID3D11InputLayout* myParticleInputLayout;
 		Texture* myTexture;
 		bool myHasNewData;
+		eEmitterType myType;
 	};
 }
 

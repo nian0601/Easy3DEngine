@@ -1,3 +1,4 @@
+
 #include "stdafx.h"
 #include "DirectX.h"
 #include <D3D11.h>
@@ -99,6 +100,24 @@ void Easy3D::DirectX::SetDepthBufferState(eDepthStencilType aState)
 	}
 }
 
+void Easy3D::DirectX::SetRasterizeState(eRasterizerType aState)
+{
+	switch (aState)
+	{
+	case Easy3D::eRasterizerType::CULL_FRONT:
+		myContext->RSSetState(mySolidRasterizer);
+		break;
+	case Easy3D::eRasterizerType::WIRE_FRAME:
+		myContext->RSSetState(myWireframeRasterizer);
+		break;
+	case Easy3D::eRasterizerType::NO_CULLING:
+		myContext->RSSetState(myNoCullingRasterizer);
+		break;
+	default:
+		break;
+	}
+}
+
 bool Easy3D::DirectX::D3DSetup()
 {
 	if (D3DSwapChainSetup() == false)
@@ -143,13 +162,19 @@ bool Easy3D::DirectX::D3DSetup()
 		return false;
 	}
 
+	if (D3DNoCullingRasterizerStateSetup() == false)
+	{
+		DIRECTX_LOG("Failed to Setup NoCullingRasterizerState");
+		return false;
+	}
+
 	if (D3DSetupBlendStates() == false)
 	{
 		DIRECTX_LOG("Failed to Setup SolidRasterizerState");
 		return false;
 	}
 
-	DisableWireframe();
+	SetRasterizeState(eRasterizerType::CULL_FRONT);
 	SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 	
 	DIRECTX_LOG("DirectX Setup Successful");
@@ -393,9 +418,31 @@ bool Easy3D::DirectX::D3DSolidRasterizerStateSetup()
 	return true;
 }
 
+bool Easy3D::DirectX::D3DNoCullingRasterizerStateSetup()
+{
+	D3D11_RASTERIZER_DESC desc;
+	ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
+
+	desc.FillMode = D3D11_FILL_SOLID;
+	desc.CullMode = D3D11_CULL_NONE;
+	desc.FrontCounterClockwise = true;
+	desc.DepthBias = false;
+	desc.DepthBiasClamp = 0;
+	desc.SlopeScaledDepthBias = 0;
+	desc.DepthClipEnable = false;
+	desc.ScissorEnable = false;
+	desc.MultisampleEnable = false;
+	desc.AntialiasedLineEnable = false;
+
+	myDevice->CreateRasterizerState(&desc, &myNoCullingRasterizer);
+
+	return true;
+}
+
 bool Easy3D::DirectX::D3DSetupBlendStates()
 {
 	D3D11_BLEND_DESC blendDesc;
+	ZeroMemory(&blendDesc, sizeof(blendDesc));
 	blendDesc.AlphaToCoverageEnable = false;
 	blendDesc.IndependentBlendEnable = false;
 	blendDesc.RenderTarget[0].BlendEnable = TRUE;
@@ -413,7 +460,7 @@ bool Easy3D::DirectX::D3DSetupBlendStates()
 		DL_ASSERT("BaseModel::InitBlendState: Failed to CreateAlphaBlendState");
 	}
 
-	blendDesc.AlphaToCoverageEnable = true;
+	blendDesc.AlphaToCoverageEnable = false;
 	blendDesc.IndependentBlendEnable = false;
 	blendDesc.RenderTarget[0].BlendEnable = FALSE;
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
@@ -425,16 +472,6 @@ bool Easy3D::DirectX::D3DSetupBlendStates()
 	}
 
 	return true;
-}
-
-void Easy3D::DirectX::EnableWireframe()
-{
-	myContext->RSSetState(myWireframeRasterizer);
-}
-
-void Easy3D::DirectX::DisableWireframe()
-{
-	myContext->RSSetState(mySolidRasterizer);
 }
 
 void Easy3D::DirectX::EnableAlphaBlending()

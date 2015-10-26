@@ -24,7 +24,11 @@ namespace Easy3D
 		XMLELEMENT root = reader.FindFirstChild("root");
 		XMLELEMENT emitter = reader.FindFirstChild(root, "emitter");
 
-		XMLELEMENT readElem = reader.ForceFindFirstChild(emitter, "myEffectName");
+		XMLELEMENT readElem = reader.ForceFindFirstChild(emitter, "myType");
+		std::string type;
+		reader.ForceReadAttribute(readElem, "value", type);
+
+		readElem = reader.ForceFindFirstChild(emitter, "myEffectName");
 		std::string shaderFile;
 		reader.ForceReadAttribute(readElem, "value", shaderFile);
 
@@ -126,6 +130,19 @@ namespace Easy3D
 
 		myMaxNrOfParticles = static_cast<int>(myParticleData.myLifeTime / myEmissionRate) + 1;
 		myHasNewData = true;
+
+		if (type == "streak")
+		{
+			myType = eEmitterType::STREAK;
+		}
+		else if (type == "particle")
+		{
+			myType = eEmitterType::PARTICLE;
+		}
+		else
+		{
+			DL_ASSERT("Invalid Emitter-type");
+		}
 	}
 
 }

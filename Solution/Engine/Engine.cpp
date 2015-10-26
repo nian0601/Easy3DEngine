@@ -161,14 +161,19 @@ namespace Easy3D
 		myDirectX->SetDepthBufferState(aState);
 	}
 
+	void Engine::SetRasterizeState(eRasterizerType aState)
+	{
+		myDirectX->SetRasterizeState(aState);
+	}
+
 	void Engine::ToggleWireframe()
 	{
-		myDirectX->EnableWireframe();
+		myDirectX->SetRasterizeState(eRasterizerType::WIRE_FRAME);
 
 		
 		if (myWireframeIsOn == true)
 		{
-			myDirectX->DisableWireframe();
+			myDirectX->SetRasterizeState(eRasterizerType::CULL_FRONT);
 			myWireframeIsOn = false;
 			myWireframeShouldShow = false;
 			return;
@@ -176,16 +181,6 @@ namespace Easy3D
 
 		myWireframeShouldShow = true;
 		myWireframeIsOn = true;
-	}
-
-	void Engine::EnableWireframe()
-	{
-		myDirectX->EnableWireframe();
-	}
-
-	void Engine::DisableWireframe()
-	{
-		myDirectX->DisableWireframe();
 	}
 
 	void Engine::EnableAlphaBlending()

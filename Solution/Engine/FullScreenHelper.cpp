@@ -73,24 +73,24 @@ namespace Easy3D
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myProcessedTexture->GetRenderTargetView(), myClearColor);
 		Combine(aSceneData->myScene, myProcessedTexture);
 
-		if (aEffect & ePostProcess::HDR)
-		{
-			HDRDownSample(aSceneData->myScene);
-			HDREffect(aSceneData->myScene, aSceneData->myFinished);
-		}
-
-		//if (aEffect & ePostProcess::MOTION_BLUR)
+		//if (aEffect & ePostProcess::HDR)
 		//{
-		//	MotionBlurEffect(myPostProcessTexture->GetShaderView()
-		//		, someRendererTextures[eRendererTextures::VELOCITY_TEXTURE]->GetShaderView());
+		//	HDRDownSample(aSceneData->myScene);
+		//	HDREffect(aSceneData->myScene, aSceneData->myFinished);
 		//}
-
-
-		if (aEffect & ePostProcess::BLOOM)
-		{
-			BloomEffect(myProcessedTexture);
-			Combine(myProcessedTexture, myBloomData.myFinalTexture);
-		}
+		//
+		////if (aEffect & ePostProcess::MOTION_BLUR)
+		////{
+		////	MotionBlurEffect(myPostProcessTexture->GetShaderView()
+		////		, someRendererTextures[eRendererTextures::VELOCITY_TEXTURE]->GetShaderView());
+		////}
+		//
+		//
+		//if (aEffect & ePostProcess::BLOOM)
+		//{
+		//	BloomEffect(myProcessedTexture);
+		//	Combine(myProcessedTexture, myBloomData.myFinalTexture);
+		//}
 
 		Combine(myProcessedTexture, aSceneData->myFinished);
 	}
