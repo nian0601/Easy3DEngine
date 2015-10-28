@@ -73,24 +73,24 @@ namespace Easy3D
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myProcessedTexture->GetRenderTargetView(), myClearColor);
 		Combine(aSceneData->myScene, myProcessedTexture);
 
-		if (aEffect & ePostProcess::HDR)
-		{
-			HDRDownSample(aSceneData->myScene);
-			HDREffect(aSceneData->myScene, aSceneData->myFinished);
-		}
-
-		//if (aEffect & ePostProcess::MOTION_BLUR)
+		//if (aEffect & ePostProcess::HDR)
 		//{
-		//	MotionBlurEffect(myPostProcessTexture->GetShaderView()
-		//		, someRendererTextures[eRendererTextures::VELOCITY_TEXTURE]->GetShaderView());
+		//	HDRDownSample(aSceneData->myScene);
+		//	HDREffect(aSceneData->myScene, aSceneData->myFinished);
 		//}
-
-
-		if (aEffect & ePostProcess::BLOOM)
-		{
-			BloomEffect(myProcessedTexture);
-			Combine(myProcessedTexture, myBloomData.myFinalTexture);
-		}
+		//
+		////if (aEffect & ePostProcess::MOTION_BLUR)
+		////{
+		////	MotionBlurEffect(myPostProcessTexture->GetShaderView()
+		////		, someRendererTextures[eRendererTextures::VELOCITY_TEXTURE]->GetShaderView());
+		////}
+		//
+		//
+		//if (aEffect & ePostProcess::BLOOM)
+		//{
+		//	BloomEffect(myProcessedTexture);
+		//	Combine(myProcessedTexture, myBloomData.myFinalTexture);
+		//}
 
 		Combine(myProcessedTexture, aSceneData->myFinished);
 	}
@@ -98,6 +98,7 @@ namespace Easy3D
 	void FullScreenHelper::Combine(Texture* aSource, Texture* aTarget)
 	{
 		DL_ASSERT_EXP(aSource != aTarget, "[Combine]: Cant use Texture as both Source and Target");
+
 
 		myRenderToTextureData.mySource->SetResource(aSource->GetShaderView());
 
@@ -125,8 +126,6 @@ namespace Easy3D
 
 	void FullScreenHelper::RenderToScreen(Texture* myToBackbufferTexture)
 	{
-		Engine::GetInstance()->RestoreViewPort();
-
 		ID3D11RenderTargetView* backbuffer = Engine::GetInstance()->GetBackbuffer();
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(backbuffer, myClearColor);
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer

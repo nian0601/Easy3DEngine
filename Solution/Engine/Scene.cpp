@@ -3,18 +3,17 @@
 #include "DebugDataDisplay.h"
 #include "DirectionalLight.h"
 #include "Instance.h"
-#include "ParticleEmitterInstance.h"
 #include "PointLight.h"
 #include "Scene.h"
 #include "SpotLight.h"
 
 Easy3D::Scene::Scene()
-	: myInstances(4)
-	, myEmitterInstances(4)
-	, myDirectionalLights(4)
-	, myPointLights(4)
-	, mySpotLights(4)
 {
+	myInstances.Init(4);
+	myDirectionalLights.Init(4);
+	myPointLights.Init(4);
+	mySpotLights.Init(4);
+
 	memset(&myDirectionalLightData[0], 0, sizeof(DirectionalLightData) * NUMBER_OF_DIRECTIONAL_LIGHTS);
 	memset(&myPointLightData[0], 0, sizeof(PointLightData) * NUMBER_OF_POINT_LIGHTS);
 	memset(&mySpotLightData[0], 0, sizeof(SpotLightData) * NUMBER_OF_SPOT_LIGHTS);
@@ -65,29 +64,11 @@ void Easy3D::Scene::Render()
 		myInstances[i]->Render(*myCamera);
 	}
 
-	Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::PARTICLES);
-	Engine::GetInstance()->EnableAlphaBlending();
-	Engine::GetInstance()->SetRasterizeState(eRasterizerType::NO_CULLING);
-	
-	for (int i = 0; i < myEmitterInstances.Size(); ++i)
-	{
-		myEmitterInstances[i]->Render(*myCamera);
-	}
-
-	Engine::GetInstance()->SetRasterizeState(eRasterizerType::CULL_FRONT);
-	Engine::GetInstance()->DisableAlphaBlending();
-	Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
-
 }
 
 void Easy3D::Scene::AddInstance(Instance* aInstance)
 {
 	myInstances.Add(aInstance);
-}
-
-void Easy3D::Scene::AddInstance(ParticleEmitterInstance* aInstance)
-{
-	myEmitterInstances.Add(aInstance);
 }
 
 void Easy3D::Scene::AddLight(DirectionalLight* aLight)

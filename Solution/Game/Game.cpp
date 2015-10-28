@@ -246,17 +246,29 @@ void Game::Render()
 	//myDebugMenu->Render(*CU::InputWrapper::GetInstance());
 	//myRenderer->EndFontRendering();
 
-	if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
-	{
-		myRenderer->ProcessScene(myScene, mySceneEffect);
-	}
+	//if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
+	//{
+	//	myRenderer->ProcessScene(myScene, mySceneEffect);
+	//}
+
+	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::Z_ENABLED);
+	myScene->Render();
+	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
+
+	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::PARTICLES);
+	Easy3D::Engine::GetInstance()->EnableAlphaBlending();
+	Easy3D::Engine::GetInstance()->SetRasterizeState(Easy3D::eRasterizerType::NO_CULLING);
+	myEmitter->Render(*myCamera);
+	Easy3D::Engine::GetInstance()->SetRasterizeState(Easy3D::eRasterizerType::CULL_FRONT);
+	Easy3D::Engine::GetInstance()->DisableAlphaBlending();
+	Easy3D::Engine::GetInstance()->SetDepthBufferState(Easy3D::eDepthStencilType::Z_ENABLED);
 
 	//if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
 	//{
 	//	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
 	//}
 
-	myRenderer->FinalRender();
+	//myRenderer->FinalRender();
 }
 
 void Game::ToggleSetting(eGameSettings aSetting)

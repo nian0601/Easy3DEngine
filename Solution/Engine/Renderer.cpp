@@ -56,6 +56,7 @@ namespace Easy3D
 		myFullScreenHelper = new FullScreenHelper();
 	}
 	
+	
 	Renderer::~Renderer()
 	{
 		for (int i = 0; i < MAX_SCENE_COUNT; ++i)
@@ -78,6 +79,7 @@ namespace Easy3D
 	void Easy3D::Renderer::ProcessScene(Scene* aScene, int aEffect)
 	{
 		DL_ASSERT_EXP(mySceneIndex < MAX_SCENE_COUNT, "[Renderer]: Tried to render too many scenes");
+
 		SceneData* currData = myScenes[mySceneIndex];
 
 		float clearcolor[4] = { 0.3f, 0.3f, 0.3f, 1 };
@@ -109,32 +111,29 @@ namespace Easy3D
 	
 	void Easy3D::Renderer::FinalRender()
 	{
-		Engine::GetInstance()->RestoreViewPort();
-		myFullScreenHelper->ActivateBuffers();
-
+		
 		float clearcolor[4] = { 0.3f, 0.3f, 0.3f, 1 };
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myCombinedScenes->GetRenderTargetView(), clearcolor);
-		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myFinalTexture->GetRenderTargetView(), clearcolor);
+
 
 		if (mySceneIndex == 1)
 		{
 			myFullScreenHelper->Combine(myScenes[0]->myFinished, myCombinedScenes);
 		}
-		else if (mySceneIndex > 1)
+		else
 		{
 			myFullScreenHelper->Combine(myScenes[0]->myFinished, myScenes[1]->myFinished, myCombinedScenes);
-		
+
 			for (int i = 2; i < mySceneIndex; ++i)
 			{
 				myFullScreenHelper->Combine(myScenes[i]->myFinished, myCombinedScenes);
 			}
 		}
 
-
 		//myFullScreenHelper->Combine(myCombinedScenes, myFontTexture, myFinalTexture);
 		//myFullScreenHelper->Combine(myCombinedScenes, myFinalTexture);
 		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
-		myFullScreenHelper->RenderToScreen(myScenes[0]->myFinished);
+		myFullScreenHelper->RenderToScreen(myCombinedScenes);
 		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 
 		mySceneIndex = 0;

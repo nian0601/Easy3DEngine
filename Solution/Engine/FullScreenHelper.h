@@ -22,7 +22,6 @@ namespace Easy3D
 		void Combine(Texture* aSourceA, Texture* aSourceB, Texture* aTarget);
 
 		void RenderToScreen(Texture* aToBackbufferTexture);
-		void ActivateBuffers();
 
 	private:
 		struct CombineData
@@ -61,7 +60,7 @@ namespace Easy3D
 			Texture* myFinalTexture;
 		};
 
-		
+		void ActivateBuffers();
 		void CreateVertices();
 		void CreateCombineData();
 		void CreateRenderToTextureData();

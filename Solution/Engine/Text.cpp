@@ -69,8 +69,6 @@ namespace Easy3D
 		static_cast<Effect2D*>(myEffect)->SetColor(aColor);
 
 		BaseModel::Render();
-
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 	}
 
 
