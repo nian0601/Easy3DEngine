@@ -44,7 +44,7 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("CPU", myCPUUsage);
 	myDebugMenu->EndGroup();
 
-	/*myDebugMenu->StartGroup("Rendering");
+	myDebugMenu->StartGroup("Rendering");
 
 	myDebugMenu->StartGroup("Scene One");
 	myDebugMenu->AddVariable("Toggle Rendering", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_RENDER));
@@ -62,7 +62,7 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("Effect Value", mySecondSceneEffect);
 	myDebugMenu->EndGroup();
 
-	myDebugMenu->EndGroup();*/
+	myDebugMenu->EndGroup();
 
 	myRenderer = new Easy3D::Renderer();
 
@@ -243,9 +243,9 @@ void Game::UpdateSubSystems()
 
 void Game::Render()
 {
-	//myRenderer->StartFontRendering();
-	//myDebugMenu->Render(*CU::InputWrapper::GetInstance());
-	//myRenderer->EndFontRendering();
+	myRenderer->StartFontRendering();
+	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
+	myRenderer->EndFontRendering();
 
 	if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
 	{
@@ -257,7 +257,7 @@ void Game::Render()
 	//	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
 	//}
 
-	//myRenderer->FinalRender();
+	myRenderer->FinalRender();
 }
 
 void Game::ToggleSetting(eGameSettings aSetting)

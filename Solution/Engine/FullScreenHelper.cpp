@@ -124,12 +124,12 @@ namespace Easy3D
 
 	void FullScreenHelper::RenderToScreen(Texture* aToBackbufferTexture)
 	{
-		//Engine::GetInstance()->RestoreViewPort();
+		Engine::GetInstance()->RestoreViewPort();
 
-		//ID3D11RenderTargetView* backbuffer = Engine::GetInstance()->GetBackbuffer();
-		//Engine::GetInstance()->GetContex()->ClearRenderTargetView(backbuffer, myClearColor);
-		//Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer
-		//	, Engine::GetInstance()->GetDepthStencilView());
+		ID3D11RenderTargetView* backbuffer = Engine::GetInstance()->GetBackbuffer();
+		Engine::GetInstance()->GetContex()->ClearRenderTargetView(backbuffer, myClearColor);
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer
+			, Engine::GetInstance()->GetDepthStencilView());
 
 		myRenderToTextureData.mySource->SetResource(aToBackbufferTexture->GetShaderView());
 

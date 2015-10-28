@@ -40,7 +40,6 @@ PS_INPUT_POS_NORM_TEX_BI_TANG VS(VS_INPUT_POS_NORM_TEX_BI_TANG input)
 
 float4 PS(PS_INPUT_POS_NORM_TEX_BI_TANG input) : SV_Target
 {
-	return float4(1, 1, 1, 1);
 	float3 norm = NormalTexture.Sample(linearSampling, input.Tex) * 2 - 1;
 	
 	input.Normal = normalize(input.Normal);
