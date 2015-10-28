@@ -70,9 +70,6 @@ namespace Easy3D
 					, mySurfaces[i]->GetVertexStart(), 0);
 			}
 		}
-		
-
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 	}
 
 	void BaseModel::InitInputLayout(D3D11_INPUT_ELEMENT_DESC* aVertexDescArray, int aArraySize)

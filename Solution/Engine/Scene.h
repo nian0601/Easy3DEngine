@@ -11,6 +11,7 @@ namespace Easy3D
 	class Camera;
 	class DirectionalLight;
 	class Instance;
+	class ParticleEmitterInstance;
 	class PointLight;
 	class SpotLight;
 
@@ -23,6 +24,7 @@ namespace Easy3D
 		void Render();
 
 		void AddInstance(Instance* aInstance);
+		void AddInstance(ParticleEmitterInstance* aInstance);
 		void AddLight(DirectionalLight* aLight);
 		void AddLight(PointLight* aLight);
 		void AddLight(SpotLight* aLight);
@@ -34,6 +36,7 @@ namespace Easy3D
 
 	private:
 		CU::GrowingArray<Instance*> myInstances;
+		CU::GrowingArray<ParticleEmitterInstance*> myEmitterInstances;
 		CU::GrowingArray<DirectionalLight*> myDirectionalLights;
 		CU::GrowingArray<PointLight*> myPointLights;
 		CU::GrowingArray<SpotLight*> mySpotLights;
