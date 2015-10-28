@@ -1,0 +1,26 @@
+<root>
+  <emitter>
+    <myEffectName value="Data/effect/3D/ParticleEffect.fx"/>
+    <myEmissionExtents x="0.5" y="2.0" z="1.0"/>
+    <myEmissionLifeTime value="50.0"/>
+    <myEmissionRate value="0.005"/>
+    <myEmissionRateDelta value="0"/>
+    <myEmissionVelocityDelta x="0" y="0" z="0"/>
+    <myMaxVelocity x="2" y="8" z="0"/>
+    <myMinVelocity x="-2" y="0" z="-2"/>
+    <myGravity value="-2.82"/>
+    <myTextureName value="Data/resources/texture/particle.dds"/>
+  </emitter>
+  <particle>
+    <myParticlesFollowEmitter value="false"/>
+    <myAffectedByGravity value="false"/>
+    <myAlphaDelta value="-1.0"/>
+    <myLifeTime value="1.0"/>
+    <myMaxStartSize value="0.0"/>
+    <myMinStartSize value="0.0"/>
+    <myMaxVelocity x="1" y="1" z="1"/>
+    <myMinVelocity x="-1" y="-1" z="-1"/>
+    <mySizeDelta value="0.8"/>
+    <myStartAlpha value="1.0"/>
+  </particle>
+</root>

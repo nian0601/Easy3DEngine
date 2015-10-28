@@ -65,18 +65,18 @@ void Easy3D::Scene::Render()
 		myInstances[i]->Render(*myCamera);
 	}
 
-	Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::PARTICLES);
-	Engine::GetInstance()->EnableAlphaBlending();
-	Engine::GetInstance()->SetRasterizeState(eRasterizerType::NO_CULLING);
-	
-	for (int i = 0; i < myEmitterInstances.Size(); ++i)
-	{
-		myEmitterInstances[i]->Render(*myCamera);
-	}
-
-	Engine::GetInstance()->SetRasterizeState(eRasterizerType::CULL_FRONT);
-	Engine::GetInstance()->DisableAlphaBlending();
-	Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
+	//Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::PARTICLES);
+	//Engine::GetInstance()->EnableAlphaBlending();
+	//Engine::GetInstance()->SetRasterizeState(eRasterizerType::NO_CULLING);
+	//
+	//for (int i = 0; i < myEmitterInstances.Size(); ++i)
+	//{
+	//	myEmitterInstances[i]->Render(*myCamera);
+	//}
+	//
+	//Engine::GetInstance()->SetRasterizeState(eRasterizerType::CULL_FRONT);
+	//Engine::GetInstance()->DisableAlphaBlending();
+	//Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 
 }
 

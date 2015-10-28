@@ -80,11 +80,11 @@ namespace Easy3D
 		DL_ASSERT_EXP(mySceneIndex < MAX_SCENE_COUNT, "[Renderer]: Tried to render too many scenes");
 		SceneData* currData = myScenes[mySceneIndex];
 
-		float clearcolor[4] = { 0.3f, 0.3f, 0.3f, 1 };
+		float clearcolor[4] = { 0.3f, 1.f, 0.3f, 1 };
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(currData->myScene->GetRenderTargetView(), clearcolor);
-		Engine::GetInstance()->GetContex()->ClearRenderTargetView(currData->myFinished->GetRenderTargetView(), clearcolor);
-		float velClearcolor[4] = { 0.f, 0.f, 0.f, 1 };
-		Engine::GetInstance()->GetContex()->ClearRenderTargetView(currData->myVelocity->GetRenderTargetView(), velClearcolor);
+		//Engine::GetInstance()->GetContex()->ClearRenderTargetView(currData->myFinished->GetRenderTargetView(), clearcolor);
+		//float velClearcolor[4] = { 0.f, 0.f, 0.f, 1 };
+		//Engine::GetInstance()->GetContex()->ClearRenderTargetView(currData->myVelocity->GetRenderTargetView(), velClearcolor);
 
 		//ID3D11RenderTargetView* renderTarget[2] = {
 		//	currData->myScene->GetRenderTargetView(),
@@ -99,12 +99,25 @@ namespace Easy3D
 			, Engine::GetInstance()->GetDepthStencilView());
 		aScene->Render();
 
-
+		myFullScreenHelper->ActivateBuffers();
 		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
-		myFullScreenHelper->Process(currData, aEffect);
+		//myFullScreenHelper->RenderToScreen(currData->myScene);
 		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
 
-		++mySceneIndex;
+		//Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
+		//myFullScreenHelper->Process(currData, aEffect);
+		//Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
+		//
+		//++mySceneIndex;
+
+		//ID3D11RenderTargetView* backbuffer = Engine::GetInstance()->GetBackbuffer();
+		//Engine::GetInstance()->GetContex()->ClearRenderTargetView(backbuffer, clearcolor);
+		//Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer
+		//	, Engine::GetInstance()->GetDepthStencilView());
+		//
+		//myRenderToTextureData.mySource->SetResource(myToBackbufferTexture->GetShaderView());
+
+		//Render(myRenderToTextureData.myEffect);
 	}
 	
 	void Easy3D::Renderer::FinalRender()

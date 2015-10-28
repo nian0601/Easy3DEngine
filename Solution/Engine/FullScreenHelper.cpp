@@ -15,11 +15,10 @@ namespace Easy3D
 	{
 		myClearColor[0] = 0.3f;
 		myClearColor[1] = 0.3f;
-		myClearColor[2] = 0.3f;
+		myClearColor[2] = 1.f;
 		myClearColor[3] = 1.f;
 
 		CreateCombineData();
-		CreateRenderToTextureData();
 		CreateRenderToTextureData();
 		CreateDownSampleData();
 		CreateHDRData();
@@ -123,16 +122,16 @@ namespace Easy3D
 		Render(myCombineData.myEffect);
 	}
 
-	void FullScreenHelper::RenderToScreen(Texture* myToBackbufferTexture)
+	void FullScreenHelper::RenderToScreen(Texture* aToBackbufferTexture)
 	{
-		Engine::GetInstance()->RestoreViewPort();
+		//Engine::GetInstance()->RestoreViewPort();
 
-		ID3D11RenderTargetView* backbuffer = Engine::GetInstance()->GetBackbuffer();
-		Engine::GetInstance()->GetContex()->ClearRenderTargetView(backbuffer, myClearColor);
-		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer
-			, Engine::GetInstance()->GetDepthStencilView());
+		//ID3D11RenderTargetView* backbuffer = Engine::GetInstance()->GetBackbuffer();
+		//Engine::GetInstance()->GetContex()->ClearRenderTargetView(backbuffer, myClearColor);
+		//Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &backbuffer
+		//	, Engine::GetInstance()->GetDepthStencilView());
 
-		myRenderToTextureData.mySource->SetResource(myToBackbufferTexture->GetShaderView());
+		myRenderToTextureData.mySource->SetResource(aToBackbufferTexture->GetShaderView());
 
 		Render(myRenderToTextureData.myEffect);
 	}

@@ -1,0 +1,9 @@
+<entity file="Data/script/streakEntity.lua">
+	<position x="0" y="0" z="10"/>
+	<rotation x="0" y="0" z="0"/>
+</entity>
+
+<entity file="Data/script/player.lua">
+	<position x="0" y="0" z="10"/>
+	<rotation x="0" y="0" z="0"/>
+</entity>

@@ -140,6 +140,7 @@ bool Game::Init(HWND& aHwnd)
 	particleData->Init("Data/script/streak.xml");
 
 	myEmitter = new Easy3D::ParticleEmitterInstance(*particleData);
+	myScene->AddInstance(myEmitter);
 	GAME_LOG("Init Successful");
 	return true;
 }
@@ -256,7 +257,7 @@ void Game::Render()
 	//	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
 	//}
 
-	myRenderer->FinalRender();
+	//myRenderer->FinalRender();
 }
 
 void Game::ToggleSetting(eGameSettings aSetting)
