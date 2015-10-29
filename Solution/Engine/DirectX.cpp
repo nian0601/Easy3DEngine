@@ -56,8 +56,16 @@ void Easy3D::DirectX::CleanD3D()
 	myDevice->Release();
 	myDevice = nullptr;
 
+	myContext->ClearState();
+	myContext->Flush();
 	myContext->Release();
 	myContext = nullptr;
+
+
+#ifdef _DEBUG
+	myDebugInterface->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+	myDebugInterface->Release();
+#endif
 }
 
 ID3D11Device* Easy3D::DirectX::GetDevice()
@@ -213,7 +221,11 @@ bool Easy3D::DirectX::D3DSwapChainSetup()
 	HRESULT result = D3D11CreateDeviceAndSwapChain(NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
+#ifdef RELEASE_BUILD
 		NULL,
+#else
+		D3D11_CREATE_DEVICE_DEBUG,
+#endif
 		NULL,
 		NULL,
 		D3D11_SDK_VERSION,
@@ -227,6 +239,27 @@ bool Easy3D::DirectX::D3DSwapChainSetup()
 	{
 		return false;
 	}
+
+#ifdef _DEBUG
+	myDebugInterface = nullptr;
+	result = myDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&myDebugInterface);
+	if (FAILED(result))
+	{
+		DL_ASSERT("[DirectX]: Failed to Query DebugInterface");
+		return false;
+	}
+
+	myInfoQueue = nullptr;
+	if (FAILED(myDebugInterface->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&myInfoQueue)))
+	{
+		DL_ASSERT("[DirectX]: Failed to Query InfoQueue");
+		return false;
+	}
+
+	myInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
+	myInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
+	myInfoQueue->Release();
+#endif
 
 	return TRUE;
 }
