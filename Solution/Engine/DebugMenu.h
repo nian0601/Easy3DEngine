@@ -27,7 +27,6 @@ namespace Easy3D
 		std::string myName;
 		eDebugVariableType myType;
 		CU::Vector2<float> myPosition;
-		Text* myText;
 
 		DebugVariable* myPrev = nullptr;
 		DebugVariable* myNext = nullptr;
@@ -99,6 +98,7 @@ namespace Easy3D
 
 		void DeAttachVariable(DebugVariable* aVariable);
 		void UpdateMovingVariable(const CU::InputWrapper& aInput);
+		void DeleteVariable(DebugVariable* aVar);
 
 		Text* myText;
 		DebugVariable* myCurrentGroup;

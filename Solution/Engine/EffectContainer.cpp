@@ -11,6 +11,33 @@
 #include "TextureContainer.h"
 #include "ParticleEffect.h"
 
+Easy3D::EffectContainer::~EffectContainer()
+{
+	for (auto it = myBaseEffects.begin(); it != myBaseEffects.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+
+	for (auto it = my2DEffects.begin(); it != my2DEffects.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+
+	for (auto it = my3DEffects.begin(); it != my3DEffects.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+
+	for (auto it = myParticleEffects.begin(); it != myParticleEffects.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+}
+
 Easy3D::BaseEffect* Easy3D::EffectContainer::GetBaseEffect(const std::string& aFilePath)
 {
 	auto it = myBaseEffects.find(aFilePath);

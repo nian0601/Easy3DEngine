@@ -28,13 +28,13 @@ namespace Easy3D
 
 	BaseModel::~BaseModel()
 	{
-		if (myVertexBuffer->myVertexBuffer != nullptr)
+		if (myVertexBuffer != nullptr && myVertexBuffer->myVertexBuffer != nullptr)
 		{
 			myVertexBuffer->myVertexBuffer->Release();
 			delete myVertexBuffer;
 		}
 
-		if (myIndexBuffer->myIndexBuffer != nullptr)
+		if (myIndexBuffer != nullptr && myIndexBuffer->myIndexBuffer != nullptr)
 		{
 			myIndexBuffer->myIndexBuffer->Release();
 			delete myIndexBuffer;
@@ -43,6 +43,16 @@ namespace Easy3D
 		delete myVertexBufferDesc;
 		delete myIndexBufferDesc;
 		delete myInitData;
+
+		if(myBlendState != nullptr)
+		{
+			myBlendState->Release();
+		}
+
+		if(myVertexLayout != nullptr)
+		{
+			myVertexLayout->Release();
+		}
 		mySurfaces.DeleteAll();
 	}
 
@@ -82,6 +92,8 @@ namespace Easy3D
 		{
 			DL_MESSAGE_BOX("Failed to CreateInputLayout", "Model2D::Init", MB_ICONWARNING);
 		}
+
+		Engine::GetInstance()->SetDebugName(myVertexLayout, "BaseModel::myVertexLayout");
 	}
 
 	void Easy3D::BaseModel::InitVertexBuffer(int aVertexSize, int aBufferUsage, int aCPUUsage)
@@ -149,12 +161,12 @@ namespace Easy3D
 		{
 			DL_ASSERT("BaseModel::InitBlendState: Failed to CreateBlendState");
 		}
+
+		Engine::GetInstance()->SetDebugName(myBlendState, "BaseModel::myBlendState");
 	}
 
 	void BaseModel::SetupVertexBuffer(int aVertexCount, int aVertexSize, char* aVertexData)
 	{
-		TIME_FUNCTION;
-
 		if (myVertexBuffer->myVertexBuffer != nullptr)
 			myVertexBuffer->myVertexBuffer->Release();
 
@@ -168,12 +180,12 @@ namespace Easy3D
 		{
 			DL_ASSERT("BaseModel::SetupVertexBuffer: Failed to SetupVertexBuffer");
 		}
+
+		Engine::GetInstance()->SetDebugName(myVertexBuffer->myVertexBuffer, "BaseModel::myVertexBuffer->myVertexBuffer");
 	}
 
 	void BaseModel::SetupIndexBuffer(int aIndexCount, char* aIndexData)
 	{
-		TIME_FUNCTION;
-
 		if (myIndexBuffer->myIndexBuffer != nullptr)
 			myIndexBuffer->myIndexBuffer->Release();
 
@@ -187,6 +199,8 @@ namespace Easy3D
 		{
 			DL_ASSERT("BaseModel::SetupIndexBuffer: Failed to SetupIndexBuffer");
 		}
+
+		Engine::GetInstance()->SetDebugName(myIndexBuffer->myIndexBuffer, "BaseModel::myIndexBuffer->myIndexBuffer");
 	}
 
 	void BaseModel::OnEffectLoad()

@@ -16,26 +16,13 @@
     <ClCompile Include="FBXFactory.cpp">
       <Filter>FBX</Filter>
     </ClCompile>
-    <ClCompile Include="GeometryGenerator.cpp" />
     <ClCompile Include="Font.cpp">
       <Filter>Rendering\Fonts</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugDataDisplay.cpp">
-      <Filter>DebugServices</Filter>
-    </ClCompile>
-    <ClCompile Include="Debug_BlockTimer.cpp">
-      <Filter>DebugServices</Filter>
-    </ClCompile>
-    <ClCompile Include="GraphRenderer.cpp">
-      <Filter>DebugServices</Filter>
     </ClCompile>
     <ClCompile Include="FontContainer.cpp">
       <Filter>Rendering\Fonts</Filter>
     </ClCompile>
     <ClCompile Include="FileWatcher.cpp" />
-    <ClCompile Include="FrameTimeDebugger.cpp">
-      <Filter>DebugServices</Filter>
-    </ClCompile>
     <ClCompile Include="SystemMonitor.cpp">
       <Filter>DebugServices</Filter>
     </ClCompile>
@@ -84,7 +71,6 @@
     <ClCompile Include="RadialDebugMenu.cpp">
       <Filter>DebugServices</Filter>
     </ClCompile>
-    <ClCompile Include="DebugMenu.cpp" />
     <ClCompile Include="ParticleEmitterData.cpp">
       <Filter>Rendering\Particles</Filter>
     </ClCompile>
@@ -99,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="FullScreenHelper.cpp">
       <Filter>Rendering\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugMenu.cpp">
+      <Filter>DebugServices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,18 +121,8 @@
     <ClInclude Include="FBXFactory.h">
       <Filter>FBX</Filter>
     </ClInclude>
-    <ClInclude Include="GeometryGenerator.h" />
     <ClInclude Include="Font.h">
       <Filter>Rendering\Fonts</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugDataDisplay.h">
-      <Filter>DebugServices</Filter>
-    </ClInclude>
-    <ClInclude Include="Debug_BlockTimer.h">
-      <Filter>DebugServices</Filter>
-    </ClInclude>
-    <ClInclude Include="GraphRenderer.h">
-      <Filter>DebugServices</Filter>
     </ClInclude>
     <ClInclude Include="FontContainer.h">
       <Filter>Rendering\Fonts</Filter>
@@ -164,9 +143,6 @@
     <ClInclude Include="Defines.h" />
     <ClInclude Include="LightStructs.h">
       <Filter>Lights</Filter>
-    </ClInclude>
-    <ClInclude Include="FrameTimeDebugger.h">
-      <Filter>DebugServices</Filter>
     </ClInclude>
     <ClInclude Include="SystemMonitor.h">
       <Filter>DebugServices</Filter>
@@ -222,7 +198,6 @@
     <ClInclude Include="RadialDebugMenu.h">
       <Filter>DebugServices</Filter>
     </ClInclude>
-    <ClInclude Include="DebugMenu.h" />
     <ClInclude Include="ParticleData.h">
       <Filter>Rendering\Particles</Filter>
     </ClInclude>
@@ -245,6 +220,9 @@
     <ClInclude Include="Structs.h" />
     <ClInclude Include="FullScreenHelper.h">
       <Filter>Rendering\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugMenu.h">
+      <Filter>DebugServices</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,7 @@
 
 
 struct ID3D11Device;
+struct ID3D11DeviceChild;
 struct ID3D11DeviceContext;
 struct ID3D11DepthStencilView;
 struct ID3D11RenderTargetView;
@@ -16,7 +17,6 @@ struct ID3D11RenderTargetView;
 namespace Easy3D
 {
 	class Camera;
-	class DebugDataDisplay;
 	class DirectX;
 	class EffectContainer;
 	class Effect3D;
@@ -47,10 +47,11 @@ namespace Easy3D
 		ID3D11DepthStencilView* GetDepthStencilView();
 		ID3D11RenderTargetView* GetBackbuffer();
 
+		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName);
+
 		TextureContainer* GetTextureContainer();
 		EffectContainer* GetEffectContainer();
 		FontContainer* GetFontContainer();
-		DebugDataDisplay* GetDebugDisplay();
 		FileWatcher* GetFileWatcher();
 		ModelLoader* GetModelLoader();
 
@@ -87,7 +88,6 @@ namespace Easy3D
 		TextureContainer* myTextureContainer;
 		EffectContainer* myEffectContainer;
 		FontContainer* myFontContainer;
-		DebugDataDisplay* myDebugDataDisplay;
 		FileWatcher* myFileWatcher;
 
 		Text* myDebugText;
@@ -117,11 +117,6 @@ inline Easy3D::EffectContainer* Easy3D::Engine::GetEffectContainer()
 inline Easy3D::FontContainer* Easy3D::Engine::GetFontContainer()
 {
 	return myFontContainer;
-}
-
-inline Easy3D::DebugDataDisplay* Easy3D::Engine::GetDebugDisplay()
-{
-	return myDebugDataDisplay;
 }
 
 inline Easy3D::FileWatcher* Easy3D::Engine::GetFileWatcher()

@@ -1,5 +1,5 @@
-
 #include "stdafx.h"
+
 #include "DirectX.h"
 #include <D3D11.h>
 
@@ -61,11 +61,26 @@ void Easy3D::DirectX::CleanD3D()
 	myContext->Release();
 	myContext = nullptr;
 
+	myAlphaBlendState->Release();
+	myNoAlphaBlendState->Release();
+
+	myNoCullingRasterizer->Release();
+	myWireframeRasterizer->Release();
+	mySolidRasterizer->Release();
+
 
 #ifdef _DEBUG
 	myDebugInterface->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
 	myDebugInterface->Release();
 #endif
+}
+
+void Easy3D::DirectX::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName)
+{
+	if (aChild != nullptr)
+	{
+		aChild->SetPrivateData(WKPDID_D3DDebugObjectName, aName.size(), aName.c_str());
+	}
 }
 
 ID3D11Device* Easy3D::DirectX::GetDevice()

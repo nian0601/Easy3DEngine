@@ -13,6 +13,12 @@
 
 namespace Easy3D
 {
+
+	Text::~Text()
+	{
+
+	}
+
 	void Text::Init(const std::string& aFontPath)
 	{
 		myEffect = Engine::GetInstance()->GetEffectContainer()->Get2DEffect("Data/effect/2D/FontEffect.fx");
@@ -94,8 +100,6 @@ namespace Easy3D
 
 	void Text::ConstructBuffers(const std::string& aString)
 	{
-		TIME_FUNCTION;
-
 		myLastText = aString;
 		myTextWidth = 0;
 

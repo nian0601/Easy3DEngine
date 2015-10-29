@@ -8,6 +8,7 @@ struct ID3D11DepthStencilState;
 struct ID3D11DepthStencilView;
 struct ID3D11DepthStencilState;
 struct ID3D11Device;
+struct ID3D11DeviceChild;
 struct ID3D11DeviceContext;
 struct ID3D11InfoQueue;
 struct ID3D11RasterizerState;
@@ -32,6 +33,8 @@ namespace Easy3D
 
 		void OnResize(int aWidth, int aHeigth);
 		void CleanD3D();
+
+		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName);
 
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContex();

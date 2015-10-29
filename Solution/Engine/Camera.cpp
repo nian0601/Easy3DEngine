@@ -53,8 +53,6 @@ namespace Easy3D
 
 	void Camera::RotateX(const float aDegrees)
 	{
-		TIME_FUNCTION;
-
 		myPosition = myOrientation.GetPos();
 		myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
 		myOrientation = CU::Matrix44<float>::CreateRotateAroundX(aDegrees * XM_PI / 180.f) * myOrientation;
@@ -63,8 +61,6 @@ namespace Easy3D
 
 	void Camera::RotateY(const float aDegrees)
 	{
-		TIME_FUNCTION;
-
 		myPosition = myOrientation.GetPos();
 		myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
 		myOrientation = CU::Matrix44<float>::CreateRotateAroundY(aDegrees * XM_PI / 180.f) * myOrientation;
@@ -73,8 +69,6 @@ namespace Easy3D
 
 	void Camera::RotateZ(const float aDegrees)
 	{
-		TIME_FUNCTION;
-
 		myPosition = myOrientation.GetPos();
 		myOrientation.SetPos({ 0.f, 0.f, 0.f, 0.f });
 		myOrientation = CU::Matrix44<float>::CreateRotateAroundZ(aDegrees * XM_PI / 180.f) * myOrientation;
@@ -83,16 +77,12 @@ namespace Easy3D
 
 	void Camera::MoveForward(const float aDistance)
 	{
-		TIME_FUNCTION;
-
 		myPosition += myOrientation.GetForward() * aDistance;
 		myOrientation.SetPos(myPosition);
 	}
 
 	void Camera::MoveRight(const float aDistance)
 	{
-		TIME_FUNCTION;
-
 		myPosition += myOrientation.GetRight() * aDistance;
 		myOrientation.SetPos(myPosition);
 	}

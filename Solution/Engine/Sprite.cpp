@@ -36,6 +36,11 @@ namespace Easy3D
 		CreateVertices();
 	}
 
+	Sprite::~Sprite()
+	{
+
+	}
+
 	void Sprite::Render(const CU::Vector2<float>& aPosition, const CU::Vector2<float>& aScale
 		, const CU::Vector4<float>& aColor)
 	{
@@ -60,9 +65,6 @@ namespace Easy3D
 
 	void Sprite::CreateVertices()
 	{
-		TIME_FUNCTION;
-
-
 		CU::GrowingArray<VertexPosUV> vertices(4);
 		CU::GrowingArray<int> indices(6);
 

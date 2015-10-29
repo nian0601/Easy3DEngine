@@ -26,6 +26,13 @@ namespace Easy3D
 	ModelLoader::~ModelLoader()
 	{
 		myNonFXBModels.DeleteAll();
+		delete myModelFactory;
+
+		for (auto it = myProxies.begin(); it != myProxies.end(); ++it)
+		{
+			delete it->second;
+			it->second = nullptr;
+		}
 	}
 
 	void ModelLoader::Run()
@@ -72,35 +79,11 @@ namespace Easy3D
 					RESOURCE_LOG("Model \"%s\" took %d ms to load", loadArray[i].myModelPath.c_str(), elapsed);
 					break;
 				}
-				case Easy3D::ModelLoader::eLoadType::POLYGON:
-				{
-					model = new Easy3D::Model();
-					model->InitPolygon();
-
-					myNonFXBModels.Add(model);
-					break;
-				}
 				case Easy3D::ModelLoader::eLoadType::CUBE:
 				{
 					model = new Easy3D::Model();
-					model->InitCube(loadArray[i].mySize.x, loadArray[i].mySize.y, loadArray[i].mySize.z);
-
-					myNonFXBModels.Add(model);
-					break;
-				}
-				case Easy3D::ModelLoader::eLoadType::LIGHT_CUBE:
-				{
-					model = new Easy3D::Model();
-					model->InitLightCube(loadArray[i].mySize.x, loadArray[i].mySize.y,
+					model->InitCube(loadArray[i].mySize.x, loadArray[i].mySize.y,
 						loadArray[i].mySize.z, loadArray[i].myColor);
-
-					myNonFXBModels.Add(model);
-					break;
-				}
-				case Easy3D::ModelLoader::eLoadType::GEOMETRY:
-				{
-					model = new Easy3D::Model();
-					model->InitGeometry(loadArray[i].myMeshData);
 
 					myNonFXBModels.Add(model);
 					break;
@@ -131,8 +114,13 @@ namespace Easy3D
 #ifdef THREADED_LOADING
 		WaitUntilAddIsAllowed();
 
-		myCanCopyArray = false;
 
+		if(myProxies.find(aModelPath) != myProxies.end())
+		{
+			return myProxies[aModelPath];
+		}
+
+		myCanCopyArray = false;
 		ModelProxy* proxy = new ModelProxy();
 		proxy->SetModel(nullptr);
 
@@ -146,8 +134,15 @@ namespace Easy3D
 
 		myCanCopyArray = true;
 
+		myProxies[aModelPath] = proxy;
 		return proxy;
 #else
+
+		if (myProxies.find(aModelPath) != myProxies.end())
+		{
+			return myProxies[aModelPath];
+		}
+
 		ModelProxy* proxy = new ModelProxy();
 		
 		CU::TimerManager::GetInstance()->StartTimer("LoadModel");
@@ -162,44 +157,14 @@ namespace Easy3D
 
 		proxy->SetModel(model);
 
+		myProxies[aModelPath] = proxy;
 		return proxy;
 #endif
 		
 	}
 
-	ModelProxy* ModelLoader::LoadPolygon()
-	{
-
-#ifdef THREADED_LOADING
-		WaitUntilAddIsAllowed();
-
-		myCanCopyArray = false;
-		ModelProxy* proxy = new ModelProxy();
-		proxy->SetModel(nullptr);
-
-		LoadData newData;
-		newData.myProxy = proxy;
-		newData.myLoadType = eLoadType::POLYGON;
-
-
-		myModelsToLoad.Add(newData);
-
-		myCanCopyArray = true;
-
-		return proxy;
-#else
-		ModelProxy* proxy = new ModelProxy();
-		Model* model = new Easy3D::Model();
-		model->InitPolygon();
-
-		proxy->SetModel(model);
-
-		return proxy;
-#endif
-		
-	}
-
-	ModelProxy* ModelLoader::LoadCube(float aWidth, float aHeight, float aDepth)
+	ModelProxy* ModelLoader::LoadCube(float aWidth, float aHeight, float aDepth
+		, CU::Vector4f aColor)
 	{
 #ifdef THREADED_LOADING
 		WaitUntilAddIsAllowed();
@@ -212,6 +177,7 @@ namespace Easy3D
 		newData.myProxy = proxy;
 		newData.myLoadType = eLoadType::CUBE;
 		newData.mySize = { aWidth, aHeight, aDepth };
+		newData.myColor = aColor;
 
 		myModelsToLoad.Add(newData);
 
@@ -221,74 +187,12 @@ namespace Easy3D
 #else
 		ModelProxy* proxy = new ModelProxy();
 		Model* model = new Easy3D::Model();
-		model->InitCube(aWidth, aHeight, aDepth);
-
-		proxy->SetModel(model);
-
-		return proxy;
-#endif
-	}
-
-	ModelProxy* ModelLoader::LoadLightCube(float aWidth, float aHeight, float aDepth
-		, CU::Vector4f aColour)
-	{
-#ifdef THREADED_LOADING
-		WaitUntilAddIsAllowed();
-
-		myCanCopyArray = false;
-		ModelProxy* proxy = new ModelProxy();
-		proxy->SetModel(nullptr);
-
-		LoadData newData;
-		newData.myProxy = proxy;
-		newData.myLoadType = eLoadType::LIGHT_CUBE;
-		newData.mySize = { aWidth, aHeight, aDepth };
-		newData.myColor = aColour;
-
-		myModelsToLoad.Add(newData);
-
-		myCanCopyArray = true;
-
-		return proxy;
-#else
-		ModelProxy* proxy = new ModelProxy();
-		Model* model = new Easy3D::Model();
-		model->InitLightCube(aWidth, aHeight, aDepth, aColour);
+		model->InitLightCube(aWidth, aHeight, aDepth, aColor);
 
 		proxy->SetModel(model);
 
 		return proxy;
 #endif	
-	}
-
-	ModelProxy* ModelLoader::LoadGeometry(const MeshData& aMeshData)
-	{
-#ifdef THREADED_LOADING
-		WaitUntilAddIsAllowed();
-
-		myCanCopyArray = false;
-		ModelProxy* proxy = new ModelProxy();
-
-		LoadData newData;
-		newData.myProxy = proxy;
-		newData.myLoadType = eLoadType::GEOMETRY;
-		newData.myMeshData = aMeshData;
-
-		myModelsToLoad.Add(newData);
-
-		myCanCopyArray = true;
-
-		return proxy;
-#else
-		ModelProxy* proxy = new ModelProxy();
-		Model* model = new Easy3D::Model();
-		model->InitGeometry(aMeshData);
-
-		proxy->SetModel(model);
-
-		return proxy;
-#endif
-		
 	}
 
 	void ModelLoader::WaitUntilCopyIsAllowed()

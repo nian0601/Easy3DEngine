@@ -8,6 +8,7 @@ namespace Easy3D
 	class Text : public BaseModel
 	{
 	public:
+		~Text();
 		void Init(const std::string& aFontPath);
 
 		void Render(const std::string& aString, const CU::Vector2<float>& aPosition

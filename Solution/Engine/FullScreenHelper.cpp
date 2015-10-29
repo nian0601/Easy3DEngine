@@ -62,6 +62,21 @@ namespace Easy3D
 	
 	FullScreenHelper::~FullScreenHelper()
 	{
+		delete myBloomData.myMiddleMan;
+		myBloomData.myMiddleMan = nullptr;
+		delete myBloomData.myFinalTexture;
+		myBloomData.myFinalTexture = nullptr;
+
+		delete myDownSampleData.myBloomDownSample[0];
+		myDownSampleData.myBloomDownSample[0] = nullptr;
+		delete myDownSampleData.myBloomDownSample[1];
+		myDownSampleData.myBloomDownSample[1] = nullptr;
+
+
+		myDownSampleData.myHDRDownSamples.DeleteAll();
+
+		delete myProcessedTexture;
+		myProcessedTexture = nullptr;
 	}
 
 	void FullScreenHelper::Process(SceneData* aSceneData, int aEffect)
@@ -105,6 +120,8 @@ namespace Easy3D
 			, Engine::GetInstance()->GetDepthStencilView());
 
 		Render(myRenderToTextureData.myEffect);
+
+		myRenderToTextureData.mySource->SetResource(NULL);
 	}
 
 	void FullScreenHelper::Combine(Texture* aSourceA, Texture* aSourceB, Texture* aTarget)
@@ -120,6 +137,9 @@ namespace Easy3D
 			, Engine::GetInstance()->GetDepthStencilView());
 
 		Render(myCombineData.myEffect);
+
+		myCombineData.mySourceA->SetResource(NULL);
+		myCombineData.mySourceB->SetResource(NULL);
 	}
 
 	void FullScreenHelper::RenderToScreen(Texture* aToBackbufferTexture)
@@ -134,6 +154,8 @@ namespace Easy3D
 		myRenderToTextureData.mySource->SetResource(aToBackbufferTexture->GetShaderView());
 
 		Render(myRenderToTextureData.myEffect);
+
+		myRenderToTextureData.mySource->SetResource(NULL);
 	}
 
 	void FullScreenHelper::ActivateBuffers()
@@ -201,19 +223,21 @@ namespace Easy3D
 
 		float width = static_cast<FLOAT>(Engine::GetInstance()->GetWindowSize().x);
 		float height = static_cast<FLOAT>(Engine::GetInstance()->GetWindowSize().y);
-		int hdrTextureCount = static_cast<int>(HDRLog2(MIN(width, height)) + 1);
-
-		myDownSampleData.myHDRDownSamples = new Texture[hdrTextureCount];
+		
+		myDownSampleData.myHDRDownSamplesCount = static_cast<int>(HDRLog2(MIN(width, height)) + 1);
+		myDownSampleData.myHDRDownSamples.Init(myDownSampleData.myHDRDownSamplesCount);
 		float size = MIN(width, height);
-		for (int i = 0; i < hdrTextureCount; ++i)
+		for (int i = 0; i < myDownSampleData.myHDRDownSamplesCount; ++i)
 		{
-			myDownSampleData.myHDRDownSamples[i].Init(size, size, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE
+			Texture* tex = new Texture();
+			tex->Init(size, size, D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_DEPTH_STENCIL
 				, DXGI_FORMAT_R8G8B8A8_UNORM);
+			myDownSampleData.myHDRDownSamples.Add(tex);
 
 			size /= 2.f;
 		}
 
-		myDownSampleData.myFinalHDRDownSample = &myDownSampleData.myHDRDownSamples[hdrTextureCount - 1];
+		myDownSampleData.myFinalHDRDownSample = myDownSampleData.myHDRDownSamples[myDownSampleData.myHDRDownSamplesCount - 1];
 	}
 
 	void FullScreenHelper::CreateHDRData()
@@ -304,8 +328,8 @@ namespace Easy3D
 		Engine::GetInstance()->GetContex()->RSSetViewports(1, &myViewPort);
 
 		ID3D11RenderTargetView* target = aTarget->GetRenderTargetView();
-		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target
-			, Engine::GetInstance()->GetDepthStencilView());
+		ID3D11DepthStencilView* depth = aTarget->GetDepthStencilView();
+		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target, depth);
 		float clearcolor[4] = { 0, 0, 0, 1 };
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(target, clearcolor);
 
@@ -333,12 +357,12 @@ namespace Easy3D
 		{
 			if (i == 0)
 			{
-				DownSample(&myDownSampleData.myHDRDownSamples[i], aSource, size, size, true);
+				DownSample(myDownSampleData.myHDRDownSamples[i], aSource, size, size, true);
 			}
 			else
 			{
-				DownSample(&myDownSampleData.myHDRDownSamples[i]
-					, &myDownSampleData.myHDRDownSamples[i - 1], size, size, true);
+				DownSample(myDownSampleData.myHDRDownSamples[i]
+					, myDownSampleData.myHDRDownSamples[i - 1], size, size, true);
 			}
 
 			size /= 2.f;
@@ -357,7 +381,6 @@ namespace Easy3D
 		myHDRData.myAverageColorTexture->SetResource(myDownSampleData.myFinalHDRDownSample->GetShaderView());
 
 		Render(myHDRData.myEffect);
-
 
 		Engine::GetInstance()->GetContex()->ClearRenderTargetView(myProcessedTexture->GetRenderTargetView(), myClearColor);
 		target = myProcessedTexture->GetRenderTargetView();
@@ -401,7 +424,6 @@ namespace Easy3D
 		myBloomData.myTexture->SetResource(aSource->GetShaderView());
 
 		Render(myBloomData.myEffect, "BLOOM_X");
-
 
 		target = aTarget->GetRenderTargetView();
 		Engine::GetInstance()->GetContex()->OMSetRenderTargets(1, &target

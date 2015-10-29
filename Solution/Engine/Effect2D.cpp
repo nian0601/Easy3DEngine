@@ -11,7 +11,6 @@ namespace Easy3D
 		BaseEffect::Init(aEffectFile);
 
 		myPosAndScale = CU::Vector4<float>(0.f, 0.f, 1.f, 1.f);
-
 		return true;
 	}
 

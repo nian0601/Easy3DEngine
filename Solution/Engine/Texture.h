@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 
+struct ID3D11DepthStencilView;
 struct ID3D11RenderTargetView;
 struct ID3D11ShaderResourceView;
 
@@ -17,10 +18,12 @@ namespace Easy3D
 		const std::string& GetFileName() const;
 		ID3D11ShaderResourceView* GetShaderView();
 		ID3D11RenderTargetView* GetRenderTargetView();
-
+		ID3D11DepthStencilView* GetDepthStencilView();
+		void CreateDepthStencilView(float aWidth, float aHeight);
 	private:
 		std::string myFileName;
 		ID3D11ShaderResourceView* myTexture;
 		ID3D11RenderTargetView* myRenderTargetView;
+		ID3D11DepthStencilView* myDepthStencilView;
 	};
 }

@@ -73,6 +73,8 @@ namespace Easy3D
 		delete myCombinedScenes;
 		delete myFontTexture;
 		delete myFinalTexture;
+
+		delete myFullScreenHelper;
 	}
 
 	void Easy3D::Renderer::ProcessScene(Scene* aScene, int aEffect)

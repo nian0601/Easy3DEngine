@@ -24,6 +24,18 @@ Easy3D::FBXFactory::FBXFactory()
 Easy3D::FBXFactory::~FBXFactory()
 {
 	delete myLoader;
+
+	for (unsigned int i = 0; i < myFBXData.size(); ++i)
+	{
+		delete myFBXData[i];
+		myFBXData[i] = nullptr;
+	}
+
+	for (auto it = myModels.begin(); it != myModels.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
 }
 
 void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect3D* aEffect)

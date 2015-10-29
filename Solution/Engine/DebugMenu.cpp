@@ -21,6 +21,25 @@ namespace Easy3D
 		myCurrentMovingVariable = nullptr;
 	}
 
+	DebugMenu::~DebugMenu()
+	{
+		delete myText;
+
+		DebugGroupStructure* group = myGroups;
+
+		while (group != nullptr)
+		{
+			DebugVariable* var = group->myGroup->myGroup->myLastVar;
+
+			DeleteVariable(var);
+
+			DebugGroupStructure* old = group;
+			group = group->myNext;
+			delete old;
+			old = nullptr;
+		}
+	}
+
 	void DebugMenu::Render(const CU::InputWrapper& aInput)
 	{
 		if (myCurrentMovingVariable != nullptr)
@@ -45,8 +64,6 @@ namespace Easy3D
 		newGroup->myPrev = nullptr;
 		newGroup->myNext = nullptr;
 		newGroup->myGroup = new DebugGroup();
-		newGroup->myText = new Text();
-		newGroup->myText->Init("Data/resources/font/font.dds");
 
 		newGroup->myGroup->myIsExpanded = false;
 		newGroup->myGroup->myIsClosed = false;
@@ -82,8 +99,6 @@ namespace Easy3D
 		var->myName = aString;
 		var->myType = eDebugVariableType::INT;
 		var->myInt = &aInt;
-		var->myText = new Text();
-		var->myText->Init("Data/resources/font/font.dds");
 
 		if (myGroups->myGroup == nullptr)
 		{
@@ -102,8 +117,6 @@ namespace Easy3D
 		var->myName = aString;
 		var->myType = eDebugVariableType::FLOAT;
 		var->myFloat = &aFloat;
-		var->myText = new Text();
-		var->myText->Init("Data/resources/font/font.dds");
 
 		if (myGroups->myGroup == nullptr)
 		{
@@ -122,8 +135,6 @@ namespace Easy3D
 		var->myName = aString;
 		var->myType = eDebugVariableType::BOOL;
 		var->myBool = &aBool;
-		var->myText = new Text();
-		var->myText->Init("Data/resources/font/font.dds");
 
 		if (myGroups->myGroup == nullptr)
 		{
@@ -202,8 +213,6 @@ namespace Easy3D
 		var->myName = aString;
 		var->myType = eDebugVariableType::FUNCTION;
 		var->myFunction = aFunction;
-		var->myText = new Text();
-		var->myText->Init("Data/resources/font/font.dds");
 
 		if (myGroups->myGroup == nullptr)
 		{
@@ -253,8 +262,8 @@ namespace Easy3D
 			color = HandleIteraction(aInput, var, ss.str(), drawPos);
 
 			textSize = myText->GetTextSize(ss.str());
-			charSize = var->myText->GetCharSize();
-			var->myText->Render(ss.str(), drawPos, myTextScale, color);
+			charSize = myText->GetCharSize();
+			myText->Render(ss.str(), drawPos, myTextScale, color);
 			drawPos.y -= textSize.y;
 
 			int xStep = GetNextVar(var);
@@ -497,6 +506,25 @@ namespace Easy3D
 			myCurrentMovingVariable = nullptr;
 		}
 		
+	}
+
+	void DebugMenu::DeleteVariable(DebugVariable* aVar)
+	{
+		if(aVar == nullptr)
+		{
+			return;
+		}
+
+		if(aVar->myType == eDebugVariableType::GROUP)
+		{
+			DeleteVariable(aVar->myGroup->myFirstVar);
+		}
+		else
+		{
+			DebugVariable* next = aVar->myNext;
+			delete aVar;
+			DeleteVariable(next);
+		}
 	}
 
 }

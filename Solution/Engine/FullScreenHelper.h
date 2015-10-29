@@ -42,8 +42,9 @@ namespace Easy3D
 			ID3DX11EffectShaderResourceVariable* myTexture;
 
 			Texture* myBloomDownSample[2];
-			Texture* myHDRDownSamples;
+			CU::GrowingArray<Texture*> myHDRDownSamples;
 			Texture* myFinalHDRDownSample;
+			int myHDRDownSamplesCount;
 		};
 		struct HDRData
 		{

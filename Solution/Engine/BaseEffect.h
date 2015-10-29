@@ -26,9 +26,6 @@ namespace Easy3D
 		ID3DX11EffectTechnique* GetTechnique();
 		const std::string& GetFileName() const;
 
-
-		
-
 	protected:
 		ID3DX11Effect* myEffect;
 		ID3DX11EffectTechnique* myTechnique;

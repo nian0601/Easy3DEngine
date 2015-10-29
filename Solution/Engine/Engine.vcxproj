@@ -106,14 +106,12 @@
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="DebugDataDisplay.cpp" />
     <ClCompile Include="DebugMenu.cpp" />
     <ClCompile Include="FullScreenHelper.cpp" />
     <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="ParticleEmitterInstance.cpp" />
     <ClCompile Include="ParticleEmitterData.cpp" />
     <ClCompile Include="RadialDebugMenu.cpp" />
-    <ClCompile Include="Debug_BlockTimer.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Effect2D.cpp" />
     <ClCompile Include="Effect3D.cpp" />
@@ -127,9 +125,6 @@
     <ClCompile Include="FileWatcher.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="FontContainer.cpp" />
-    <ClCompile Include="FrameTimeDebugger.cpp" />
-    <ClCompile Include="GeometryGenerator.cpp" />
-    <ClCompile Include="GraphRenderer.cpp" />
     <ClCompile Include="Instance.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelLoader.cpp" />
@@ -151,7 +146,6 @@
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="DebugDataDisplay.h" />
     <ClInclude Include="DebugMenu.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="FullScreenHelper.h" />
@@ -161,7 +155,6 @@
     <ClInclude Include="ParticleData.h" />
     <ClInclude Include="ParticleEmitterData.h" />
     <ClInclude Include="RadialDebugMenu.h" />
-    <ClInclude Include="Debug_BlockTimer.h" />
     <ClInclude Include="Defines.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Effect2D.h" />
@@ -174,9 +167,6 @@
     <ClInclude Include="FileWatcher.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="FontContainer.h" />
-    <ClInclude Include="FrameTimeDebugger.h" />
-    <ClInclude Include="GeometryGenerator.h" />
-    <ClInclude Include="GraphRenderer.h" />
     <ClInclude Include="IndexBufferWrapper.h" />
     <ClInclude Include="Instance.h" />
     <ClInclude Include="DirectionalLight.h" />

@@ -18,7 +18,6 @@ Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrien
 
 Easy3D::Instance::~Instance()
 {
-	delete &myProxy;
 }
 
 void Easy3D::Instance::Render(Camera& aCamera)

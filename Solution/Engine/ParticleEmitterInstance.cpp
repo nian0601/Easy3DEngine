@@ -24,6 +24,7 @@ namespace Easy3D
 	
 	ParticleEmitterInstance::~ParticleEmitterInstance()
 	{
+		myVertexBufferWrapper->myVertexBuffer->Release();
 		delete myVertexBufferWrapper;
 	}
 
@@ -92,10 +93,8 @@ namespace Easy3D
 	void ParticleEmitterInstance::CreateVertexBuffer()
 	{
 		myEmitterData.myHasNewData = false;
-		if (myVertexBufferWrapper != nullptr)
-		{
+		if (myVertexBufferWrapper != nullptr && myVertexBufferWrapper->myVertexBuffer != nullptr)
 			myVertexBufferWrapper->myVertexBuffer->Release();
-		}
 
 		myVertexBufferWrapper = new VertexBufferWrapper();
 		myVertexBufferWrapper->myStride = sizeof(ParticleInstance);
@@ -112,8 +111,7 @@ namespace Easy3D
 		vertexBufferDesc.MiscFlags = 0;
 		vertexBufferDesc.StructureByteStride = 0;
 
-		if (myVertexBufferWrapper->myVertexBuffer != nullptr)
-			myVertexBufferWrapper->myVertexBuffer->Release();
+		
 
 		vertexBufferDesc.ByteWidth = sizeof(ParticleInstance) * myEmitterData.myMaxNrOfParticles;
 

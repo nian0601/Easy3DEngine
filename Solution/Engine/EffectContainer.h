@@ -12,6 +12,8 @@ namespace Easy3D
 	class EffectContainer
 	{
 	public:
+		~EffectContainer();
+
 		BaseEffect* GetBaseEffect(const std::string& aFilePath);
 		Effect2D* Get2DEffect(const std::string& aFilePath);
 		Effect3D* Get3DEffect(const std::string& aFilePath);

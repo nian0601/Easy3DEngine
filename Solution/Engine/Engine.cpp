@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-#include "DebugDataDisplay.h"
 #include "DirectX.h"
 #include "EffectContainer.h"
 #include "Engine.h"
@@ -26,7 +25,6 @@ namespace Easy3D
 		myTextureContainer = new TextureContainer();
 		myEffectContainer = new EffectContainer();
 		myFontContainer = new FontContainer();
-		myDebugDataDisplay = new DebugDataDisplay();
 		myFileWatcher = new FileWatcher();
 		myModelLoader = new ModelLoader();
 
@@ -39,7 +37,6 @@ namespace Easy3D
 		delete myTextureContainer;
 		delete myEffectContainer;
 		delete myFontContainer;
-		delete myDebugDataDisplay;
 		delete myFileWatcher;
 		delete myModelLoader;
 	}
@@ -75,8 +72,6 @@ namespace Easy3D
 	void Engine::Render()
 	{
 		VTUNE_EVENT_BEGIN(VTUNE::RENDER);
-
-		TIME_FUNCTION;
 
 		myDirectX->Present(0, 0);
 		float clearColor[4] = { myClearColor.myR, myClearColor.myG, myClearColor.myB, myClearColor.myA };
@@ -115,6 +110,11 @@ namespace Easy3D
 		return myDirectX->GetBackbuffer();
 	}
 
+	void Engine::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName)
+	{
+		myDirectX->SetDebugName(aChild, aName);
+	}
+
 	bool Engine::Init(HWND& aHwnd, WNDPROC aWndProc)
 	{
 		myWindowSize.x = mySetupInfo->myScreenWidth;
@@ -135,9 +135,6 @@ namespace Easy3D
 
 		ShowWindow(aHwnd, 10);
 		UpdateWindow(aHwnd);
-
-		myDebugDataDisplay->Init();
-
 
 		myDebugText = new Text();
 		myDebugText->Init("Data/resources/font/font.dds");

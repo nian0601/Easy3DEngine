@@ -7,6 +7,8 @@ namespace Easy3D
 	class FontContainer
 	{
 	public:
+		~FontContainer();
+
 		Font* GetFont(const std::string& aPath);
 
 	private:

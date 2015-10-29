@@ -1,6 +1,7 @@
 #pragma once
 #include "EffectListener.h"
 #include "VertexBufferWrapper.h"
+#include "Vertices.h"
 
 struct ID3D11BlendState;
 struct ID3D11InputLayout;
@@ -22,7 +23,7 @@ namespace Easy3D
 	{
 	public:
 		BaseModel();
-		~BaseModel();
+		virtual ~BaseModel();
 
 	protected:
 		void Render();

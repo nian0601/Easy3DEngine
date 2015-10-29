@@ -2,7 +2,6 @@
 
 #include <Camera.h>
 #include "CollisionManager.h"
-#include <DebugDataDisplay.h>
 #include <DebugMenu.h>
 #include <DirectionalLight.h>
 #include "Entity.h"
@@ -27,6 +26,15 @@ Game::Game()
 
 Game::~Game()
 {
+	delete myRenderer;
+	delete myDebugMenu;
+
+	delete myCollisionManager;
+	delete myScene;
+	delete mySecondScene;
+
+	delete myEmitter;
+
 }
 
 bool Game::Init(HWND& aHwnd)
@@ -43,9 +51,9 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("Memory (MB)", myMemoryUsage);
 	myDebugMenu->AddVariable("CPU", myCPUUsage);
 	myDebugMenu->EndGroup();
-
+	
 	myDebugMenu->StartGroup("Rendering");
-
+	
 	myDebugMenu->StartGroup("Scene One");
 	myDebugMenu->AddVariable("Toggle Rendering", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_RENDER));
 	myDebugMenu->AddVariable("Toggle HDR", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_HDR));
@@ -53,7 +61,7 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("Toggle Motion Blur", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_MOTION_BLUR));
 	myDebugMenu->AddVariable("Effect Value", mySceneEffect);
 	myDebugMenu->EndGroup();
-
+	
 	myDebugMenu->StartGroup("Scene Two");
 	myDebugMenu->AddVariable("Toggle Rendering", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_RENDER));
 	myDebugMenu->AddVariable("Toggle HDR", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_HDR));
@@ -61,7 +69,7 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("Toggle Motion Blur", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_MOTION_BLUR));
 	myDebugMenu->AddVariable("Effect Value", mySecondSceneEffect);
 	myDebugMenu->EndGroup();
-
+	
 	myDebugMenu->EndGroup();
 
 	myRenderer = new Easy3D::Renderer();
@@ -74,27 +82,27 @@ bool Game::Init(HWND& aHwnd)
 	{
 		std::string file;
 		reader.ForceReadAttribute(entityElem, "file", file);
-
+	
 		XMLELEMENT pos = reader.ForceFindFirstChild(entityElem, "position");
 		CU::Vector3<float> position;
 		reader.ForceReadAttribute(pos, "x", position.x);
 		reader.ForceReadAttribute(pos, "y", position.y);
 		reader.ForceReadAttribute(pos, "z", position.z);
-
+	
 		XMLELEMENT rot = reader.ForceFindFirstChild(entityElem, "rotation");
 		CU::Vector3<float> rotation;
 		reader.ForceReadAttribute(rot, "x", rotation.x);
 		reader.ForceReadAttribute(rot, "y", rotation.y);
 		reader.ForceReadAttribute(rot, "z", rotation.z);
-
+	
 		Entity* newEntity = new Entity();
 		newEntity->LoadFromScript(file);
-
+	
 		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundX(rotation.x));
 		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundY(rotation.y));
 		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundZ(rotation.z));
 		newEntity->SetPosition(position);
-
+	
 		myEntities.Add(newEntity);
 		entityElem = reader.FindNextElement(entityElem, "entity");
 	}
@@ -119,7 +127,7 @@ bool Game::Init(HWND& aHwnd)
 		{
 			myCollisionManager->Add(comp);
 		}
-
+	
 		GraphicsComponent* gfx = reinterpret_cast<GraphicsComponent*>(myEntities[i]->GetComponent(eComponent::GRAPHIC));
 		if (gfx != nullptr)
 		{
@@ -138,7 +146,7 @@ bool Game::Init(HWND& aHwnd)
 	
 	Easy3D::ParticleEmitterData* particleData = new Easy3D::ParticleEmitterData();
 	particleData->Init("Data/script/streak.xml");
-
+	
 	myEmitter = new Easy3D::ParticleEmitterInstance(*particleData);
 	myScene->AddInstance(myEmitter);
 	GAME_LOG("Init Successful");
@@ -152,8 +160,6 @@ bool Game::Destroy()
 
 bool Game::Update()
 {
-	BEGIN_TIME_BLOCK("Game::Update");
-	
 	UpdateSubSystems();
 
 	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_ESCAPE))
@@ -180,15 +186,9 @@ bool Game::Update()
 	myCollisionManager->CheckCollisions();
 
 
-	Easy3D::Engine::GetInstance()->GetDebugDisplay()->Update(*CU::InputWrapper::GetInstance());
-
 	myEmitter->Update(myDeltaTime);
 
 	Render();
-
-	END_TIME_BLOCK("Game::Update");
-
-	Easy3D::Engine::GetInstance()->GetDebugDisplay()->RecordFrameTime(myDeltaTime);
 	return true;
 }
 
@@ -243,21 +243,23 @@ void Game::UpdateSubSystems()
 
 void Game::Render()
 {
-	myRenderer->StartFontRendering();
+	//myRenderer->StartFontRendering();
 	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
-	myRenderer->EndFontRendering();
-
-	if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
-	{
-		myRenderer->ProcessScene(myScene, mySceneEffect);
-	}
-
-	//if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
+	//myRenderer->EndFontRendering();
+	//
+	//if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
 	//{
-	//	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
+	//	myRenderer->ProcessScene(myScene, mySceneEffect);
 	//}
+	//
+	////if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
+	////{
+	////	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
+	////}
+	//
+	//myRenderer->FinalRender();'
 
-	myRenderer->FinalRender();
+	myScene->Render();
 }
 
 void Game::ToggleSetting(eGameSettings aSetting)

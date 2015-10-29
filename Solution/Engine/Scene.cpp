@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-#include "DebugDataDisplay.h"
 #include "DirectionalLight.h"
 #include "Instance.h"
 #include "ParticleEmitterInstance.h"
@@ -27,8 +26,6 @@ Easy3D::Scene::~Scene()
 
 void Easy3D::Scene::Render()
 {
-	TIME_FUNCTION;;
-
 	for (int i = 0; i < myDirectionalLights.Size(); ++i)
 	{
 		myDirectionalLights[i]->Update();
