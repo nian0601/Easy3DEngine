@@ -81,6 +81,8 @@ float4 PS(PS_INPUT_POS_NORM_TEX_BI_TANG input) : SV_Target
 	//finalColor += cubeMap;
 	//finalColor *= AmbientOcclusion;
 
+	finalColor *= ColorMask;
+
 	finalColor.a = 1.f;
 	
 	return finalColor;

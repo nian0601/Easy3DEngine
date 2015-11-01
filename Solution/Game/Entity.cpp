@@ -15,9 +15,11 @@
 
 
 
-Entity::Entity()
+Entity::Entity(eEntityType aType)
 	: myComponentsArray(8)
 	, myAlive(true)
+	, myIsActive(true)
+	, myType(aType)
 {
 }
 
@@ -245,7 +247,6 @@ void Entity::RegisterClassToLua(luabridge::lua_State* aState)
 {
 	getGlobalNamespace(aState)
 		.beginClass<Entity>("Entity")
-		.addConstructor<void(*)()>()
 		.addFunction("SendLuaMessage", &Entity::SendLUAMessage)
 		.addFunction("TakeDamage", &Entity::TakeDamage)
 		.addFunction("GetHealth", &Entity::GetHealth)

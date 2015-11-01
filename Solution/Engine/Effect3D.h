@@ -20,6 +20,7 @@ namespace Easy3D
 		bool ReloadShader(const std::string& aFile) override;
 
 		void SetScaleVector(const CU::Vector3<float>& aScaleVector);
+		void SetColor(const CU::Vector4<float>& aColor);
 		void SetWorldMatrix(const CU::Matrix44<float>& aWorldMatrix);
 		void SetViewMatrix(const CU::Matrix44<float>& aViewMatrix);
 		void SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix);
@@ -36,6 +37,7 @@ namespace Easy3D
 		ID3DX11EffectMatrixVariable* myWorldMatrixVariable;
 
 		ID3DX11EffectVectorVariable* myScaleVectorVariable;
+		ID3DX11EffectVectorVariable* myColorVariable;
 
 		ID3DX11EffectVariable* myDirectionalLightVariable;
 		ID3DX11EffectVariable* myPointLightVariable;

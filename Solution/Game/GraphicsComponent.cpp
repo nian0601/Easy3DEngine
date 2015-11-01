@@ -76,6 +76,10 @@ void GraphicsComponent::Update(float aDelta)
 void GraphicsComponent::ReceiveNote(const ChangeColorNote& aNote)
 {
 	myColor = aNote.myColor;
+	if (myModel != nullptr)
+	{
+		myModel->SetColor(myColor);
+	}
 }
 
 void GraphicsComponent::LoadSprite(luabridge::LuaRef& aSpriteRef)
@@ -131,5 +135,5 @@ void GraphicsComponent::LoadModel(luabridge::LuaRef& aModelRef)
 	std::string shader = shaderRef.cast<std::string>();
 
 	myModel = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadModel(myFilePath, shader)
-		, myEntity.GetOrientation());
+		, myEntity.GetOrientation(), myEntity.IsActive());
 }

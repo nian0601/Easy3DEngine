@@ -11,3 +11,9 @@ enum class eComponent
 	HEALTH,
 	EMITTER,
 };
+
+enum class eEntityType
+{
+	PLAYER,
+	PICKABLE,
+};

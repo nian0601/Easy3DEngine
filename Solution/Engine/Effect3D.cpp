@@ -23,6 +23,12 @@ namespace Easy3D
 			myScaleVectorVariable = nullptr;
 		}
 
+		myColorVariable = myEffect->GetVariableByName("ColorMask")->AsVector();
+		if (myColorVariable->IsValid() == false)
+		{
+			myColorVariable = nullptr;
+		}
+
 		myWorldMatrixVariable = myEffect->GetVariableByName("World")->AsMatrix();
 		if (myWorldMatrixVariable->IsValid() == false)
 		{
@@ -70,8 +76,15 @@ namespace Easy3D
 		if (myScaleVectorVariable != nullptr)
 		{
 			myScaleVectorVariable->SetFloatVector(&aScaleVector.x);
+		}	
+	}
+
+	void Effect3D::SetColor(const CU::Vector4<float>& aColor)
+	{
+		if (myColorVariable != nullptr)
+		{
+			myColorVariable->SetFloatVector(&aColor.x);
 		}
-		
 	}
 
 	void Effect3D::SetWorldMatrix(const CU::Matrix44<float>& aWorldMatrix)

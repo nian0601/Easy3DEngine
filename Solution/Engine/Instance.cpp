@@ -8,10 +8,12 @@
 #include "ModelProxy.h"
 
 
-Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation)
+Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation, const bool& aIsActive)
 	: myProxy(aModel)
 	, myOrientation(aOrientation)
+	, myIsActive(aIsActive)
 	, myScale({1,1,1})
+	, myColor({ 1.f, 1.f, 1.f, 1.f })
 {
 
 }
@@ -22,11 +24,12 @@ Easy3D::Instance::~Instance()
 
 void Easy3D::Instance::Render(Camera& aCamera)
 {
-	if (myProxy.IsLoaded())
+	if (myProxy.IsLoaded() && myIsActive == true)
 	{
 		myProxy.GetEffect()->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
 		myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
 		myProxy.GetEffect()->SetScaleVector(myScale);
+		myProxy.GetEffect()->SetColor(myColor);
 
 		myProxy.Render(myOrientation);
 	}
@@ -34,11 +37,12 @@ void Easy3D::Instance::Render(Camera& aCamera)
 
 void Easy3D::Instance::Render(const CU::Matrix44<float>& aParentMatrix, Camera& aCamera)
 {
-	if (myProxy.IsLoaded())
+	if (myProxy.IsLoaded() && myIsActive == true)
 	{
 		myProxy.GetEffect()->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
 		myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
 		myProxy.GetEffect()->SetScaleVector(myScale);
+		myProxy.GetEffect()->SetColor(myColor);
 
 		myProxy.Render(myOrientation * aParentMatrix);
 	}
@@ -55,7 +59,11 @@ void Easy3D::Instance::SetEffect(const std::string& aEffectFile)
 void Easy3D::Instance::SetScale(const CU::Vector3<float>& aScaleVector)
 {
 	myScale = aScaleVector;
-	
+}
+
+void Easy3D::Instance::SetColor(const CU::Vector4<float>& aColor)
+{
+	myColor = aColor;
 }
 
 void Easy3D::Instance::UpdateDirectionalLights(

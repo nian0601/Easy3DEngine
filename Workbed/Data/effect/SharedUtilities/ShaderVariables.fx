@@ -13,6 +13,7 @@ Texture2D AOTexture;
 TextureCube CubeMap;
 
 float3 Scale;
+float4 ColorMask;
 
 struct VS_INPUT_POS_NORM_TEX
 {

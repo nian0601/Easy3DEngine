@@ -38,6 +38,9 @@
     <ClCompile Include="EmitterComponent.cpp">
       <Filter>ComponentSystem\Components</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>ComponentSystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
@@ -85,6 +88,9 @@
     </ClInclude>
     <ClInclude Include="EmitterComponent.h">
       <Filter>ComponentSystem\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>ComponentSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

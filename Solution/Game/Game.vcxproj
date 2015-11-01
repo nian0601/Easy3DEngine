@@ -98,6 +98,7 @@
     <ClInclude Include="HealthComponent.h" />
     <ClInclude Include="InputComponent.h" />
     <ClInclude Include="PhycisComponent.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="ScriptComponent.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="UpdateVelocityNote.h" />
@@ -114,6 +115,7 @@
     <ClCompile Include="HealthComponent.cpp" />
     <ClCompile Include="InputComponent.cpp" />
     <ClCompile Include="PhycisComponent.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="ScriptComponent.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

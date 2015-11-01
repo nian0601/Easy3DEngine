@@ -1,9 +1,17 @@
-<entity file="Data/script/entities/streakEntity.lua">
-	<position x="0" y="0" z="10"/>
-	<rotation x="0" y="0" z="0"/>
-</entity>
-
 <entity file="Data/script/entities/player.lua">
 	<position x="0" y="0" z="10"/>
 	<rotation x="0" y="0" z="0"/>
+	<entityType type="player"/>
+</entity>
+
+<entity file="Data/script/entities/pickables/test_item.lua">
+	<position x="10" y="0" z="10"/>
+	<rotation x="0" y="0" z="0"/>
+	<entityType type="material"/>
+</entity>
+
+<entity file="Data/script/entities/pickables/test_item.lua">
+	<position x="-10" y="0" z="10"/>
+	<rotation x="0" y="0" z="0"/>
+	<entityType type="material"/>
 </entity>

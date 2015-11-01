@@ -51,7 +51,7 @@ entity = {
 			shader = "Data/effect/3D/BasicEffect.fx"
 		}
 	},
-	--[[inputComponent = {
+	inputComponent = {
 		onWDown = function(aEntity)
 			inputMessage(aEntity, 0, 0, 1)
 		end,
@@ -66,7 +66,7 @@ entity = {
 		end
 	},
 	physicsComponent = {
-		speed = 20,
+		speed = 10,
 	},
 	scriptComponent = {
 		onUpdate = function(aEntity, aElapsed)
@@ -89,5 +89,8 @@ entity = {
 	},
 	healthComponent = {
 		health = 100
-	}]]--
+	},
+	emitterComponent = {
+		file = "Data/script/emitters/streak.xml"
+	}
 }

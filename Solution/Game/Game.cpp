@@ -91,7 +91,19 @@ bool Game::Init(HWND& aHwnd)
 		reader.ForceReadAttribute(rot, "y", rotation.y);
 		reader.ForceReadAttribute(rot, "z", rotation.z);
 
-		Entity* newEntity = myEntityManager->CreateEntity(file);
+		XMLELEMENT type = reader.ForceFindFirstChild(entityElem, "entityType");
+		std::string entityType;
+		reader.ForceReadAttribute(type, "type", entityType);
+
+		Entity* newEntity = nullptr;
+		if (entityType == "player")
+		{
+			newEntity = myEntityManager->CreateEntity(file, eEntityType::PLAYER);
+		}
+		else if (entityType == "material")
+		{
+			newEntity = myEntityManager->CreateEntity(file, eEntityType::PICKABLE);
+		}
 	
 		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundX(rotation.x));
 		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundY(rotation.y));
@@ -155,7 +167,7 @@ void Game::UpdateSubSystems()
 	myCPUUsage = Easy3D::SystemMonitor::GetCPUUsage();
 
 
-	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+	/*if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
 	{
 		myCamera->MoveForward(100.f * myDeltaTime);
 	}
@@ -170,7 +182,7 @@ void Game::UpdateSubSystems()
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
 	{
 		myCamera->MoveRight(100.f * myDeltaTime);
-	}
+	}*/
 
 
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_UP))

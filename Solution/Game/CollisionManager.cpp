@@ -18,8 +18,18 @@ void CollisionManager::CheckCollisions()
 {
 	for (int i = 0; i < myCollisionComponents.Size(); ++i)
 	{
+		if (myCollisionComponents[i]->GetEntity().IsActive() == false)
+		{
+			continue;
+		}
+
 		for (int j = i + 1; j < myCollisionComponents.Size(); ++j)
 		{
+			if (myCollisionComponents[j]->GetEntity().IsActive() == false)
+			{
+				continue;
+			}
+
 			float dist = CU::Length(myCollisionComponents[i]->GetPosition() - myCollisionComponents[j]->GetPosition());
 			float rad = myCollisionComponents[i]->GetRadius() + myCollisionComponents[j]->GetRadius();
 
