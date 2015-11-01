@@ -107,6 +107,7 @@
     <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugMenu.cpp" />
+    <ClCompile Include="EmitterContainer.cpp" />
     <ClCompile Include="FullScreenHelper.cpp" />
     <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="ParticleEmitterInstance.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DebugMenu.h" />
+    <ClInclude Include="EmitterContainer.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="FullScreenHelper.h" />
     <ClInclude Include="ParticleEffect.h" />

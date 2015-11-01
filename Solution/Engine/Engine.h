@@ -20,6 +20,7 @@ namespace Easy3D
 	class DirectX;
 	class EffectContainer;
 	class Effect3D;
+	class EmitterContainer;
 	class FBXFactory;
 	class FileWatcher;
 	class FontContainer;
@@ -54,6 +55,7 @@ namespace Easy3D
 		FontContainer* GetFontContainer();
 		FileWatcher* GetFileWatcher();
 		ModelLoader* GetModelLoader();
+		EmitterContainer* GetEmitterContainer();
 
 		const CU::Vector2<int>& GetWindowSize() const;
 		const CU::Matrix44<float>& GetOrthogonalMatrix() const;
@@ -89,6 +91,7 @@ namespace Easy3D
 		EffectContainer* myEffectContainer;
 		FontContainer* myFontContainer;
 		FileWatcher* myFileWatcher;
+		EmitterContainer* myEmitterContainer;
 
 		Text* myDebugText;
 
@@ -127,6 +130,11 @@ inline Easy3D::FileWatcher* Easy3D::Engine::GetFileWatcher()
 inline Easy3D::ModelLoader* Easy3D::Engine::GetModelLoader()
 {
 	return myModelLoader;
+}
+
+inline Easy3D::EmitterContainer* Easy3D::Engine::GetEmitterContainer()
+{
+	return myEmitterContainer;
 }
 
 inline const CU::Vector2<int>& Easy3D::Engine::GetWindowSize() const

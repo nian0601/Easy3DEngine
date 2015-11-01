@@ -2,6 +2,7 @@
 
 #include "DirectX.h"
 #include "EffectContainer.h"
+#include "EmitterContainer.h"
 #include "Engine.h"
 #include "FBXFactory.h"
 #include "FileWatcher.h"
@@ -27,6 +28,7 @@ namespace Easy3D
 		myFontContainer = new FontContainer();
 		myFileWatcher = new FileWatcher();
 		myModelLoader = new ModelLoader();
+		myEmitterContainer = new EmitterContainer();
 
 		myWireframeIsOn = false;
 		myWireframeShouldShow = false;
@@ -39,6 +41,7 @@ namespace Easy3D
 		delete myFontContainer;
 		delete myFileWatcher;
 		delete myModelLoader;
+		delete myEmitterContainer;
 	}
 
 	bool Engine::Create(HWND& aHwnd, WNDPROC aWndProc, SetupInfo& aSetupInfo)

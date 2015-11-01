@@ -89,6 +89,9 @@
     <ClCompile Include="DebugMenu.cpp">
       <Filter>DebugServices</Filter>
     </ClCompile>
+    <ClCompile Include="EmitterContainer.cpp">
+      <Filter>Rendering\Particles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -223,6 +226,9 @@
     </ClInclude>
     <ClInclude Include="DebugMenu.h">
       <Filter>DebugServices</Filter>
+    </ClInclude>
+    <ClInclude Include="EmitterContainer.h">
+      <Filter>Rendering\Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
