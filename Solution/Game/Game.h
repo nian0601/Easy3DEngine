@@ -76,6 +76,4 @@ private:
 
 	EntityManager* myEntityManager;
 	CollisionManager* myCollisionManager;
-
-	Easy3D::ParticleEmitterInstance* myEmitter;
 };

@@ -2,6 +2,7 @@
 
 #include "CollisionComponent.h"
 #include "CollisionManager.h"
+#include "EmitterComponent.h"
 #include "Entity.h"
 #include "GraphicsComponent.h"
 #include "EntityManager.h"
@@ -40,6 +41,12 @@ Entity* EntityManager::CreateEntity(const std::string& aFilePath)
 		{
 			myScene.AddInstance(gfx->GetInstance());
 		}
+	}
+
+	EmitterComponent* emitter = static_cast<EmitterComponent*>(newEntity->GetComponent(eComponent::EMITTER));
+	if (emitter != nullptr)
+	{
+		myScene.AddInstance(emitter->GetEmitter());
 	}
 
 	return newEntity;

@@ -32,9 +32,6 @@ Game::~Game()
 
 	delete myCollisionManager;
 	delete myScene;
-
-	delete myEmitter;
-
 }
 
 bool Game::Init(HWND& aHwnd)
@@ -113,9 +110,7 @@ bool Game::Init(HWND& aHwnd)
 	dirLight->SetColor({ 1.f, 0.5f, 0.5f, 1.f });
 	dirLight->SetDir({ 0.f, -1.f, -1.f });
 	myScene->AddLight(dirLight);
-	
-	myEmitter = Easy3D::Engine::GetInstance()->GetEmitterContainer()->CreateEmitter("Data/script/streak.xml");
-	myScene->AddInstance(myEmitter);
+
 	GAME_LOG("Init Successful");
 	return true;
 }
@@ -142,8 +137,6 @@ bool Game::Update()
 
 	myCollisionManager->CheckCollisions();
 
-
-	myEmitter->Update(myDeltaTime);
 
 	Render();
 	return true;

@@ -3,6 +3,7 @@
 #include "ChangeColorNote.h"
 #include "Component.h"
 #include "CollisionComponent.h"
+#include "EmitterComponent.h"
 #include "Entity.h"
 #include "GraphicsComponent.h"
 #include "HealthComponent.h"
@@ -34,54 +35,6 @@ void Entity::LoadFromScript(const std::string& aScript)
 	RegisterClassToLua(L);
 	luaL_dofile(L, aScript.c_str());
 	LuaRef entity = getGlobal(L, "entity");
-
-	/*LuaRef position = entity["position"];
-	if (position.isNil() == false)
-	{
-		LuaRef xRef = position["x"];
-		LuaRef yRef = position["y"];
-		LuaRef zRef = position["z"];
-
-		if (xRef.isNil() == true || yRef.isNil() == true || zRef.isNil() == true)
-		{
-			DL_ASSERT("One or more elements (x/y/z) is missing from entity-script.");
-		}
-
-		CU::Vector3<float> newPos;
-		newPos.x = xRef.cast<float>();
-		newPos.y = yRef.cast<float>();
-		newPos.z = zRef.cast<float>();
-		myOrientation.SetPos(newPos);
-	}
-
-	LuaRef rotation = entity["rotation"];
-	if (rotation.isNil() == false)
-	{
-		LuaRef xRef = rotation["x"];
-		LuaRef yRef = rotation["y"];
-		LuaRef zRef = rotation["z"];
-
-		CU::Vector3<float> pos = myOrientation.GetPos();
-		myOrientation.SetPos({ 0.f, 0.f, 0.f, 1.f });
-		if (xRef.isNil() == false)
-		{
-			float x = xRef.cast<float>();
-			myOrientation = CU::Matrix44<float>::CreateRotateAroundX(x) * myOrientation;
-		}
-
-		if (yRef.isNil() == false)
-		{
-			float y = yRef.cast<float>();
-			myOrientation = CU::Matrix44<float>::CreateRotateAroundX(y) * myOrientation;
-		}
-
-		if (zRef.isNil() == false)
-		{
-			float z = zRef.cast<float>();
-			myOrientation = CU::Matrix44<float>::CreateRotateAroundX(z) * myOrientation;
-		}
-		myOrientation.SetPos(pos);
-	}*/
 
 	LuaRef graphicsComponent = entity["graphicsComponent"];
 	if (graphicsComponent.isNil() == false)
@@ -124,6 +77,14 @@ void Entity::LoadFromScript(const std::string& aScript)
 		HealthComponent* health = new HealthComponent(*this);
 		AddComponent(health);
 	}
+	
+	LuaRef emitterComponent = entity["emitterComponent"];
+	if (emitterComponent.isNil() == false)
+	{
+		EmitterComponent* emitter = new EmitterComponent(*this);
+		AddComponent(emitter);
+	}
+
 
 	
 
@@ -151,6 +112,9 @@ void Entity::LoadFromScript(const std::string& aScript)
 			break;
 		case eComponent::HEALTH:
 			comp->LoadFromScript(healthComponent);
+			break;
+		case eComponent::EMITTER:
+			comp->LoadFromScript(emitterComponent);
 			break;
 		default:
 			break;

@@ -71,7 +71,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 	}
 
 	globalGame = new Game();
-	OnResize();
+	//OnResize();
 	if (globalGame->Init(hwnd) == false)
 	{
 		return 1;
