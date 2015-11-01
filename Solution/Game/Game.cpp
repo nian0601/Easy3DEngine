@@ -5,12 +5,13 @@
 #include <DebugMenu.h>
 #include <DirectionalLight.h>
 #include "Entity.h"
+#include "EntityManager.h"
+#include <EmitterContainer.h>
 #include <Engine.h>
 #include <FileWatcher.h>
 #include "Game.h"
 #include "GraphicsComponent.h"
 #include <InputWrapper.h>
-#include <ParticleEmitterData.h>
 #include <ParticleEmitterInstance.h>
 #include <Renderer.h>
 #include <Scene.h>
@@ -31,7 +32,6 @@ Game::~Game()
 
 	delete myCollisionManager;
 	delete myScene;
-	delete mySecondScene;
 
 	delete myEmitter;
 
@@ -61,20 +61,19 @@ bool Game::Init(HWND& aHwnd)
 	myDebugMenu->AddVariable("Toggle Motion Blur", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_MOTION_BLUR));
 	myDebugMenu->AddVariable("Effect Value", mySceneEffect);
 	myDebugMenu->EndGroup();
-	
-	myDebugMenu->StartGroup("Scene Two");
-	myDebugMenu->AddVariable("Toggle Rendering", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_RENDER));
-	myDebugMenu->AddVariable("Toggle HDR", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_HDR));
-	myDebugMenu->AddVariable("Toggle Bloom", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_BLOOM));
-	myDebugMenu->AddVariable("Toggle Motion Blur", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_TWO_MOTION_BLUR));
-	myDebugMenu->AddVariable("Effect Value", mySecondSceneEffect);
+
 	myDebugMenu->EndGroup();
 	
 	myDebugMenu->EndGroup();
 
 	myRenderer = new Easy3D::Renderer();
+	myCollisionManager = new CollisionManager();
+	myScene = new Easy3D::Scene();
+	myScene->SetCamera(myCamera);
+	mySceneEffect = Easy3D::ePostProcess::HDR;
 
-	myEntities.Init(4);
+	myEntityManager = new EntityManager(myScene, myCollisionManager);
+
 	XMLReader reader;
 	reader.OpenDocument("Data/script/entities.xml");
 	XMLELEMENT entityElem = reader.FindFirstChild("entity");
@@ -94,49 +93,20 @@ bool Game::Init(HWND& aHwnd)
 		reader.ForceReadAttribute(rot, "x", rotation.x);
 		reader.ForceReadAttribute(rot, "y", rotation.y);
 		reader.ForceReadAttribute(rot, "z", rotation.z);
-	
-		Entity* newEntity = new Entity();
-		newEntity->LoadFromScript(file);
+
+		Entity* newEntity = myEntityManager->CreateEntity(file);
 	
 		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundX(rotation.x));
 		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundY(rotation.y));
 		newEntity->Rotate(CU::Matrix44<float>::CreateRotateAroundZ(rotation.z));
 		newEntity->SetPosition(position);
 	
-		myEntities.Add(newEntity);
+
 		entityElem = reader.FindNextElement(entityElem, "entity");
 	}
 
-	myCollisionManager = new CollisionManager();
-	myScene = new Easy3D::Scene();
-	myScene->SetCamera(myCamera);
-	mySceneEffect = Easy3D::ePostProcess::HDR;
-
-	mySecondScene = new Easy3D::Scene();
-	mySecondScene->SetCamera(myCamera);
-	mySecondSceneEffect = 0;
-
-	mySettings.set(eGameSettings::SCENE_ONE_RENDER, true);
-	mySettings.set(eGameSettings::SCENE_TWO_RENDER, true);
-
-	bool addToFirstScene = true;
-	for (int i = 0; i < myEntities.Size(); ++i)
-	{
-		CollisionComponent* comp = reinterpret_cast<CollisionComponent*>(myEntities[i]->GetComponent(eComponent::COLLISION));
-		if (comp != nullptr)
-		{
-			myCollisionManager->Add(comp);
-		}
 	
-		GraphicsComponent* gfx = reinterpret_cast<GraphicsComponent*>(myEntities[i]->GetComponent(eComponent::GRAPHIC));
-		if (gfx != nullptr)
-		{
-			if (gfx->GetInstance() != nullptr)
-			{
-				myScene->AddInstance(gfx->GetInstance());
-			}
-		}
-	}
+	mySettings.set(eGameSettings::SCENE_ONE_RENDER, true);
 
 
 	Easy3D::DirectionalLight* dirLight = new Easy3D::DirectionalLight();
@@ -144,10 +114,7 @@ bool Game::Init(HWND& aHwnd)
 	dirLight->SetDir({ 0.f, -1.f, -1.f });
 	myScene->AddLight(dirLight);
 	
-	Easy3D::ParticleEmitterData* particleData = new Easy3D::ParticleEmitterData();
-	particleData->Init("Data/script/streak.xml");
-	
-	myEmitter = new Easy3D::ParticleEmitterInstance(*particleData);
+	myEmitter = Easy3D::Engine::GetInstance()->GetEmitterContainer()->CreateEmitter("Data/script/streak.xml");
 	myScene->AddInstance(myEmitter);
 	GAME_LOG("Init Successful");
 	return true;
@@ -170,18 +137,8 @@ bool Game::Update()
 	myCollisionManager->CleanUp();
 
 	
+	myEntityManager->Update(myDeltaTime);
 
-	for (int i = myEntities.Size() - 1; i >= 0; --i)
-	{
-		if (myEntities[i]->IsAlive() == false)
-		{
-			myEntities.DeleteCyclicAtIndex(i);
-			continue;
-		}
-
-		myEntities[i]->Update(myDeltaTime);
-		myEmitter->SetPosition(myEntities[i]->GetPosition());
-	}
 
 	myCollisionManager->CheckCollisions();
 
@@ -243,23 +200,23 @@ void Game::UpdateSubSystems()
 
 void Game::Render()
 {
-	//myRenderer->StartFontRendering();
+	myRenderer->StartFontRendering();
 	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
-	//myRenderer->EndFontRendering();
-	//
-	//if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
+	myRenderer->EndFontRendering();
+	
+	if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
+	{
+		myRenderer->ProcessScene(myScene, mySceneEffect);
+	}
+	
+	//if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
 	//{
-	//	myRenderer->ProcessScene(myScene, mySceneEffect);
+	//	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
 	//}
-	//
-	////if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
-	////{
-	////	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
-	////}
-	//
-	//myRenderer->FinalRender();'
+	
+	myRenderer->FinalRender();
 
-	myScene->Render();
+	//myScene->Render();
 }
 
 void Game::ToggleSetting(eGameSettings aSetting)
@@ -274,15 +231,6 @@ void Game::ToggleSetting(eGameSettings aSetting)
 		break;
 	case SCENE_ONE_MOTION_BLUR:
 		mySceneEffect ^= Easy3D::ePostProcess::MOTION_BLUR;
-		break;
-	case SCENE_TWO_HDR:
-		mySecondSceneEffect ^= Easy3D::ePostProcess::HDR;
-		break;
-	case SCENE_TWO_BLOOM:
-		mySecondSceneEffect ^= Easy3D::ePostProcess::BLOOM;
-		break;
-	case SCENE_TWO_MOTION_BLUR:
-		mySecondSceneEffect ^= Easy3D::ePostProcess::MOTION_BLUR;
 		break;
 	default:
 		mySettings.flip(aSetting);

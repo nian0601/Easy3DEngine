@@ -9,4 +9,5 @@ enum class eComponent
 	SCRIPT,
 	COLLISION,
 	HEALTH,
+	EMITTER,
 };

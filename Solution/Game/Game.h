@@ -22,6 +22,7 @@ namespace luabridge
 
 class CollisionManager;
 class Entity;
+class EntityManager;
 
 enum eGameSettings
 {
@@ -63,8 +64,6 @@ private:
 	Easy3D::DebugMenu* myDebugMenu;
 	Easy3D::Scene* myScene;
 	int mySceneEffect;
-	Easy3D::Scene* mySecondScene;
-	int mySecondSceneEffect;
 
 	Easy3D::Renderer* myRenderer;
 	std::bitset<eGameSettings::_COUNT> mySettings;
@@ -75,7 +74,7 @@ private:
 	int myMemoryUsage;
 	float myCPUUsage;
 
-	CU::GrowingArray<Entity*> myEntities;
+	EntityManager* myEntityManager;
 	CollisionManager* myCollisionManager;
 
 	Easy3D::ParticleEmitterInstance* myEmitter;
