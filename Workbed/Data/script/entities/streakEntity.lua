@@ -33,6 +33,6 @@ entity = {
 		end,
 	},
 	emitterComponent = {
-		file = "Data/script/streak.xml"
+		file = "Data/script/emitters/streak.xml"
 	}
 }
