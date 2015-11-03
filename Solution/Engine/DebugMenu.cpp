@@ -25,7 +25,7 @@ namespace Easy3D
 	{
 		delete myText;
 
-		DebugGroupStructure* group = myGroups;
+		/*DebugGroupStructure* group = myGroups;
 
 		while (group != nullptr)
 		{
@@ -37,7 +37,7 @@ namespace Easy3D
 			group = group->myNext;
 			delete old;
 			old = nullptr;
-		}
+		}*/
 	}
 
 	void DebugMenu::Render(const CU::InputWrapper& aInput)

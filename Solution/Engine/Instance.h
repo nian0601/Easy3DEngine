@@ -10,6 +10,7 @@ namespace Easy3D
 	class Camera;
 	class Light;
 	class ModelProxy;
+	class RenderProcessTarget;
 
 	class Instance
 	{
@@ -19,6 +20,7 @@ namespace Easy3D
 
 		void Render(Camera& aCamera);
 		void Render(const CU::Matrix44<float>& aParentMatrix, Camera& aCamera);
+		void AddRenderData(RenderProcessTarget* aTarget);
 
 		void SetEffect(const std::string& aEffectFile);
 

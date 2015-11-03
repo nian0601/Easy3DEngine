@@ -19,7 +19,7 @@ end
 
 entity = {
 	graphicsComponent = {
-		file = "Data/resources/model/companion/companion.fbx",
+		file = "Data/resources/model/cube.fbx",
 		model = {
 			shader = "Data/effect/3D/BasicEffect.fx"
 		}
@@ -31,8 +31,5 @@ entity = {
 		onUpdate = function(aEntity, aElapsed)
 			calcMovement(aEntity, aElapsed)
 		end,
-	},
-	emitterComponent = {
-		file = "Data/script/streak.xml"
 	}
 }

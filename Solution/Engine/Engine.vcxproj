@@ -131,6 +131,7 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="ModelProxy.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderProcessTarget.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -178,6 +179,7 @@
     <ClInclude Include="ModelProxy.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderProcessTarget.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SetupInfo.h" />
     <ClInclude Include="SpotLight.h" />

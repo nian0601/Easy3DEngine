@@ -14,6 +14,7 @@ namespace Easy3D
 	class ParticleEmitterInstance;
 	class PointLight;
 	class SpotLight;
+	class RenderProcessTarget;
 
 	class Scene
 	{
@@ -22,6 +23,7 @@ namespace Easy3D
 		~Scene();
 
 		void Render();
+		void Render(RenderProcessTarget* aTarget);
 
 		void AddInstance(Instance* aInstance);
 		void AddInstance(ParticleEmitterInstance* aInstance);

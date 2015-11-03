@@ -39,6 +39,20 @@ struct VS_INPUT_POS_NORM_TEX_BI_TANG
 	float3 Tangent : TANGENT;
 };
 
+struct VS_INPUT_POS_NORM_TEX_BI_TANG_INSTANCED
+{
+	float4 Position : POSITION;
+	float3 Normal : NORMAL;
+	float2 Tex : TEXCOORD;
+	float3 BiNormal : BINORMAL;
+	float3 Tangent : TANGENT;
+	float4 WorldPosition : POSITION;
+	float4 world0 : myWorld0;
+	float4 world1 : myWorld1;
+	float4 world2 : myWorld2;
+	float4 world3 : myWorld3;
+};
+
 struct PS_INPUT_POS_NORM_TEX_BI_TANG
 {
 	float4 Position : SV_POSITION;
@@ -47,6 +61,10 @@ struct PS_INPUT_POS_NORM_TEX_BI_TANG
 	float3 BiNormal : BINORMAL;
 	float3 Tangent : TANGENT;
 	float4 WorldPosition : POSITION;
+	float4 world0 : myWorld0;
+	float4 world1 : myWorld1;
+	float4 world2 : myWorld2;
+	float4 world3 : myWorld3;
 };
 
 

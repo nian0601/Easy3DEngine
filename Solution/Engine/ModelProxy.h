@@ -13,6 +13,7 @@ namespace Easy3D
 		void Render(const CU::Matrix44<float>& aOrientation);
 
 		void SetModel(Model* aModel);
+		Model* GetModel();
 
 		Effect3D* GetEffect();
 		void SetEffect(Effect3D* aEffect);

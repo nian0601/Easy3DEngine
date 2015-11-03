@@ -15,6 +15,7 @@ namespace Easy3D
 	BaseModel::BaseModel()
 	{
 		myVertexBufferDesc = new D3D11_BUFFER_DESC();
+		myInstnacingBufferDesc = new D3D11_BUFFER_DESC();
 		myIndexBufferDesc = new D3D11_BUFFER_DESC();
 		myInitData = new D3D11_SUBRESOURCE_DATA();
 
@@ -23,6 +24,7 @@ namespace Easy3D
 		mySurfaces.Init(1);
 
 		myVertexBuffer = nullptr;
+		myInstancingBuffer = nullptr;
 		myIndexBuffer = nullptr;
 	}
 
@@ -34,6 +36,12 @@ namespace Easy3D
 			delete myVertexBuffer;
 		}
 
+		if (myInstancingBuffer != nullptr && myInstancingBuffer->myVertexBuffer != nullptr)
+		{
+			myInstancingBuffer->myVertexBuffer->Release();
+			delete myInstancingBuffer;
+		}
+
 		if (myIndexBuffer != nullptr && myIndexBuffer->myIndexBuffer != nullptr)
 		{
 			myIndexBuffer->myIndexBuffer->Release();
@@ -41,6 +49,7 @@ namespace Easy3D
 		}
 		
 		delete myVertexBufferDesc;
+		delete myInstnacingBufferDesc;
 		delete myIndexBufferDesc;
 		delete myInitData;
 
@@ -58,12 +67,7 @@ namespace Easy3D
 
 	void BaseModel::Render()
 	{
-		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
-		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
-			, myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer
-			, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer
-			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
+		SetGPUState();
 
 
 		D3DX11_TECHNIQUE_DESC techDesc;
@@ -81,6 +85,46 @@ namespace Easy3D
 			}
 		}
 	}
+
+	void BaseModel::SetGPUState()
+	{
+		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
+		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
+			, myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer
+			, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
+		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer
+			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
+	}
+
+	void BaseModel::SetGPUState(const CU::GrowingArray<CU::Matrix44<float>>& someWorldMatrices)
+	{
+		DL_ASSERT_EXP(someWorldMatrices.Size() < 1024, "Tried to instance to many instances");
+
+		D3D11_MAPPED_SUBRESOURCE mappedResource;
+		ID3D11DeviceContext* context = Engine::GetInstance()->GetContex();
+
+		context->Map(myInstancingBuffer->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+		if (mappedResource.pData != nullptr)
+		{
+			CU::Matrix44<float>* data = (CU::Matrix44<float>*)mappedResource.pData;
+			for (int i = 0; i < someWorldMatrices.Size(); ++i)
+			{
+				data[i] = someWorldMatrices[i];
+			}
+		}
+
+		context->Unmap(myInstancingBuffer->myVertexBuffer, 0);
+		myVertexBuffers[0] = myVertexBuffer->myVertexBuffer;
+		myVertexBuffers[1] = myInstancingBuffer->myVertexBuffer;
+
+		UINT strides[2] = { myVertexBuffer->myStride, myInstancingBuffer->myStride };
+		UINT offsets[2] = { 0, 0 };
+		context->IASetVertexBuffers(0, 2, myVertexBuffers, strides, offsets);
+		context->IASetIndexBuffer(myIndexBuffer->myIndexBuffer
+			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
+		context->IASetInputLayout(myVertexLayout);
+	}
+
 
 	void BaseModel::InitInputLayout(D3D11_INPUT_ELEMENT_DESC* aVertexDescArray, int aArraySize)
 	{
@@ -111,6 +155,24 @@ namespace Easy3D
 		myVertexBufferDesc->CPUAccessFlags = aCPUUsage;
 		myVertexBufferDesc->MiscFlags = 0;
 		myVertexBufferDesc->StructureByteStride = 0;
+	}
+
+	void Easy3D::BaseModel::InitInstancingBuffer()
+	{
+		myInstancingBuffer = new VertexBufferWrapper();
+		myInstancingBuffer->myStride = sizeof(CU::Matrix44<float>);
+		myInstancingBuffer->myByteOffset = 0;
+		myInstancingBuffer->myStartSlot = 0;
+		myInstancingBuffer->myNumberOfBuffers = 1;
+
+
+		ZeroMemory(myInstnacingBufferDesc, sizeof(myInstnacingBufferDesc));
+		myInstnacingBufferDesc->Usage = D3D11_USAGE_DYNAMIC;
+		myInstnacingBufferDesc->BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		myInstnacingBufferDesc->CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		myInstnacingBufferDesc->MiscFlags = 0;
+		myInstnacingBufferDesc->StructureByteStride = 0;
+
 	}
 
 	void BaseModel::InitIndexBuffer()
@@ -182,6 +244,24 @@ namespace Easy3D
 		}
 
 		Engine::GetInstance()->SetDebugName(myVertexBuffer->myVertexBuffer, "BaseModel::myVertexBuffer->myVertexBuffer");
+	}
+
+	void BaseModel::SetupInstancingBuffer()
+	{
+		if (myInstancingBuffer->myVertexBuffer != nullptr)
+			myInstancingBuffer->myVertexBuffer->Release();
+
+		myInstnacingBufferDesc->ByteWidth = sizeof(CU::Matrix44<float>) * 1024;
+
+
+		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myInstnacingBufferDesc, nullptr
+			, &myInstancingBuffer->myVertexBuffer);
+		if (FAILED(hr) != S_OK)
+		{
+			DL_ASSERT("BaseModel::SetupInstancingBuffer: Failed to SetupInstancingBuffer");
+		}
+
+		Engine::GetInstance()->SetDebugName(myInstancingBuffer->myVertexBuffer, "BaseModel::myInstancingBuffer->myVertexBuffer");
 	}
 
 	void BaseModel::SetupIndexBuffer(int aIndexCount, char* aIndexData)

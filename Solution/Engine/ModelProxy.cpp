@@ -23,6 +23,11 @@ namespace Easy3D
 		myModel = aModel;
 	}
 
+	Model* ModelProxy::GetModel()
+	{
+		return myModel;
+	}
+
 	Effect3D* ModelProxy::GetEffect()
 	{
 		if (myModel == nullptr)

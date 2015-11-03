@@ -26,6 +26,9 @@ Easy3D::Scene::~Scene()
 
 void Easy3D::Scene::Render()
 {
+	//Sleep(5);
+
+
 	for (int i = 0; i < myDirectionalLights.Size(); ++i)
 	{
 		myDirectionalLights[i]->Update();
@@ -74,7 +77,14 @@ void Easy3D::Scene::Render()
 	Engine::GetInstance()->SetRasterizeState(eRasterizerType::CULL_FRONT);
 	Engine::GetInstance()->DisableAlphaBlending();
 	Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
+}
 
+void Easy3D::Scene::Render(RenderProcessTarget* aTarget)
+{
+	for (int i = 0; i < myInstances.Size(); ++i)
+	{
+		myInstances[i]->AddRenderData(aTarget);
+	}
 }
 
 void Easy3D::Scene::AddInstance(Instance* aInstance)

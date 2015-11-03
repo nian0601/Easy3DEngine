@@ -92,6 +92,9 @@
     <ClCompile Include="EmitterContainer.cpp">
       <Filter>Rendering\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="RenderProcessTarget.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="EmitterContainer.h">
       <Filter>Rendering\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderProcessTarget.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

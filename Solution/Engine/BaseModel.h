@@ -4,6 +4,7 @@
 #include "Vertices.h"
 
 struct ID3D11BlendState;
+struct ID3D11Buffer;
 struct ID3D11InputLayout;
 struct D3D11_BUFFER_DESC;
 struct D3D11_INPUT_ELEMENT_DESC;
@@ -27,14 +28,18 @@ namespace Easy3D
 
 	protected:
 		void Render();
+		void SetGPUState();
+		void SetGPUState(const CU::GrowingArray<CU::Matrix44<float>>& someWorldMatrices);
 
 		void InitInputLayout(D3D11_INPUT_ELEMENT_DESC* aVertexDescArray, int aArraySize);
 		void InitVertexBuffer(int aVertexSize, int aBufferUsage, int aCPUUsage);
+		void InitInstancingBuffer();
 		void InitIndexBuffer();
 		void InitSurface(const std::string& aResourceName, const std::string& aFileName);
 		void InitBlendState();
 
 		void SetupVertexBuffer(int aVertexCount, int aVertexSize, char* aVertexData);
+		void SetupInstancingBuffer();
 		void SetupIndexBuffer(int aVertexCount, char* aIndexData);
 
 		virtual void OnEffectLoad();
@@ -45,11 +50,14 @@ namespace Easy3D
 		ID3D11InputLayout* myVertexLayout;
 		ID3D11BlendState* myBlendState;
 		D3D11_BUFFER_DESC* myVertexBufferDesc;
+		D3D11_BUFFER_DESC* myInstnacingBufferDesc;
 		D3D11_BUFFER_DESC* myIndexBufferDesc;
 		D3D11_SUBRESOURCE_DATA* myInitData;
 
 		VertexBufferWrapper* myVertexBuffer;
+		VertexBufferWrapper* myInstancingBuffer;
 		IndexBufferWrapper* myIndexBuffer;
+		ID3D11Buffer* myVertexBuffers[2];
 
 		CU::Vector2<float> myPosition;
 		CU::Vector2<float> myScale;

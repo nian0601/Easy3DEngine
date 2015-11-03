@@ -13,6 +13,7 @@ namespace Easy3D
 	class ParticleEmitterInstance;
 	class Scene;
 	class Renderer;
+	class RenderProcessTarget;
 }
 
 namespace luabridge
@@ -26,14 +27,9 @@ class EntityManager;
 
 enum eGameSettings
 {
-	SCENE_ONE_RENDER,
-	SCENE_ONE_HDR,
-	SCENE_ONE_BLOOM,
-	SCENE_ONE_MOTION_BLUR,
-	SCENE_TWO_RENDER,
-	SCENE_TWO_HDR,
-	SCENE_TWO_BLOOM,
-	SCENE_TWO_MOTION_BLUR,
+	NO_INSTANCING,
+	EASY_INSTANCING,
+	HARDWARE_INSTANCING,
 	_COUNT
 };
 
@@ -63,10 +59,13 @@ private:
 	Easy3D::Camera* myCamera;
 	Easy3D::DebugMenu* myDebugMenu;
 	Easy3D::Scene* myScene;
+	Easy3D::Scene* myInstancedScene;
 	int mySceneEffect;
 
 	Easy3D::Renderer* myRenderer;
+	Easy3D::RenderProcessTarget* myRenderProcessTarget;
 	std::bitset<eGameSettings::_COUNT> mySettings;
+	eGameSettings myRenderMode;
 
 	float myDeltaTime;
 

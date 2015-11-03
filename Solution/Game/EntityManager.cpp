@@ -34,20 +34,13 @@ Entity* EntityManager::CreateEntity(const std::string& aFilePath)
 		myCollisionManager.Add(comp);
 	}
 
-	GraphicsComponent* gfx = static_cast<GraphicsComponent*>(newEntity->GetComponent(eComponent::GRAPHIC));
-	if (gfx != nullptr)
-	{
-		if (gfx->GetInstance() != nullptr)
-		{
-			myScene.AddInstance(gfx->GetInstance());
-		}
-	}
+	
 
-	EmitterComponent* emitter = static_cast<EmitterComponent*>(newEntity->GetComponent(eComponent::EMITTER));
+	/*EmitterComponent* emitter = static_cast<EmitterComponent*>(newEntity->GetComponent(eComponent::EMITTER));
 	if (emitter != nullptr)
 	{
 		myScene.AddInstance(emitter->GetEmitter());
-	}
+	}*/
 
 	return newEntity;
 }

@@ -35,23 +35,30 @@ namespace Easy3D
 	{
 		if (myIsNULLObject == false)
 		{
-			const int size = myVertexFormat.Size();
+			const int size = myVertexFormat.Size() + 4;
 			D3D11_INPUT_ELEMENT_DESC* vertexDesc = new D3D11_INPUT_ELEMENT_DESC[size];
 			for (int i = 0; i < myVertexFormat.Size(); ++i)
 			{
 				vertexDesc[i] = *myVertexFormat[i];
 			}
 
+			vertexDesc[myVertexFormat.Size() + 0] = { "myWorld", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
+			vertexDesc[myVertexFormat.Size() + 1] = { "myWorld", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
+			vertexDesc[myVertexFormat.Size() + 2] = { "myWorld", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
+			vertexDesc[myVertexFormat.Size() + 3] = { "myWorld", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 };
+
+
 			InitInputLayout(vertexDesc, size);
 			//delete vertexDesc;
 			//myVertexFormat.DeleteAll();
 
 			InitVertexBuffer(myVertexBaseData->myStride, D3D11_USAGE_IMMUTABLE, 0);
+			InitInstancingBuffer();
 			InitIndexBuffer();
 
 			SetupVertexBuffer(myVertexBaseData->myNumberOfVertices
 				, myVertexBaseData->myStride, myVertexBaseData->myVertexData);
-
+			SetupInstancingBuffer();
 			SetupIndexBuffer(myIndexBaseData->myNumberOfIndices, myIndexBaseData->myIndexData);
 		}
 
@@ -244,6 +251,63 @@ namespace Easy3D
 		for (int i = 0; i < myChilds.Size(); ++i)
 		{
 			myChilds[i]->Render(myChildTransforms[i] * aOrientation);
+		}
+	}
+
+	void Model::SetGPUState()
+	{
+		DL_ASSERT_EXP(mySurfaces.Size() < 2, "We do not support several surfaces yet");
+
+		if (myIsNULLObject == true)
+		{
+			myChilds[0]->SetGPUState();
+		}
+		else
+		{
+			BaseModel::SetGPUState();
+
+			mySurfaces[0]->Activate();
+		}
+	}
+
+	void Model::SetGPUState(const CU::GrowingArray<CU::Matrix44<float>>& someWorldMatrices)
+	{
+		DL_ASSERT_EXP(mySurfaces.Size() < 2, "We do not support several surfaces yet");
+
+		if (myIsNULLObject == true)
+		{
+			myChilds[0]->SetGPUState(someWorldMatrices);
+		}
+		else
+		{
+			BaseModel::SetGPUState(someWorldMatrices);
+
+			mySurfaces[0]->Activate();
+		}
+	}
+
+	int Model::GetIndexCount(int aSurfaceIndex)
+	{
+		if (myIsNULLObject == true)
+		{
+			return myChilds[0]->GetIndexCount(aSurfaceIndex);
+		}
+		else
+		{
+			return mySurfaces[aSurfaceIndex]->GetIndexCount();
+		}
+		
+	}
+
+	int Model::GetVertexStart(int aSurfaceIndex)
+	{
+		if (myIsNULLObject == true)
+		{
+			return myChilds[0]->GetVertexStart(aSurfaceIndex);
+		}
+		else
+		{
+			return mySurfaces[aSurfaceIndex]->GetVertexStart();
 		}
 	}
 }

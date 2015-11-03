@@ -6,6 +6,7 @@
 #include "Instance.h"
 #include "Model.h"
 #include "ModelProxy.h"
+#include "RenderProcessTarget.h"
 
 
 Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation)
@@ -41,6 +42,14 @@ void Easy3D::Instance::Render(const CU::Matrix44<float>& aParentMatrix, Camera& 
 		myProxy.GetEffect()->SetScaleVector(myScale);
 
 		myProxy.Render(myOrientation * aParentMatrix);
+	}
+}
+
+void Easy3D::Instance::AddRenderData(RenderProcessTarget* aTarget)
+{
+	if (myProxy.IsLoaded())
+	{
+		aTarget->AddModel(myProxy.GetModel(), myOrientation);
 	}
 }
 

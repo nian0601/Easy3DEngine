@@ -29,6 +29,11 @@ namespace Easy3D
 		void SetEffect(Effect3D* aEffect);
 
 		void Render(const CU::Matrix44<float>& aOrientation);
+		void SetGPUState();
+		void SetGPUState(const CU::GrowingArray<CU::Matrix44<float>>& someWorldMatrices);
+
+		int GetIndexCount(int aSurfaceIndex);
+		int GetVertexStart(int aSurfaceIndex);
 
 	private:
 		bool myIsNULLObject;

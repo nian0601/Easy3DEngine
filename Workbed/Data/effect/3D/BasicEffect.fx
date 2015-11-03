@@ -12,6 +12,7 @@ SamplerState linearSampling
 	AddressV = Wrap;
 };
 
+
 PS_INPUT_POS_NORM_TEX_BI_TANG VS(VS_INPUT_POS_NORM_TEX_BI_TANG input)
 {
 	PS_INPUT_POS_NORM_TEX_BI_TANG output = (PS_INPUT_POS_NORM_TEX_BI_TANG)0;
@@ -57,7 +58,7 @@ float4 PS(PS_INPUT_POS_NORM_TEX_BI_TANG input) : SV_Target
 
 	
 	//DirectionalLight
-	for(int i = 0; i < 1; ++i)
+	for(int i = 0; i < 0; ++i)
 	{
 		finalColor += CalculateDirectionalLight(DirectionalLights[i], norm);
 	}
