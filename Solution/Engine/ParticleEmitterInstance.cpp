@@ -68,8 +68,9 @@ namespace Easy3D
 			Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_LINESTRIP);
 		}
 		
+		ID3D11Buffer* buf = myVertexBufferWrapper->myVertexBuffer.Get();
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBufferWrapper->myStartSlot
-			, myVertexBufferWrapper->myNumberOfBuffers, &myVertexBufferWrapper->myVertexBuffer
+			, myVertexBufferWrapper->myNumberOfBuffers, &buf
 			, &myVertexBufferWrapper->myStride, &myVertexBufferWrapper->myByteOffset);
 
 
@@ -93,7 +94,7 @@ namespace Easy3D
 	void ParticleEmitterInstance::CreateVertexBuffer()
 	{
 		myEmitterData.myHasNewData = false;
-		if (myVertexBufferWrapper != nullptr && myVertexBufferWrapper->myVertexBuffer != nullptr)
+		if (myVertexBufferWrapper != nullptr && myVertexBufferWrapper->myVertexBuffer.Get() != nullptr)
 			myVertexBufferWrapper->myVertexBuffer->Release();
 
 		myVertexBufferWrapper = new VertexBufferWrapper();
@@ -119,13 +120,15 @@ namespace Easy3D
 		ZeroMemory(&initData, sizeof(initData));
 		initData.pSysMem = reinterpret_cast<char*>(&myParticles[0]);
 
-
+		ID3D11Buffer* buf = nullptr;
 		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(&vertexBufferDesc, &initData
-			, &myVertexBufferWrapper->myVertexBuffer);
+			, &buf);
 		if (FAILED(hr) != S_OK)
 		{
 			DL_ASSERT("ParticleEmitterInstance::CreateVertexBuffer: Failed to CreateVertexBuffer");
 		}
+
+		myVertexBufferWrapper->myVertexBuffer.Set(buf);
 	}
 
 	void ParticleEmitterInstance::EmitterUpdate(float aDelta)
@@ -195,7 +198,7 @@ namespace Easy3D
 		{
 			D3D11_MAPPED_SUBRESOURCE mappedResource;
 			Engine::GetInstance()->GetContex()->Map(
-				myVertexBufferWrapper->myVertexBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+				myVertexBufferWrapper->myVertexBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
 			if (mappedResource.pData != nullptr)
 			{
@@ -203,7 +206,7 @@ namespace Easy3D
 				memcpy(data, &myParticles[0], sizeof(ParticleInstance) * myEmitterData.myMaxNrOfParticles);
 			}
 
-			Engine::GetInstance()->GetContex()->Unmap(myVertexBufferWrapper->myVertexBuffer, 0);
+			Engine::GetInstance()->GetContex()->Unmap(myVertexBufferWrapper->myVertexBuffer.Get(), 0);
 		}
 
 	}

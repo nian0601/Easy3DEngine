@@ -1,5 +1,7 @@
 #pragma once
 
+#include "D3DPointer.h"
+
 struct ID3D11Buffer;
 
 namespace Easy3D
@@ -10,6 +12,6 @@ namespace Easy3D
 		int myNumberOfBuffers;
 		int myStartSlot;
 		unsigned int myStride;
-		ID3D11Buffer* myVertexBuffer;
+		D3DPointer<ID3D11Buffer> myVertexBuffer;
 	};
 }

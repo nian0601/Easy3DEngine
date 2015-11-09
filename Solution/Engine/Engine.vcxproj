@@ -147,6 +147,8 @@
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="D3DPointer.h" />
+    <ClInclude Include="D3DPointers.h" />
     <ClInclude Include="DebugMenu.h" />
     <ClInclude Include="EmitterContainer.h" />
     <ClInclude Include="Enums.h" />

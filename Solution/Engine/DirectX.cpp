@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "DirectX.h"
-#include <D3D11.h>
+
 
 
 
@@ -21,9 +21,10 @@ void Easy3D::DirectX::Present(const unsigned int aSyncInterval, const unsigned i
 
 void Easy3D::DirectX::Clear(const float aClearColor[4])
 {
-	myContext->OMSetRenderTargets(1, &myRenderTargetView, myDepthBufferView);
-	myContext->ClearRenderTargetView(myRenderTargetView, aClearColor);
-	myContext->ClearDepthStencilView(myDepthBufferView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	ID3D11RenderTargetView* target = myRenderTargetView.Get();
+	myContext->OMSetRenderTargets(1, &target, myDepthBufferView.Get());
+	myContext->ClearRenderTargetView(target, aClearColor);
+	myContext->ClearDepthStencilView(myDepthBufferView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 }
 
 void Easy3D::DirectX::OnResize(const int aWidth, const int aHeight)
@@ -47,31 +48,36 @@ void Easy3D::DirectX::CleanD3D()
 {
 	mySwapChain->SetFullscreenState(FALSE, NULL);
 
-	mySwapChain->Release();
-	mySwapChain = nullptr;
+	/*
+		Need to call Release manually here because ->Release on the directX-object
+		before the context gets released to make the debug-output give correct data
+	*/
 
-	myRenderTargetView->Release();
-	myRenderTargetView = nullptr;
+	mySwapChain.Release();
+	myDevice.Release();
 
-	myDevice->Release();
-	myDevice = nullptr;
+	myRenderTargetView.Release();
+	myDepthBufferView.Release();
+	myDepthBuffer.Release();
+
+	myNoCullingRasterizer.Release();
+	myWireframeRasterizer.Release();
+	mySolidRasterizer.Release();
+
+	myAlphaBlendState.Release();
+	myNoAlphaBlendState.Release();
+
+	myDepthStencilStates[0].Release();
+	myDepthStencilStates[1].Release();
+	myDepthStencilStates[2].Release();
 
 	myContext->ClearState();
 	myContext->Flush();
-	myContext->Release();
-	myContext = nullptr;
-
-	myAlphaBlendState->Release();
-	myNoAlphaBlendState->Release();
-
-	myNoCullingRasterizer->Release();
-	myWireframeRasterizer->Release();
-	mySolidRasterizer->Release();
-
+	myContext.Release();
 
 #ifdef _DEBUG
 	myDebugInterface->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	myDebugInterface->Release();
+	myDebugInterface.Release();
 #endif
 }
 
@@ -85,26 +91,26 @@ void Easy3D::DirectX::SetDebugName(ID3D11DeviceChild* aChild, const std::string&
 
 ID3D11Device* Easy3D::DirectX::GetDevice()
 {
-	DL_ASSERT_EXP(myDevice != nullptr, "DirectX: myDevice is nullptr, HOW?!");
-	return myDevice;
+	DL_ASSERT_EXP(myDevice.Get() != nullptr, "DirectX: myDevice is nullptr, HOW?!");
+	return myDevice.Get();
 }
 
 ID3D11DeviceContext* Easy3D::DirectX::GetContex()
 {
-	DL_ASSERT_EXP(myContext != nullptr, "DirectX: myContex is nullptr, HOW?!");
-	return myContext;
+	DL_ASSERT_EXP(myContext.Get() != nullptr, "DirectX: myContex is nullptr, HOW?!");
+	return myContext.Get();
 }
 
 ID3D11DepthStencilView*Easy3D::DirectX::GetDepthStencilView()
 {
-	DL_ASSERT_EXP(myDepthBufferView != nullptr, "DirectX: myDepthBufferView is nullptr, HOW?!");
-	return myDepthBufferView;
+	DL_ASSERT_EXP(myDepthBufferView.Get() != nullptr, "DirectX: myDepthBufferView is nullptr, HOW?!");
+	return myDepthBufferView.Get();
 }
 
 ID3D11RenderTargetView* Easy3D::DirectX::GetBackbuffer()
 {
-	DL_ASSERT_EXP(myRenderTargetView != nullptr, "DirectX: myRenderTargetView is nullptr, HOW?!");
-	return myRenderTargetView;
+	DL_ASSERT_EXP(myRenderTargetView.Get() != nullptr, "DirectX: myRenderTargetView is nullptr, HOW?!");
+	return myRenderTargetView.Get();
 }
 
 void Easy3D::DirectX::SetDepthBufferState(eDepthStencilType aState)
@@ -112,13 +118,13 @@ void Easy3D::DirectX::SetDepthBufferState(eDepthStencilType aState)
 	switch (aState)
 	{
 	case Easy3D::eDepthStencilType::Z_ENABLED:
-		myContext->OMSetDepthStencilState(myDepthStencilStates[0], 1);
+		myContext->OMSetDepthStencilState(myDepthStencilStates[0].Get(), 1);
 		break;
 	case Easy3D::eDepthStencilType::Z_DISABLED:
-		myContext->OMSetDepthStencilState(myDepthStencilStates[1], 1);
+		myContext->OMSetDepthStencilState(myDepthStencilStates[1].Get(), 1);
 		break;
 	case Easy3D::eDepthStencilType::PARTICLES:
-		myContext->OMSetDepthStencilState(myDepthStencilStates[2], 0);
+		myContext->OMSetDepthStencilState(myDepthStencilStates[2].Get(), 0);
 		break;
 	}
 }
@@ -128,13 +134,13 @@ void Easy3D::DirectX::SetRasterizeState(eRasterizerType aState)
 	switch (aState)
 	{
 	case Easy3D::eRasterizerType::CULL_FRONT:
-		myContext->RSSetState(mySolidRasterizer);
+		myContext->RSSetState(mySolidRasterizer.Get());
 		break;
 	case Easy3D::eRasterizerType::WIRE_FRAME:
-		myContext->RSSetState(myWireframeRasterizer);
+		myContext->RSSetState(myWireframeRasterizer.Get());
 		break;
 	case Easy3D::eRasterizerType::NO_CULLING:
-		myContext->RSSetState(myNoCullingRasterizer);
+		myContext->RSSetState(myNoCullingRasterizer.Get());
 		break;
 	default:
 		break;
@@ -209,10 +215,14 @@ bool Easy3D::DirectX::D3DRenderTargetSetup()
 	ID3D11Texture2D* backBuffer = nullptr;
 	mySwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&backBuffer);
 
-	myDevice->CreateRenderTargetView(backBuffer, NULL, &myRenderTargetView);
+	ID3D11RenderTargetView* target = nullptr;
+	myDevice->CreateRenderTargetView(backBuffer, NULL, &target);
 	backBuffer->Release();
 
-	myContext->OMSetRenderTargets(1, &myRenderTargetView, NULL);
+	myContext->OMSetRenderTargets(1, &target, NULL);
+	
+	myRenderTargetView.Set(target);
+	SetDebugName(myRenderTargetView.Get(), "DirextX::myRenderTargetView");
 
 	return TRUE;
 }
@@ -233,6 +243,9 @@ bool Easy3D::DirectX::D3DSwapChainSetup()
 	swapChainDesc.SampleDesc.Count = 1;
 	swapChainDesc.Windowed = mySetupInfo.myWindowed;
 
+	ID3D11Device* dev = nullptr;
+	ID3D11DeviceContext* cont = nullptr;
+	IDXGISwapChain* chain = nullptr;
 	HRESULT result = D3D11CreateDeviceAndSwapChain(NULL,
 		D3D_DRIVER_TYPE_HARDWARE,
 		NULL,
@@ -245,32 +258,41 @@ bool Easy3D::DirectX::D3DSwapChainSetup()
 		NULL,
 		D3D11_SDK_VERSION,
 		&swapChainDesc,
-		&mySwapChain,
-		&myDevice,
+		&chain,
+		&dev,
 		NULL,
-		&myContext);
+		&cont);
 
 	if (FAILED(result))
 	{
 		return false;
 	}
 
+	myDevice.Set(dev);
+	myContext.Set(cont);
+	mySwapChain.Set(chain);
+
+	SetDebugName(myContext.Get(), "DirectX::myDevice");
+
 #ifdef _DEBUG
-	myDebugInterface = nullptr;
-	result = myDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&myDebugInterface);
+	ID3D11Debug* debugInterface = nullptr;
+	result = myDevice->QueryInterface(__uuidof(ID3D11Debug), (void**)&debugInterface);
 	if (FAILED(result))
 	{
 		DL_ASSERT("[DirectX]: Failed to Query DebugInterface");
 		return false;
 	}
 
-	myInfoQueue = nullptr;
-	if (FAILED(myDebugInterface->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&myInfoQueue)))
+	myDebugInterface.Set(debugInterface);
+
+	ID3D11InfoQueue* infoQueue = nullptr;
+	if (FAILED(myDebugInterface->QueryInterface(__uuidof(ID3D11InfoQueue), (void**)&infoQueue)))
 	{
 		DL_ASSERT("[DirectX]: Failed to Query InfoQueue");
 		return false;
 	}
 
+	myInfoQueue.Set(infoQueue);
 	myInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
 	myInfoQueue->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
 	myInfoQueue->Release();
@@ -311,11 +333,16 @@ bool Easy3D::DirectX::D3DStencilBufferSetup(int aWidth, int aHeight)
 	depthBufferInfo.Usage = D3D11_USAGE_DEFAULT;
 	depthBufferInfo.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-	hr = myDevice->CreateTexture2D(&depthBufferInfo, NULL, &myDepthBuffer);
+	ID3D11Texture2D* tex = nullptr;
+	hr = myDevice->CreateTexture2D(&depthBufferInfo, NULL, &tex);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+
+	myDepthBuffer.Set(tex);
+
+	SetDebugName(myDepthBuffer.Get(), "DirectX::myDepthBuffer");
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC stencilDesc;
 	ZeroMemory(&stencilDesc, sizeof(stencilDesc));
@@ -325,11 +352,16 @@ bool Easy3D::DirectX::D3DStencilBufferSetup(int aWidth, int aHeight)
 
 	stencilDesc.Texture2D.MipSlice = 0;
 
-	hr = myDevice->CreateDepthStencilView(myDepthBuffer, &stencilDesc, &myDepthBufferView);
+	ID3D11DepthStencilView* depth = nullptr;
+	hr = myDevice->CreateDepthStencilView(myDepthBuffer.Get(), &stencilDesc, &depth);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+
+	myDepthBufferView.Set(depth);
+
+	SetDebugName(myDepthBufferView.Get(), "DirectX::myDepthBufferView");
 
 	return true;
 }
@@ -358,11 +390,15 @@ bool Easy3D::DirectX::D3DDepthStencilStatesSetup()
 	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStencilStates[0]);
+	ID3D11DepthStencilState* depth = nullptr;
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &depth);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+
+	myDepthStencilStates[0].Set(depth);
+	SetDebugName(myDepthStencilStates[0].Get(), "DirectX::myDepthStencilStates[0]");
 #pragma endregion
 
 
@@ -385,11 +421,15 @@ bool Easy3D::DirectX::D3DDepthStencilStatesSetup()
 	stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStencilStates[1]);
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &depth);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+
+	myDepthStencilStates[1].Set(depth);
+
+	SetDebugName(myDepthStencilStates[1].Get(), "DirectX::myDepthStencilStates[1]");
 #pragma endregion
 
 
@@ -413,11 +453,14 @@ bool Easy3D::DirectX::D3DDepthStencilStatesSetup()
 	stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
 
-	hr = myDevice->CreateDepthStencilState(&stencilDesc, &myDepthStencilStates[2]);
+	hr = myDevice->CreateDepthStencilState(&stencilDesc, &depth);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+
+	myDepthStencilStates[2].Set(depth);
+	SetDebugName(myDepthStencilStates[2].Get(), "DirectX::myDepthStencilStates[2]");
 #pragma endregion
 
 	return true;
@@ -440,7 +483,11 @@ bool Easy3D::DirectX::D3DWireframeRasterizerStateSetup()
 	desc.MultisampleEnable = false;
 	desc.AntialiasedLineEnable = false;
 	
-	myDevice->CreateRasterizerState(&desc, &myWireframeRasterizer);
+	ID3D11RasterizerState* rast = nullptr;
+	myDevice->CreateRasterizerState(&desc, &rast);
+
+	myWireframeRasterizer.Set(rast);
+	SetDebugName(myWireframeRasterizer.Get(), "DirectX::myWireframeRasterizer");
 
 	return true;
 }
@@ -461,7 +508,12 @@ bool Easy3D::DirectX::D3DSolidRasterizerStateSetup()
 	desc.MultisampleEnable = false;
 	desc.AntialiasedLineEnable = false;
 
-	myDevice->CreateRasterizerState(&desc, &mySolidRasterizer);
+	ID3D11RasterizerState* rast = nullptr;
+	myDevice->CreateRasterizerState(&desc, &rast);
+
+	mySolidRasterizer.Set(rast);
+
+	SetDebugName(mySolidRasterizer.Get(), "DirectX::mySolidRasterizer");
 
 	return true;
 }
@@ -482,7 +534,12 @@ bool Easy3D::DirectX::D3DNoCullingRasterizerStateSetup()
 	desc.MultisampleEnable = false;
 	desc.AntialiasedLineEnable = false;
 
-	myDevice->CreateRasterizerState(&desc, &myNoCullingRasterizer);
+	ID3D11RasterizerState* rast = nullptr;
+	myDevice->CreateRasterizerState(&desc, &rast);
+
+	myNoCullingRasterizer.Set(rast);
+
+	SetDebugName(myNoCullingRasterizer.Get(), "DirectX::myNoCullingRasterizer");
 
 	return true;
 }
@@ -502,22 +559,29 @@ bool Easy3D::DirectX::D3DSetupBlendStates()
 	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
-	HRESULT hr = myDevice->CreateBlendState(&blendDesc, &myAlphaBlendState);
+	ID3D11BlendState* blend = nullptr;
+	HRESULT hr = myDevice->CreateBlendState(&blendDesc, &blend);
 	if (FAILED(hr) != S_OK)
 	{
 		DL_ASSERT("BaseModel::InitBlendState: Failed to CreateAlphaBlendState");
 	}
+
+	myAlphaBlendState.Set(blend);
+	SetDebugName(myAlphaBlendState.Get(), "DirectX::myAlphaBlendState");
 
 	blendDesc.AlphaToCoverageEnable = false;
 	blendDesc.IndependentBlendEnable = false;
 	blendDesc.RenderTarget[0].BlendEnable = FALSE;
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
-	hr = myDevice->CreateBlendState(&blendDesc, &myNoAlphaBlendState);
+	hr = myDevice->CreateBlendState(&blendDesc, &blend);
 	if (FAILED(hr) != S_OK)
 	{
 		DL_ASSERT("BaseModel::InitBlendState: Failed to CreateNoAlphaBlendState");
 	}
+
+	myNoAlphaBlendState.Set(blend),
+	SetDebugName(myNoAlphaBlendState.Get(), "DirectX::myNoAlphaBlendState");
 
 	return true;
 }
@@ -530,7 +594,7 @@ void Easy3D::DirectX::EnableAlphaBlending()
 	blendFactor[2] = 0.f;
 	blendFactor[3] = 0.f;
 
-	myContext->OMSetBlendState(myAlphaBlendState, blendFactor, 0xFFFFFFFF);
+	myContext->OMSetBlendState(myAlphaBlendState.Get(), blendFactor, 0xFFFFFFFF);
 }
 
 void Easy3D::DirectX::DisableAlpaBlending()
@@ -541,7 +605,7 @@ void Easy3D::DirectX::DisableAlpaBlending()
 	blendFactor[2] = 0.f;
 	blendFactor[3] = 0.f;
 
-	myContext->OMSetBlendState(myNoAlphaBlendState, blendFactor, 0xFFFFFFFF);
+	myContext->OMSetBlendState(myNoAlphaBlendState.Get(), blendFactor, 0xFFFFFFFF);
 }
 
 void Easy3D::DirectX::RestoreViewPort()

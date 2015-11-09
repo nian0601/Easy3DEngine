@@ -1,5 +1,7 @@
 #pragma once
 
+#include <D3D11.h>
+#include "D3DPointer.h"
 #include "Enums.h"
 #include "SetupInfo.h"
 
@@ -21,8 +23,6 @@ struct SetupInfo;
 
 namespace Easy3D
 {
-	
-
 	class DirectX
 	{
 	public:
@@ -64,21 +64,20 @@ namespace Easy3D
 		bool D3DSetupBlendStates();
 
 
-
-		ID3D11Device* myDevice;
-		ID3D11DeviceContext* myContext;
-		ID3D11Debug* myDebugInterface;
-		ID3D11InfoQueue *myInfoQueue;
-		IDXGISwapChain* mySwapChain;
-		ID3D11RenderTargetView* myRenderTargetView;
-		ID3D11DepthStencilView* myDepthBufferView;
-		ID3D11DepthStencilState* myDepthStencilStates[3];
-		ID3D11Texture2D* myDepthBuffer;
-		ID3D11RasterizerState* mySolidRasterizer;
-		ID3D11RasterizerState* myWireframeRasterizer;
-		ID3D11RasterizerState* myNoCullingRasterizer;
-		ID3D11BlendState* myAlphaBlendState;
-		ID3D11BlendState* myNoAlphaBlendState;
+		D3DPointer<ID3D11Device> myDevice;
+		D3DPointer<ID3D11DeviceContext> myContext;
+		D3DPointer<ID3D11Debug> myDebugInterface;
+		D3DPointer<ID3D11InfoQueue> myInfoQueue;
+		D3DPointer<IDXGISwapChain> mySwapChain;
+		D3DPointer<ID3D11RenderTargetView> myRenderTargetView;
+		D3DPointer<ID3D11DepthStencilView> myDepthBufferView;
+		D3DPointer<ID3D11DepthStencilState> myDepthStencilStates[3];
+		D3DPointer<ID3D11Texture2D> myDepthBuffer;
+		D3DPointer<ID3D11RasterizerState> mySolidRasterizer;
+		D3DPointer<ID3D11RasterizerState> myWireframeRasterizer;
+		D3DPointer<ID3D11RasterizerState> myNoCullingRasterizer;
+		D3DPointer<ID3D11BlendState> myAlphaBlendState;
+		D3DPointer<ID3D11BlendState> myNoAlphaBlendState;
 		D3D11_VIEWPORT* myViewPort;
 
 

@@ -230,6 +230,12 @@
     <ClInclude Include="EmitterContainer.h">
       <Filter>Rendering\Particles</Filter>
     </ClInclude>
+    <ClInclude Include="D3DPointer.h">
+      <Filter>DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="D3DPointers.h">
+      <Filter>DirectX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompile">

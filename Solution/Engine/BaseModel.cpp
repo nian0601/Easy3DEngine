@@ -28,17 +28,21 @@ namespace Easy3D
 
 	BaseModel::~BaseModel()
 	{
-		if (myVertexBuffer != nullptr && myVertexBuffer->myVertexBuffer != nullptr)
+		/*if (myVertexBuffer != nullptr && myVertexBuffer->myVertexBuffer != nullptr)
 		{
 			myVertexBuffer->myVertexBuffer->Release();
 			delete myVertexBuffer;
-		}
+		}*/
 
-		if (myIndexBuffer != nullptr && myIndexBuffer->myIndexBuffer != nullptr)
+		delete myVertexBuffer;
+
+		/*if (myIndexBuffer != nullptr && myIndexBuffer->myIndexBuffer != nullptr)
 		{
 			myIndexBuffer->myIndexBuffer->Release();
 			delete myIndexBuffer;
-		}
+		}*/
+
+		delete myIndexBuffer;
 		
 		delete myVertexBufferDesc;
 		delete myIndexBufferDesc;
@@ -58,11 +62,12 @@ namespace Easy3D
 
 	void BaseModel::Render()
 	{
+		ID3D11Buffer* buf = myVertexBuffer->myVertexBuffer.Get();
 		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
-			, myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer
+			, myVertexBuffer->myNumberOfBuffers, &buf
 			, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer
+		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer.Get()
 			, myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 
 
@@ -167,40 +172,45 @@ namespace Easy3D
 
 	void BaseModel::SetupVertexBuffer(int aVertexCount, int aVertexSize, char* aVertexData)
 	{
-		if (myVertexBuffer->myVertexBuffer != nullptr)
+		if (myVertexBuffer->myVertexBuffer.Get() != nullptr)
 			myVertexBuffer->myVertexBuffer->Release();
 
 		myVertexBufferDesc->ByteWidth = aVertexSize * aVertexCount;
 		myInitData->pSysMem = aVertexData;
 
-
+		ID3D11Buffer* buf = nullptr;
 		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData
-			, &myVertexBuffer->myVertexBuffer);
+			, &buf);
 		if (FAILED(hr) != S_OK)
 		{
 			DL_ASSERT("BaseModel::SetupVertexBuffer: Failed to SetupVertexBuffer");
 		}
 
-		Engine::GetInstance()->SetDebugName(myVertexBuffer->myVertexBuffer, "BaseModel::myVertexBuffer->myVertexBuffer");
+		myVertexBuffer->myVertexBuffer.Set(buf);
+		Engine::GetInstance()->SetDebugName(myVertexBuffer->myVertexBuffer.Get(), "BaseModel::myVertexBuffer->myVertexBuffer");
 	}
 
 	void BaseModel::SetupIndexBuffer(int aIndexCount, char* aIndexData)
 	{
-		if (myIndexBuffer->myIndexBuffer != nullptr)
+		/*if (myIndexBuffer->myIndexBuffer != nullptr)
+			myIndexBuffer->myIndexBuffer->Release();*/
+
+		if (myIndexBuffer != nullptr && myIndexBuffer->myIndexBuffer.Get() != nullptr)
 			myIndexBuffer->myIndexBuffer->Release();
 
 		myIndexBufferDesc->ByteWidth = sizeof(UINT) * aIndexCount;
 		myInitData->pSysMem = aIndexData;
 
-
+		ID3D11Buffer* buf = myIndexBuffer->myIndexBuffer.Get();
 		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData,
-			&myIndexBuffer->myIndexBuffer);
+			&buf);
 		if (FAILED(hr) != S_OK)
 		{
 			DL_ASSERT("BaseModel::SetupIndexBuffer: Failed to SetupIndexBuffer");
 		}
 
-		Engine::GetInstance()->SetDebugName(myIndexBuffer->myIndexBuffer, "BaseModel::myIndexBuffer->myIndexBuffer");
+		myIndexBuffer->myIndexBuffer.Set(buf);
+		Engine::GetInstance()->SetDebugName(myIndexBuffer->myIndexBuffer.Get(), "BaseModel::myIndexBuffer->myIndexBuffer");
 	}
 
 	void BaseModel::OnEffectLoad()

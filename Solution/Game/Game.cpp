@@ -20,6 +20,8 @@
 #include <XMLReader.h>
 
 
+#include <D3DPointers.h>
+
 Game::Game()
 	: myDebugMenu(new Easy3D::DebugMenu())
 {

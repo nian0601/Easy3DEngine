@@ -160,11 +160,12 @@ namespace Easy3D
 
 	void FullScreenHelper::ActivateBuffers()
 	{
+		ID3D11Buffer* buf = myVertexBuffer->myVertexBuffer.Get();
 		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot,
-			myVertexBuffer->myNumberOfBuffers, &myVertexBuffer->myVertexBuffer,
+			myVertexBuffer->myNumberOfBuffers, &buf,
 			&myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
-		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer,
+		Engine::GetInstance()->GetContex()->IASetIndexBuffer(myIndexBuffer->myIndexBuffer.Get(),
 			myIndexBuffer->myIndexBufferFormat, myIndexBuffer->myByteOffset);
 		Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	}
