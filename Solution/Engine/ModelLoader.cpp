@@ -9,7 +9,7 @@
 #include <TimerManager.h>
 
 
-#define THREADED_LOADING
+//#define THREADED_LOADING
 
 namespace Easy3D
 {
@@ -148,7 +148,7 @@ namespace Easy3D
 		CU::TimerManager::GetInstance()->StartTimer("LoadModel");
 
 		Model* model = myModelFactory->LoadModel(aModelPath.c_str(),
-			Engine::GetInstance()->GetEffectContainer()->GetEffect(aEffectPath));
+			Engine::GetInstance()->GetEffectContainer()->Get3DEffect(aEffectPath));
 		model->Init();
 
 		int elapsed = static_cast<int>(
@@ -187,7 +187,7 @@ namespace Easy3D
 #else
 		ModelProxy* proxy = new ModelProxy();
 		Model* model = new Easy3D::Model();
-		model->InitLightCube(aWidth, aHeight, aDepth, aColor);
+		model->InitCube(aWidth, aHeight, aDepth, aColor);
 
 		proxy->SetModel(model);
 

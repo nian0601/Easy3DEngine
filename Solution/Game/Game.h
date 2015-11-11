@@ -57,15 +57,10 @@ private:
 	void ToggleSetting(eGameSettings aSetting);
 
 	Easy3D::Camera* myCamera;
-	Easy3D::DebugMenu* myDebugMenu;
 	Easy3D::Scene* myScene;
-	Easy3D::Scene* myInstancedScene;
 	int mySceneEffect;
 
 	Easy3D::Renderer* myRenderer;
-	Easy3D::RenderProcessTarget* myRenderProcessTarget;
-	std::bitset<eGameSettings::_COUNT> mySettings;
-	eGameSettings myRenderMode;
 
 	float myDeltaTime;
 

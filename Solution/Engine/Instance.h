@@ -4,6 +4,7 @@
 #include "LightStructs.h"
 #include <Matrix.h>
 #include <StaticArray.h>
+#include "TransformationNodeInstance.h"
 
 namespace Easy3D
 {
@@ -18,8 +19,14 @@ namespace Easy3D
 		Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation);
 		~Instance();
 
+		void BuildHierarchy(TransformationNodeInstance& aHierarchy, Model* aModel);
+
+		void Update(float aDelta);
+
 		void Render(Camera& aCamera);
 		void Render(const CU::Matrix44<float>& aParentMatrix, Camera& aCamera);
+		void RenderModel(Model* aModel, const CU::Matrix44<float>& aParent, Camera& aCamera
+			, TransformationNodeInstance& aHierarchy);
 		void AddRenderData(RenderProcessTarget* aTarget);
 
 		void SetEffect(const std::string& aEffectFile);
@@ -38,5 +45,7 @@ namespace Easy3D
 		const CU::Matrix44<float>& myOrientation;
 		CU::Vector3<float> myScale;
 		CU::Vector3<float> myPosition;
+
+		TransformationNodeInstance myHierarchy;
 	};
 }

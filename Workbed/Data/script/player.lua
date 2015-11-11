@@ -46,7 +46,7 @@ end
 
 entity = {
 	graphicsComponent = {
-		file = "Data/resources/model/PBL_metalness_arm/pbl_metalness_arm_binary.fbx",
+		file = "Data/resources/model/Dice/dice.fbx",
 		model = {
 			shader = "Data/effect/3D/BasicEffect.fx"
 		}

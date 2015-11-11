@@ -6,6 +6,7 @@
 #include "Surface.h"
 #include "VertexDataWrapper.h"
 #include "VertexIndexWrapper.h"
+#include "TransformationNode.h"
 
 
 namespace Easy3D
@@ -18,6 +19,7 @@ namespace Easy3D
 		, myIsNULLObject(true)
 		, myVertexBaseData(nullptr)
 		, myIndexBaseData(nullptr)
+		, myTransformation(nullptr)
 	{
 
 	}
@@ -213,7 +215,7 @@ namespace Easy3D
 	void Model::AddChild(Model* aChild)
 	{
 		myChilds.Add(aChild);
-		myChildTransforms.Add(aChild->myOrientation);
+		myChildTransforms.Add(new TransformationNode(aChild->myOrientation));
 	}
 
 	Effect3D* Model::GetEffect()
@@ -248,10 +250,10 @@ namespace Easy3D
 			BaseModel::Render();
 		}
 
-		for (int i = 0; i < myChilds.Size(); ++i)
+		/*for (int i = 0; i < myChilds.Size(); ++i)
 		{
-			myChilds[i]->Render(myChildTransforms[i] * aOrientation);
-		}
+			myChilds[i]->Render(myChildTransforms[i]->GetTransformationForTime(0) * aOrientation);
+		}*/
 	}
 
 	void Model::SetGPUState()

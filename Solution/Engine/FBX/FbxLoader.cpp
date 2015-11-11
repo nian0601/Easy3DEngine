@@ -1426,6 +1426,10 @@ FbxModelData* FBXLoader::loadModel( const char* aFile )
 	FBX_LOG("Success!");
 	FBX_LOG("FBXLoader Loading Scene...");
 	auto scene = LoadScene(aFile);
+	fbxsdk::FbxTime::EMode mode = scene->GetGlobalSettings().GetTimeMode();
+	double fps = fbxsdk::FbxGetFrameRate(mode);
+	myLoadingModel->myFPS = static_cast<float>(fps);
+
 	FBX_LOG("Successfully loaded scene!");
 
 	FBX_LOG("FBXLoader Loading Textures...");

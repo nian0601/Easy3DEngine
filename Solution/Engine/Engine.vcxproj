@@ -103,6 +103,7 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AnimationCurve.cpp" />
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -143,8 +144,13 @@
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureContainer.cpp" />
+    <ClCompile Include="TransformationNode.cpp" />
+    <ClCompile Include="TransformationNodeInstance.cpp" />
+    <ClCompile Include="TransformationNodeCurves.cpp" />
+    <ClCompile Include="TransformationNodeHierarchy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AnimationCurve.h" />
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Camera.h" />
@@ -191,6 +197,10 @@
     <ClInclude Include="Text.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureContainer.h" />
+    <ClInclude Include="TransformationNode.h" />
+    <ClInclude Include="TransformationNodeInstance.h" />
+    <ClInclude Include="TransformationNodeCurves.h" />
+    <ClInclude Include="TransformationNodeHierarchy.h" />
     <ClInclude Include="VertexBufferWrapper.h" />
     <ClInclude Include="VertexDataWrapper.h" />
     <ClInclude Include="VertexIndexWrapper.h" />

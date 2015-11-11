@@ -14,23 +14,49 @@ Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrien
 	, myOrientation(aOrientation)
 	, myScale({1,1,1})
 {
-
+	BuildHierarchy(myHierarchy, aModel.GetModel());
 }
 
 Easy3D::Instance::~Instance()
 {
 }
 
+void Easy3D::Instance::BuildHierarchy(TransformationNodeInstance& aHierarchy, Model* aModel)
+{
+	aHierarchy.SetTransformationNode(aModel->myTransformation);
+
+	for (int i = 0; i < aModel->myChildTransforms.Size(); ++i)
+	{
+		TransformationNodeInstance* newNode = new TransformationNodeInstance();
+		newNode->SetTransformationNode(aModel->myChildTransforms[i]);
+		aHierarchy.AddChildNode(newNode);
+
+		BuildHierarchy(*newNode, aModel->myChilds[i]);
+	}
+}
+
+void Easy3D::Instance::Update(float aDelta)
+{
+	myHierarchy.Update(aDelta);
+}
+
 void Easy3D::Instance::Render(Camera& aCamera)
 {
-	if (myProxy.IsLoaded())
+
+	myProxy.GetEffect()->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
+	myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
+	myProxy.GetEffect()->SetScaleVector(myScale);
+
+	RenderModel(myProxy.GetModel(), myOrientation, aCamera, myHierarchy);
+
+	/*if (myProxy.IsLoaded())
 	{
 		myProxy.GetEffect()->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
 		myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
 		myProxy.GetEffect()->SetScaleVector(myScale);
 
 		myProxy.Render(myOrientation);
-	}
+	}*/
 }
 
 void Easy3D::Instance::Render(const CU::Matrix44<float>& aParentMatrix, Camera& aCamera)
@@ -42,6 +68,22 @@ void Easy3D::Instance::Render(const CU::Matrix44<float>& aParentMatrix, Camera& 
 		myProxy.GetEffect()->SetScaleVector(myScale);
 
 		myProxy.Render(myOrientation * aParentMatrix);
+	}
+}
+
+void Easy3D::Instance::RenderModel(Model* aModel, const CU::Matrix44<float>& aParent
+	, Camera& aCamera, TransformationNodeInstance& aHierarchy)
+{
+	if (aModel->myIsNULLObject == false)
+	{
+		aModel->Render(aHierarchy.GetTransformation() * aParent);
+	}
+
+	for (int i = 0; i < aHierarchy.GetChildren().Size(); ++i)
+	{
+		DL_ASSERT_EXP(aModel->myChilds[i] != nullptr, "Missmatch number of TransformationNodes and number of Models");
+
+		RenderModel(aModel->myChilds[i], aHierarchy.GetTransformation() * aParent, aCamera, *aHierarchy.GetChildren()[i]);
 	}
 }
 

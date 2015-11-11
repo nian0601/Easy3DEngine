@@ -11,6 +11,9 @@
 #include "VertexDataWrapper.h"
 #include "VertexIndexWrapper.h"
 
+#include "AnimationCurve.h"
+#include "TransformationNodeCurves.h"
+
 
 Easy3D::FBXFactory::FBXFactory()
 {
@@ -152,6 +155,72 @@ void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect3D*
 	outData->mySurfaces.Add(new Surface(surface));
 }
 
+void Easy3D::FBXFactory::FillAnimationData(FbxModelData* someData, Model* outData)
+{
+	TransformationNodeCurves* nodeCurves = new TransformationNodeCurves();
+	Easy3D::KeyFrame frame;
+	fbxsdk::FbxAnimCurve* fbxCurve = nullptr;
+
+	float startTime = FLT_MAX;
+	float stopTime = FLT_MIN;
+
+	//RotationCurves
+	for (int i = 0; i < 3; ++i)
+	{
+		AnimationCurve* curve = new AnimationCurve();
+		fbxCurve = someData->myAnimationCurves->myRotationCurve[i];
+		int keyCount = fbxCurve->KeyGetCount();
+
+		for (int j = 0; j < keyCount; ++j)
+		{
+			frame.myTime = static_cast<float>(fbxCurve->KeyGetTime(j).GetSecondDouble());
+			frame.myValue = fbxCurve->KeyGetValue(j);
+			curve->AddKeyFrame(frame);
+		}
+
+		nodeCurves->SetRotationCurve(i, curve);
+		curve->FinalizeCurve();
+
+		fbxsdk::FbxTimeSpan span;
+		fbxCurve->GetTimeInterval(span);
+		float start = static_cast<float>(span.GetStart().GetSecondDouble());
+		float stop = static_cast<float>(span.GetStop().GetSecondDouble());
+
+		startTime = fminf(start, startTime);
+		stopTime = fmaxf(stop, stopTime);
+	}
+	 
+	//TransalationCurves
+	for (int i = 0; i < 3; ++i)
+	{
+		AnimationCurve* curve = new AnimationCurve();
+		fbxCurve = someData->myAnimationCurves->myTtranslationCurve[i];
+		int keyCount = fbxCurve->KeyGetCount();
+
+		for (int j = 0; j < keyCount; ++j)
+		{
+			frame.myTime = static_cast<float>(fbxCurve->KeyGetTime(j).GetSecondDouble());
+			frame.myValue = fbxCurve->KeyGetValue(j);
+			curve->AddKeyFrame(frame);
+		}
+
+		curve->FinalizeCurve();
+		nodeCurves->SetTranslationCurve(i, curve);
+
+		fbxsdk::FbxTimeSpan span;
+		fbxCurve->GetTimeInterval(span);
+		float start = static_cast<float>(span.GetStart().GetSecondDouble());
+		float stop = static_cast<float>(span.GetStop().GetSecondDouble());
+
+		startTime = fminf(start, startTime);
+		stopTime = fmaxf(stop, stopTime);
+	}
+	
+	//we are not reading KeyFrameCount at the moment, using -1 until we need the real count!
+	nodeCurves->Init(Easy3D::AnimationType::RELATIVE_TRANSFORM, -1, static_cast<int>(someData->myFPS) , startTime, stopTime);
+	outData->myTransformation = nodeCurves;
+}
+
 Easy3D::Model* Easy3D::FBXFactory::CreateModel(FbxModelData* someModelData, Effect3D* aEffect)
 {
 	Model* tempModel = new Model();
@@ -161,8 +230,13 @@ Easy3D::Model* Easy3D::FBXFactory::CreateModel(FbxModelData* someModelData, Effe
 	{
 		FillData(someModelData->myData, tempModel, aEffect);
 		tempModel->myOrientation = someModelData->myOrientation;
-
 	}
+
+	if (someModelData->myAnimationCurves != nullptr)
+	{
+		FillAnimationData(someModelData, tempModel);
+	}
+
 	for (int i = 0; i < someModelData->myChilds.Size(); ++i)
 	{
 		auto currentChild = someModelData->myChilds[i];

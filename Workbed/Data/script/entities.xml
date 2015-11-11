@@ -1,9 +1,4 @@
 <entity file="Data/script/player.lua">
-	<position x="0" y="0" z="10"/>
-	<rotation x="0" y="0" z="0"/>
-</entity>
-
-<entity file="Data/script/player_instanced.lua">
-	<position x="0" y="0" z="10"/>
-	<rotation x="0" y="0" z="0"/>
+	<position x="0" y="0" z="0"/>
+	<rotation x="0" y="3.14f" z="0"/>
 </entity>

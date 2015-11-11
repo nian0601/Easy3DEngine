@@ -7,6 +7,8 @@ struct D3D11_INPUT_ELEMENT_DESC;
 namespace Easy3D
 {
 	class Effect3D;
+	class TransformationNode;
+
 	struct MeshData;
 	struct VertexDataWrapper;
 	struct VertexIndexWrapper;
@@ -14,7 +16,7 @@ namespace Easy3D
 	class Model : public BaseModel
 	{
 		friend class FBXFactory;
-
+		friend class Instance;
 	public:
 		Model();
 		~Model();
@@ -43,7 +45,8 @@ namespace Easy3D
 		VertexDataWrapper* myVertexBaseData;
 
 		CU::GrowingArray<Model*> myChilds;
-		CU::GrowingArray<CU::Matrix44f> myChildTransforms;
+		CU::GrowingArray<TransformationNode*> myChildTransforms;
+		TransformationNode* myTransformation;
 		CU::Matrix44f myOrientation;
 	};
 }

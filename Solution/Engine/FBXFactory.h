@@ -21,6 +21,7 @@ namespace Easy3D
 		Model* LoadModel(const char* aFilePath, Effect3D* aEffect);
 	private:
 		void FillData(ModelData* someData, Model* outData, Effect3D* aEffect);
+		void FillAnimationData(FbxModelData* someData, Model* outData);
 		Model* CreateModel(FbxModelData* someModelData, Effect3D* aEffect);
 
 		FBXLoader *myLoader;

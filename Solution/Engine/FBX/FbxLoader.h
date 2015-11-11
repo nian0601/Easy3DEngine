@@ -164,6 +164,7 @@ public:
 	CU::Matrix44f myOrientation;
 	CU::Matrix44f myRotationPivot;
 	FBXLoaderArray<FbxModelData*> myChilds;
+	float myFPS;
 };
 
 class FBXLoader

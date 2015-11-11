@@ -22,6 +22,8 @@ namespace Easy3D
 		Scene();
 		~Scene();
 
+		void Update(float aDelta);
+
 		void Render();
 		void Render(RenderProcessTarget* aTarget);
 

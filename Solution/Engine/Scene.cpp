@@ -24,11 +24,8 @@ Easy3D::Scene::~Scene()
 	myInstances.DeleteAll();
 }
 
-void Easy3D::Scene::Render()
+void Easy3D::Scene::Update(float aDelta)
 {
-	//Sleep(5);
-
-
 	for (int i = 0; i < myDirectionalLights.Size(); ++i)
 	{
 		myDirectionalLights[i]->Update();
@@ -62,6 +59,14 @@ void Easy3D::Scene::Render()
 		myInstances[i]->UpdateDirectionalLights(myDirectionalLightData);
 		myInstances[i]->UpdatePointLights(myPointLightData);
 		myInstances[i]->UpdateSpotLights(mySpotLightData);
+		myInstances[i]->Update(aDelta);
+	}
+}
+
+void Easy3D::Scene::Render()
+{
+	for (int i = 0; i < myInstances.Size(); ++i)
+	{
 		myInstances[i]->Render(*myCamera);
 	}
 
