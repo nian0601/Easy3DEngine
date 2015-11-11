@@ -38,12 +38,16 @@ namespace Easy3D
 
 		D3DX11_PASS_DESC passDesc;
 		myRenderToTextureData.myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+
+		ID3D11InputLayout* input = nullptr;
 		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateInputLayout(vertexDesc
-			, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+			, ARRAYSIZE(vertexDesc), passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &input);
 		if (FAILED(hr) != S_OK)
 		{
 			DL_MESSAGE_BOX("Failed to CreateInputLayout", "Model2D::Init", MB_ICONWARNING);
 		}
+
+		myVertexLayout.Set(input);
 
 		InitVertexBuffer(sizeof(VertexPosUV), D3D11_USAGE_IMMUTABLE, 0);
 		InitIndexBuffer();
@@ -161,7 +165,7 @@ namespace Easy3D
 	void FullScreenHelper::ActivateBuffers()
 	{
 		ID3D11Buffer* buf = myVertexBuffer->myVertexBuffer.Get();
-		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
+		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout.Get());
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot,
 			myVertexBuffer->myNumberOfBuffers, &buf,
 			&myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);

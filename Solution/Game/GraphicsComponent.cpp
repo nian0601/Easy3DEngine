@@ -7,7 +7,7 @@
 #include <Instance.h>
 #include <LuaBridge.h>
 #include <ModelLoader.h>
-#include <Sprite.h>
+#include <SpriteInstance.h>
 #include <Vector.h>
 
 
@@ -121,7 +121,7 @@ void GraphicsComponent::LoadSprite(luabridge::LuaRef& aSpriteRef)
 		}
 	}
 
-	mySprite = new Easy3D::Sprite(myFilePath, size, hotspot);
+	mySprite = new Easy3D::SpriteInstance(myFilePath, size, hotspot);
 }
 
 void GraphicsComponent::LoadModel(luabridge::LuaRef& aModelRef)

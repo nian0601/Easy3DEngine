@@ -3,7 +3,7 @@
 #include "Component.h"
 namespace Easy3D
 {
-	class Sprite;
+	class SpriteInstance;
 	class Instance;
 }
 
@@ -27,7 +27,7 @@ private:
 	void LoadModel(luabridge::LuaRef& aModelRef);
 
 	std::string myFilePath;
-	Easy3D::Sprite* mySprite;
+	Easy3D::SpriteInstance* mySprite;
 	Easy3D::Instance* myModel;
 	CU::Vector4<float> myColor;
 };

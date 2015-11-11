@@ -14,10 +14,6 @@ namespace Easy3D
 
 	BaseModel::BaseModel()
 	{
-		myVertexBufferDesc = new D3D11_BUFFER_DESC();
-		myIndexBufferDesc = new D3D11_BUFFER_DESC();
-		myInitData = new D3D11_SUBRESOURCE_DATA();
-
 		myEffect = nullptr;
 
 		mySurfaces.Init(1);
@@ -28,42 +24,16 @@ namespace Easy3D
 
 	BaseModel::~BaseModel()
 	{
-		/*if (myVertexBuffer != nullptr && myVertexBuffer->myVertexBuffer != nullptr)
-		{
-			myVertexBuffer->myVertexBuffer->Release();
-			delete myVertexBuffer;
-		}*/
-
 		delete myVertexBuffer;
-
-		/*if (myIndexBuffer != nullptr && myIndexBuffer->myIndexBuffer != nullptr)
-		{
-			myIndexBuffer->myIndexBuffer->Release();
-			delete myIndexBuffer;
-		}*/
-
 		delete myIndexBuffer;
 		
-		delete myVertexBufferDesc;
-		delete myIndexBufferDesc;
-		delete myInitData;
-
-		if(myBlendState != nullptr)
-		{
-			myBlendState->Release();
-		}
-
-		if(myVertexLayout != nullptr)
-		{
-			myVertexLayout->Release();
-		}
 		mySurfaces.DeleteAll();
 	}
 
 	void BaseModel::Render()
 	{
 		ID3D11Buffer* buf = myVertexBuffer->myVertexBuffer.Get();
-		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout);
+		Engine::GetInstance()->GetContex()->IASetInputLayout(myVertexLayout.Get());
 		Engine::GetInstance()->GetContex()->IASetVertexBuffers(myVertexBuffer->myStartSlot
 			, myVertexBuffer->myNumberOfBuffers, &buf
 			, &myVertexBuffer->myStride, &myVertexBuffer->myByteOffset);
@@ -91,14 +61,17 @@ namespace Easy3D
 	{
 		D3DX11_PASS_DESC passDesc;
 		myEffect->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+		ID3D11InputLayout* input = nullptr;
 		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateInputLayout(aVertexDescArray
-			, aArraySize, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &myVertexLayout);
+			, aArraySize, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &input);
 		if (FAILED(hr) != S_OK)
 		{
 			DL_MESSAGE_BOX("Failed to CreateInputLayout", "Model2D::Init", MB_ICONWARNING);
 		}
 
-		Engine::GetInstance()->SetDebugName(myVertexLayout, "BaseModel::myVertexLayout");
+		myVertexLayout.Set(input);
+
+		Engine::GetInstance()->SetDebugName(myVertexLayout.Get(), "BaseModel::myVertexLayout");
 	}
 
 	void Easy3D::BaseModel::InitVertexBuffer(int aVertexSize, int aBufferUsage, int aCPUUsage)
@@ -110,12 +83,12 @@ namespace Easy3D
 		myVertexBuffer->myNumberOfBuffers = 1;
 
 
-		ZeroMemory(myVertexBufferDesc, sizeof(myVertexBufferDesc));
-		myVertexBufferDesc->Usage = static_cast<D3D11_USAGE>(aBufferUsage);
-		myVertexBufferDesc->BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		myVertexBufferDesc->CPUAccessFlags = aCPUUsage;
-		myVertexBufferDesc->MiscFlags = 0;
-		myVertexBufferDesc->StructureByteStride = 0;
+		ZeroMemory(&myVertexBufferDesc, sizeof(myVertexBufferDesc));
+		myVertexBufferDesc.Usage = static_cast<D3D11_USAGE>(aBufferUsage);
+		myVertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		myVertexBufferDesc.CPUAccessFlags = aCPUUsage;
+		myVertexBufferDesc.MiscFlags = 0;
+		myVertexBufferDesc.StructureByteStride = 0;
 	}
 
 	void BaseModel::InitIndexBuffer()
@@ -125,12 +98,12 @@ namespace Easy3D
 		myIndexBuffer->myByteOffset = 0;
 
 
-		ZeroMemory(myIndexBufferDesc, sizeof(myIndexBufferDesc));
-		myIndexBufferDesc->Usage = D3D11_USAGE_IMMUTABLE;
-		myIndexBufferDesc->BindFlags = D3D11_BIND_INDEX_BUFFER;
-		myIndexBufferDesc->CPUAccessFlags = 0;
-		myIndexBufferDesc->MiscFlags = 0;
-		myIndexBufferDesc->StructureByteStride = 0;
+		ZeroMemory(&myIndexBufferDesc, sizeof(myIndexBufferDesc));
+		myIndexBufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		myIndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+		myIndexBufferDesc.CPUAccessFlags = 0;
+		myIndexBufferDesc.MiscFlags = 0;
+		myIndexBufferDesc.StructureByteStride = 0;
 	}
 
 	void BaseModel::InitSurface(const std::string& aResourceName, const std::string& aFileName)
@@ -161,13 +134,15 @@ namespace Easy3D
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBlendState(&blendDesc, &myBlendState);
+		ID3D11BlendState* state = nullptr;
+		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBlendState(&blendDesc, &state);
 		if (FAILED(hr) != S_OK)
 		{
 			DL_ASSERT("BaseModel::InitBlendState: Failed to CreateBlendState");
 		}
 
-		Engine::GetInstance()->SetDebugName(myBlendState, "BaseModel::myBlendState");
+		myBlendState.Set(state);
+		Engine::GetInstance()->SetDebugName(myBlendState.Get(), "BaseModel::myBlendState");
 	}
 
 	void BaseModel::SetupVertexBuffer(int aVertexCount, int aVertexSize, char* aVertexData)
@@ -175,11 +150,11 @@ namespace Easy3D
 		if (myVertexBuffer->myVertexBuffer.Get() != nullptr)
 			myVertexBuffer->myVertexBuffer->Release();
 
-		myVertexBufferDesc->ByteWidth = aVertexSize * aVertexCount;
-		myInitData->pSysMem = aVertexData;
+		myVertexBufferDesc.ByteWidth = aVertexSize * aVertexCount;
+		myInitData.pSysMem = aVertexData;
 
 		ID3D11Buffer* buf = nullptr;
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myVertexBufferDesc, myInitData
+		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(&myVertexBufferDesc, &myInitData
 			, &buf);
 		if (FAILED(hr) != S_OK)
 		{
@@ -198,11 +173,11 @@ namespace Easy3D
 		if (myIndexBuffer != nullptr && myIndexBuffer->myIndexBuffer.Get() != nullptr)
 			myIndexBuffer->myIndexBuffer->Release();
 
-		myIndexBufferDesc->ByteWidth = sizeof(UINT) * aIndexCount;
-		myInitData->pSysMem = aIndexData;
+		myIndexBufferDesc.ByteWidth = sizeof(UINT) * aIndexCount;
+		myInitData.pSysMem = aIndexData;
 
 		ID3D11Buffer* buf = myIndexBuffer->myIndexBuffer.Get();
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(myIndexBufferDesc, myInitData,
+		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(&myIndexBufferDesc, &myInitData,
 			&buf);
 		if (FAILED(hr) != S_OK)
 		{

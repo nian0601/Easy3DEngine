@@ -133,6 +133,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteInstance.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -140,6 +141,7 @@
     <ClCompile Include="Surface.cpp" />
     <ClCompile Include="SystemMonitor.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="TextInstance.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureContainer.cpp" />
   </ItemGroup>
@@ -184,11 +186,13 @@
     <ClInclude Include="SetupInfo.h" />
     <ClInclude Include="SpotLight.h" />
     <ClInclude Include="Sprite.h" />
+    <ClInclude Include="SpriteInstance.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Structs.h" />
     <ClInclude Include="Surface.h" />
     <ClInclude Include="SystemMonitor.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="TextInstance.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureContainer.h" />
     <ClInclude Include="VertexBufferWrapper.h" />

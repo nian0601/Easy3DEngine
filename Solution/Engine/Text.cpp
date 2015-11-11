@@ -39,7 +39,7 @@ namespace Easy3D
 		InitSurface("Texture", myFont->GetTexture()->GetFileName());
 		InitBlendState();
 
-		ZeroMemory(myInitData, sizeof(myInitData));
+		ZeroMemory(&myInitData, sizeof(myInitData));
 
 		myVertices.Init(16);
 		myIndices.Init(16);
@@ -69,7 +69,7 @@ namespace Easy3D
 		blendFactor[2] = 0.f;
 		blendFactor[3] = 0.f;
 
-		myEffect->SetBlendState(myBlendState, blendFactor);
+		myEffect->SetBlendState(myBlendState.Get(), blendFactor);
 		static_cast<Effect2D*>(myEffect)->SetProjectionMatrix(Engine::GetInstance()->GetOrthogonalMatrix());
 		static_cast<Effect2D*>(myEffect)->SetPosAndScale(aPosition, aScale);
 		static_cast<Effect2D*>(myEffect)->SetColor(aColor);

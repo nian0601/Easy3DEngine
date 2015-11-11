@@ -92,6 +92,12 @@
     <ClCompile Include="EmitterContainer.cpp">
       <Filter>Rendering\Particles</Filter>
     </ClCompile>
+    <ClCompile Include="SpriteInstance.cpp">
+      <Filter>Rendering\RenderableObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="TextInstance.cpp">
+      <Filter>Rendering\RenderableObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -235,6 +241,12 @@
     </ClInclude>
     <ClInclude Include="D3DPointers.h">
       <Filter>DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteInstance.h">
+      <Filter>Rendering\RenderableObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="TextInstance.h">
+      <Filter>Rendering\RenderableObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
