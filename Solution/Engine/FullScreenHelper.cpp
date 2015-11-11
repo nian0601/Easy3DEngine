@@ -201,7 +201,7 @@ namespace Easy3D
 
 	void FullScreenHelper::CreateCombineData()
 	{
-		myCombineData.myEffect = Engine::GetInstance()->GetEffectContainer()->GetBaseEffect(
+		myCombineData.myEffect = EffectContainer::GetInstance()->GetBaseEffect(
 			"Data/effect/SharedUtilities/Combine.fx");
 
 		myCombineData.mySourceA 
@@ -212,7 +212,7 @@ namespace Easy3D
 
 	void FullScreenHelper::CreateRenderToTextureData()
 	{
-		myRenderToTextureData.myEffect = Engine::GetInstance()->GetEffectContainer()->GetBaseEffect(
+		myRenderToTextureData.myEffect = EffectContainer::GetInstance()->GetBaseEffect(
 			"Data/effect/SharedUtilities/RenderToTexture.fx");
 
 		myRenderToTextureData.mySource
@@ -222,7 +222,7 @@ namespace Easy3D
 	void FullScreenHelper::CreateDownSampleData()
 	{
 		myDownSampleData.myEffect 
-			= Engine::GetInstance()->GetEffectContainer()->GetBaseEffect("Data/effect/SharedUtilities/DownSample.fx");
+			= EffectContainer::GetInstance()->GetBaseEffect("Data/effect/SharedUtilities/DownSample.fx");
 		myDownSampleData.myTexture 
 			= myDownSampleData.myEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
 
@@ -248,7 +248,7 @@ namespace Easy3D
 	void FullScreenHelper::CreateHDRData()
 	{
 		myHDRData.myEffect
-			= Engine::GetInstance()->GetEffectContainer()->GetBaseEffect("Data/effect/SharedUtilities/HDR.fx");
+			= EffectContainer::GetInstance()->GetBaseEffect("Data/effect/SharedUtilities/HDR.fx");
 
 		myHDRData.myOriginalTexture 
 			= myHDRData.myEffect->GetEffect()->GetVariableByName("Original")->AsShaderResource();
@@ -271,7 +271,7 @@ namespace Easy3D
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 		myBloomData.myEffect
-			= Engine::GetInstance()->GetEffectContainer()->GetBaseEffect("Data/effect/SharedUtilities/Bloom.fx");
+			= EffectContainer::GetInstance()->GetBaseEffect("Data/effect/SharedUtilities/Bloom.fx");
 		myBloomData.myTexture
 			= myBloomData.myEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
 		myBloomData.myTexelWidthVariable

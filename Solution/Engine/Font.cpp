@@ -10,7 +10,7 @@ Easy3D::Font::Font()
 
 bool Easy3D::Font::Init(const char* aFontPath)
 {
-	myTexture = Engine::GetInstance()->GetTextureContainer()->GetTexture(aFontPath);
+	myTexture = TextureContainer::GetInstance()->GetTexture(aFontPath);
 
 	return true;
 }

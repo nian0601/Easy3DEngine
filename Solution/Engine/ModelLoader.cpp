@@ -13,6 +13,24 @@
 
 namespace Easy3D
 {
+	ModelLoader* ModelLoader::myInstance = nullptr;
+
+	void ModelLoader::Create()
+	{
+		myInstance = new ModelLoader();
+	}
+
+	void ModelLoader::Destroy()
+	{
+		delete myInstance;
+	}
+
+	ModelLoader* ModelLoader::GetInstance()
+	{
+		DL_ASSERT_EXP(myInstance != nullptr, "ModelLoader: myInstance is nullptr, forgot to create?");
+		return myInstance;
+	}
+
 	ModelLoader::ModelLoader()
 		: myModelsToLoad(4)
 		, myNonFXBModels(4)
@@ -70,7 +88,7 @@ namespace Easy3D
 					CU::TimerManager::GetInstance()->StartTimer("LoadModel");
 
 					model = myModelFactory->LoadModel(loadArray[i].myModelPath.c_str(),
-						Engine::GetInstance()->GetEffectContainer()->Get3DEffect(loadArray[i].myEffectPath));
+						EffectContainer::GetInstance()->Get3DEffect(loadArray[i].myEffectPath));
 					model->Init();
 
 
@@ -148,7 +166,7 @@ namespace Easy3D
 		CU::TimerManager::GetInstance()->StartTimer("LoadModel");
 
 		Model* model = myModelFactory->LoadModel(aModelPath.c_str(),
-			Engine::GetInstance()->GetEffectContainer()->GetEffect(aEffectPath));
+			EffectContainer::GetInstance()->GetEffect(aEffectPath));
 		model->Init();
 
 		int elapsed = static_cast<int>(

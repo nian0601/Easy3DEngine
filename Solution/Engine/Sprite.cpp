@@ -16,7 +16,7 @@ namespace Easy3D
 		: mySize(aSize)
 		, myHotspot(aHotSpot)
 	{
-		myEffect = Engine::GetInstance()->GetEffectContainer()->Get2DEffect("Data/effect/2D/SpriteEffect.fx");
+		myEffect = EffectContainer::GetInstance()->Get2DEffect("Data/effect/2D/SpriteEffect.fx");
 		myEffect->AddListener(this);
 
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
@@ -44,7 +44,7 @@ namespace Easy3D
 	void Sprite::Render(const CU::Vector2<float>& aPosition, const CU::Vector2<float>& aScale
 		, const CU::Vector4<float>& aColor)
 	{
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 
 		myPosition = aPosition;
 		myScale = aScale;

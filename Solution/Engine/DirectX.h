@@ -15,6 +15,8 @@ struct ID3D11DeviceContext;
 struct ID3D11InfoQueue;
 struct ID3D11RasterizerState;
 struct ID3D11RenderTargetView;
+struct D3D11_RENDER_TARGET_VIEW_DESC;
+struct ID3D11Resource;
 struct ID3D11Texture2D;
 struct IDXGISwapChain;
 struct D3D11_VIEWPORT;
@@ -41,13 +43,22 @@ namespace Easy3D
 		ID3D11DepthStencilView* GetDepthStencilView();
 		ID3D11RenderTargetView* GetBackbuffer();
 
-		void SetDepthBufferState(eDepthStencilType aState);
-		void SetRasterizeState(eRasterizerType aState);
+		void SetDepthBufferState(eDepthStencil aState);
+		void SetRasterizeState(eRasterizer aState);
+		void SetBlendState(eBlendState aState);
+		eDepthStencil GetDepthBufferState() const;
+		eRasterizer GetRasterizerState() const;
+		eBlendState GetBlendState() const;
+
 
 		void EnableAlphaBlending();
 		void DisableAlpaBlending();
 
 		void RestoreViewPort();
+
+
+		void CreateRenderTargetView(const std::string& aDebugName, ID3D11Resource* aResource, const D3D11_RENDER_TARGET_VIEW_DESC* aDesc
+			, D3DPointer<ID3D11RenderTargetView>& aOutPointer);
 
 	private:
 		void operator=(const DirectX&) = delete;
@@ -80,6 +91,9 @@ namespace Easy3D
 		D3DPointer<ID3D11BlendState> myNoAlphaBlendState;
 		D3D11_VIEWPORT* myViewPort;
 
+		eDepthStencil myDepthBufferState;
+		eRasterizer myRasterizeState;
+		eBlendState myBlendState;
 
 		HWND& myHWND;
 		SetupInfo mySetupInfo;

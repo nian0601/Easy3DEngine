@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <D3D11.h>
+#include "D3DPointers.h"
 
 struct ID3D11DepthStencilView;
 struct ID3D11RenderTargetView;
@@ -22,8 +24,8 @@ namespace Easy3D
 		void CreateDepthStencilView(float aWidth, float aHeight);
 	private:
 		std::string myFileName;
-		ID3D11ShaderResourceView* myTexture;
-		ID3D11RenderTargetView* myRenderTargetView;
-		ID3D11DepthStencilView* myDepthStencilView;
+		D3DPointer<ID3D11ShaderResourceView> myTexture;
+		D3DPointer<ID3D11RenderTargetView> myRenderTargetView;
+		D3DPointer<ID3D11DepthStencilView> myDepthStencilView;
 	};
 }

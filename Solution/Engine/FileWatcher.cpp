@@ -4,6 +4,24 @@
 
 namespace Easy3D
 {
+	FileWatcher* FileWatcher::myInstance = nullptr;
+
+	void FileWatcher::Create()
+	{
+		myInstance = new FileWatcher();
+	}
+
+	void FileWatcher::Destroy()
+	{
+		delete myInstance;
+	}
+
+	FileWatcher* FileWatcher::GetInstance()
+	{
+		DL_ASSERT_EXP(myInstance != nullptr, "FileWatcher: myInstance is nullptr, forgot to create?");
+		return myInstance;
+	}
+
 	FileWatcher::FileWatcher()
 	{
 		myFileDatas.Init(4);

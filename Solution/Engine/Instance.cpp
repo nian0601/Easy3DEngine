@@ -52,7 +52,7 @@ void Easy3D::Instance::SetEffect(const std::string& aEffectFile)
 {
 	if (myProxy.IsLoaded())
 	{
-		myProxy.SetEffect(Engine::GetInstance()->GetEffectContainer()->Get3DEffect(aEffectFile));
+		myProxy.SetEffect(EffectContainer::GetInstance()->Get3DEffect(aEffectFile));
 	}
 }
 

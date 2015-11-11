@@ -7,13 +7,19 @@ namespace Easy3D
 	class FontContainer
 	{
 	public:
-		~FontContainer();
+		static void Create();
+		static void Destroy();
+		static FontContainer* GetInstance();
 
 		Font* GetFont(const std::string& aPath);
 
 	private:
+		~FontContainer();
+
 		void LoadFont(const std::string& aPath);
 
 		std::unordered_map<std::string, Font*> myFonts;
+
+		static FontContainer* myInstance;
 	};
 }

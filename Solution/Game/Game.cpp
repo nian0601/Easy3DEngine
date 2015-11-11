@@ -159,7 +159,7 @@ bool Game::Update()
 
 void Game::UpdateSubSystems()
 {
-	Easy3D::Engine::GetInstance()->GetFileWatcher()->CheckFiles();
+	Easy3D::FileWatcher::GetInstance()->CheckFiles();
 	CU::InputWrapper::GetInstance()->Update();
 	CU::TimerManager::GetInstance()->Update();
 	myDeltaTime = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();

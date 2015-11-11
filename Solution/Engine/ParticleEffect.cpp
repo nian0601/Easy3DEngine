@@ -46,7 +46,7 @@ namespace Easy3D
 			{
 				DL_MESSAGE_BOX((char*)compilationMsgs->GetBufferPointer(), "Effect Error", MB_ICONWARNING);
 				DL_ASSERT("Need to fix a dummy-shader for Particles");
-				//myEffect = Engine::GetInstance()->GetEffectContainer()->GetEffect(
+				//myEffect = EffectContainer::GetInstance()->GetEffect(
 				//	"Data/effect/SuperUglyDebugEffect.fx")->myEffect;
 			}
 		}

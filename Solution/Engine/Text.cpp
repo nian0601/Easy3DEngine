@@ -21,8 +21,8 @@ namespace Easy3D
 
 	void Text::Init(const std::string& aFontPath)
 	{
-		myEffect = Engine::GetInstance()->GetEffectContainer()->Get2DEffect("Data/effect/2D/FontEffect.fx");
-		myFont = Engine::GetInstance()->GetFontContainer()->GetFont(aFontPath);
+		myEffect = EffectContainer::GetInstance()->Get2DEffect("Data/effect/2D/FontEffect.fx");
+		myFont = FontContainer::GetInstance()->GetFont(aFontPath);
 		myCharSize = myFont->GetCharSize();
 		myCharSpacing = 17.f;
 		myScale = { 1.f, 1.f };
@@ -48,17 +48,15 @@ namespace Easy3D
 	void Text::Render(const std::string& aString, const CU::Vector2<float>& aPosition
 		, const CU::Vector2<float>& aScale, const CU::Vector4<float>& aColor)
 	{
-		if (Engine::GetInstance()->myWireframeShouldShow == true)
-		{
-			Engine::GetInstance()->SetRasterizeState(eRasterizerType::CULL_FRONT);
-		}
+		eRasterizer oldRasterizer = Engine::GetInstance()->GetRasterizerState();
+		Engine::GetInstance()->SetRasterizeState(eRasterizer::CULL_FRONT);
 
 		if (myLastText != aString)
 		{
 			ConstructBuffers(aString);
 		}
 
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 
 		myPosition = aPosition;
 		myScale = aScale;
@@ -76,7 +74,8 @@ namespace Easy3D
 
 		BaseModel::Render();
 
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
+		Engine::GetInstance()->SetRasterizeState(oldRasterizer);
 	}
 
 

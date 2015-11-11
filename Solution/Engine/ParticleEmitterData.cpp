@@ -68,8 +68,8 @@ namespace Easy3D
 		std::string texFile;
 		reader.ForceReadAttribute(readElem, "value", texFile);
 
-		myEffect = Engine::GetInstance()->GetEffectContainer()->GetParticleEffect(shaderFile);
-		myTexture = Engine::GetInstance()->GetTextureContainer()->GetTexture(texFile);
+		myEffect = EffectContainer::GetInstance()->GetParticleEffect(shaderFile);
+		myTexture = TextureContainer::GetInstance()->GetTexture(texFile);
 		
 
 

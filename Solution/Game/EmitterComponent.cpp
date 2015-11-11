@@ -27,7 +27,7 @@ void EmitterComponent::LoadFromScript(luabridge::LuaRef& aTableRef)
 		DL_ASSERT("Failed to Load EmitterComponent from script. Did not find \"file\" in lua.");
 	}
 
-	myEmitter = Easy3D::Engine::GetInstance()->GetEmitterContainer()->CreateEmitter(file.cast<std::string>());
+	myEmitter = Easy3D::EmitterContainer::GetInstance()->CreateEmitter(file.cast<std::string>());
 }
 
 void EmitterComponent::Update(float aDelta)

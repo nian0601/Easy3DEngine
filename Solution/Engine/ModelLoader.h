@@ -12,8 +12,11 @@ namespace Easy3D
 	class ModelLoader
 	{
 	public:
-		ModelLoader();
-		~ModelLoader();
+		static void Create();
+		static void Destroy();
+		static ModelLoader* GetInstance();
+
+		
 
 		void Run();
 		void Shutdown();
@@ -38,6 +41,9 @@ namespace Easy3D
 			CU::Vector4<float> myColor;
 		};
 
+		ModelLoader();
+		~ModelLoader();
+
 		void WaitUntilCopyIsAllowed();
 		void WaitUntilAddIsAllowed();
 
@@ -49,5 +55,7 @@ namespace Easy3D
 		FBXFactory* myModelFactory;
 		CU::GrowingArray<Model*> myNonFXBModels;
 		std::unordered_map<std::string, ModelProxy*> myProxies;
+
+		static ModelLoader* myInstance;
 	};
 }

@@ -10,14 +10,20 @@ namespace Easy3D
 	class EmitterContainer
 	{
 	public:
-		~EmitterContainer();
+		static void Create();
+		static void Destroy();
+		static EmitterContainer* GetInstance();
 
 		ParticleEmitterInstance* CreateEmitter(const std::string& aFile);
 
 	private:
+		~EmitterContainer();
+
 		void LoadData(const std::string& aFile);
 
 		std::unordered_map<std::string, ParticleEmitterData*> myEmitterDatas;
+
+		static EmitterContainer* myInstance;
 	};
 }
 

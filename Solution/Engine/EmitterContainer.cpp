@@ -6,6 +6,24 @@
 
 namespace Easy3D
 {
+	EmitterContainer* EmitterContainer::myInstance = nullptr;
+
+	void EmitterContainer::Create()
+	{
+		myInstance = new EmitterContainer();
+	}
+
+	void EmitterContainer::Destroy()
+	{
+		delete myInstance;
+	}
+
+	EmitterContainer* EmitterContainer::GetInstance()
+	{
+		DL_ASSERT_EXP(myInstance != nullptr, "EmitterContainer: myInstance is nullptr, forgot to create?");
+		return myInstance;
+	}
+
 	EmitterContainer::~EmitterContainer()
 	{
 		for (auto it = myEmitterDatas.begin(); it != myEmitterDatas.end(); ++it)

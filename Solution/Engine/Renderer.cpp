@@ -103,9 +103,9 @@ namespace Easy3D
 		aScene->Render();
 
 
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myFullScreenHelper->Process(currData, aEffect);
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 
 		++mySceneIndex;
 	}
@@ -134,10 +134,10 @@ namespace Easy3D
 		}
 
 
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_DISABLED);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_DISABLED);
 		myFullScreenHelper->Combine(myCombinedScenes, myFontTexture, myFinalTexture);
 		myFullScreenHelper->RenderToScreen(myFinalTexture);
-		Engine::GetInstance()->SetDepthBufferState(eDepthStencilType::Z_ENABLED);
+		Engine::GetInstance()->SetDepthBufferState(eDepthStencil::Z_ENABLED);
 
 		mySceneIndex = 0;
 	}

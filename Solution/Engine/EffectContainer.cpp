@@ -11,222 +11,243 @@
 #include "TextureContainer.h"
 #include "ParticleEffect.h"
 
-Easy3D::EffectContainer::~EffectContainer()
+namespace Easy3D
 {
-	for (auto it = myBaseEffects.begin(); it != myBaseEffects.end(); ++it)
+	EffectContainer* EffectContainer::myInstance = nullptr;
+
+	void EffectContainer::Create()
 	{
-		delete it->second;
-		it->second = nullptr;
+		myInstance = new EffectContainer();
 	}
 
-	for (auto it = my2DEffects.begin(); it != my2DEffects.end(); ++it)
+	void EffectContainer::Destroy()
 	{
-		delete it->second;
-		it->second = nullptr;
+		delete myInstance;
 	}
 
-	for (auto it = my3DEffects.begin(); it != my3DEffects.end(); ++it)
+	EffectContainer* EffectContainer::GetInstance()
 	{
-		delete it->second;
-		it->second = nullptr;
+		DL_ASSERT_EXP(myInstance != nullptr, "EffectContainer: myInstance is nullptr, forgot to create?");
+		return myInstance;
 	}
 
-	for (auto it = myParticleEffects.begin(); it != myParticleEffects.end(); ++it)
+	EffectContainer::~EffectContainer()
 	{
-		delete it->second;
-		it->second = nullptr;
-	}
-}
+		for (auto it = myBaseEffects.begin(); it != myBaseEffects.end(); ++it)
+		{
+			delete it->second;
+			it->second = nullptr;
+		}
 
-Easy3D::BaseEffect* Easy3D::EffectContainer::GetBaseEffect(const std::string& aFilePath)
-{
-	auto it = myBaseEffects.find(aFilePath);
+		for (auto it = my2DEffects.begin(); it != my2DEffects.end(); ++it)
+		{
+			delete it->second;
+			it->second = nullptr;
+		}
 
-	if (it == myBaseEffects.end())
-	{
-		LoadBaseEffect(aFilePath);
-	}
+		for (auto it = my3DEffects.begin(); it != my3DEffects.end(); ++it)
+		{
+			delete it->second;
+			it->second = nullptr;
+		}
 
-	return myBaseEffects[aFilePath];
-}
-
-Easy3D::Effect2D* Easy3D::EffectContainer::Get2DEffect(const std::string& aFilePath)
-{
-	auto it = my2DEffects.find(aFilePath);
-
-	if (it == my2DEffects.end())
-	{
-		Load2DEffect(aFilePath);
-	}
-
-	return my2DEffects[aFilePath];
-}
-
-Easy3D::Effect3D* Easy3D::EffectContainer::Get3DEffect(const std::string& aFilePath)
-{
-	auto it = my3DEffects.find(aFilePath);
-
-	if (it == my3DEffects.end())
-	{
-		Load3DEffect(aFilePath);
+		for (auto it = myParticleEffects.begin(); it != myParticleEffects.end(); ++it)
+		{
+			delete it->second;
+			it->second = nullptr;
+		}
 	}
 
-	return my3DEffects[aFilePath];
-}
-
-Easy3D::ParticleEffect* Easy3D::EffectContainer::GetParticleEffect(const std::string& aFilePath)
-{
-	auto it = myParticleEffects.find(aFilePath);
-
-	if (it == myParticleEffects.end())
+	BaseEffect* EffectContainer::GetBaseEffect(const std::string& aFilePath)
 	{
-		LoadParticleEffect(aFilePath);
+		auto it = myBaseEffects.find(aFilePath);
+
+		if (it == myBaseEffects.end())
+		{
+			LoadBaseEffect(aFilePath);
+		}
+
+		return myBaseEffects[aFilePath];
 	}
 
-	return myParticleEffects[aFilePath];
-}
-
-
-void Easy3D::EffectContainer::LoadBaseEffect(const std::string& aFilePath)
-{
-	BaseEffect* newEffect = new BaseEffect();
-
-	if (newEffect->Init(aFilePath) == false)
+	Effect2D* EffectContainer::Get2DEffect(const std::string& aFilePath)
 	{
-		std::stringstream ss;
-		ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
-		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::LoadBaseEffect", MB_ICONWARNING);
-		return;
+		auto it = my2DEffects.find(aFilePath);
+
+		if (it == my2DEffects.end())
+		{
+			Load2DEffect(aFilePath);
+		}
+
+		return my2DEffects[aFilePath];
 	}
 
-
-	DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
-
-	myBaseEffects[aFilePath] = newEffect;
-
-	WATCH_FILE(aFilePath, Easy3D::EffectContainer::ReloadBaseEffect);
-}
-
-void Easy3D::EffectContainer::ReloadBaseEffect(const std::string& aFilePath)
-{
-	if (myBaseEffects.find(aFilePath) == myBaseEffects.end())
+	Effect3D* EffectContainer::Get3DEffect(const std::string& aFilePath)
 	{
-		return;
+		auto it = my3DEffects.find(aFilePath);
+
+		if (it == my3DEffects.end())
+		{
+			Load3DEffect(aFilePath);
+		}
+
+		return my3DEffects[aFilePath];
 	}
 
-	myBaseEffects[aFilePath]->Init(aFilePath);
-}
-
-void Easy3D::EffectContainer::Load2DEffect(const std::string& aFilePath)
-{
-	Effect2D* newEffect = new Effect2D();
-
-	if (newEffect->Init(aFilePath) == false)
+	ParticleEffect* EffectContainer::GetParticleEffect(const std::string& aFilePath)
 	{
-		std::stringstream ss;
-		ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
-		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load2DEffect", MB_ICONWARNING);
-		return;
+		auto it = myParticleEffects.find(aFilePath);
+
+		if (it == myParticleEffects.end())
+		{
+			LoadParticleEffect(aFilePath);
+		}
+
+		return myParticleEffects[aFilePath];
 	}
 
 
-	DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
-
-	my2DEffects[aFilePath] = newEffect;
-
-	WATCH_FILE(aFilePath, Easy3D::EffectContainer::Reload2DEffect);
-}
-
-void Easy3D::EffectContainer::Reload2DEffect(const std::string& aFilePath)
-{
-	if (my2DEffects.find(aFilePath) == my2DEffects.end())
+	void EffectContainer::LoadBaseEffect(const std::string& aFilePath)
 	{
-		return;
+		BaseEffect* newEffect = new BaseEffect();
+
+		if (newEffect->Init(aFilePath) == false)
+		{
+			std::stringstream ss;
+			ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
+			DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::LoadBaseEffect", MB_ICONWARNING);
+			return;
+		}
+
+
+		DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
+
+		myBaseEffects[aFilePath] = newEffect;
+
+		WATCH_FILE(aFilePath, EffectContainer::ReloadBaseEffect);
 	}
 
-	my2DEffects[aFilePath]->Init(aFilePath);
-}
-
-
-void Easy3D::EffectContainer::Load3DEffect(const std::string& aFilePath)
-{
-	Effect3D* newEffect = new Effect3D();
-
-	if (newEffect->Init(aFilePath) == false)
+	void EffectContainer::ReloadBaseEffect(const std::string& aFilePath)
 	{
-		std::stringstream ss;
-		ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
-		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load3DEffect", MB_ICONWARNING);
-		return;
+		if (myBaseEffects.find(aFilePath) == myBaseEffects.end())
+		{
+			return;
+		}
+
+		myBaseEffects[aFilePath]->Init(aFilePath);
 	}
 
-	Texture* tex = Engine::GetInstance()->GetTextureContainer()->GetTexture(myCubeMap);
-	ID3DX11EffectShaderResourceVariable* shaderVar = newEffect->GetEffect()->GetVariableByName("CubeMap")->AsShaderResource();
-
-	if (shaderVar->IsValid())
+	void EffectContainer::Load2DEffect(const std::string& aFilePath)
 	{
-		shaderVar->SetResource(tex->GetShaderView());
+		Effect2D* newEffect = new Effect2D();
+
+		if (newEffect->Init(aFilePath) == false)
+		{
+			std::stringstream ss;
+			ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
+			DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load2DEffect", MB_ICONWARNING);
+			return;
+		}
+
+
+		DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
+
+		my2DEffects[aFilePath] = newEffect;
+
+		WATCH_FILE(aFilePath, EffectContainer::Reload2DEffect);
 	}
 
-
-	DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
-
-	my3DEffects[aFilePath] = newEffect;
-
-	WATCH_FILE(aFilePath, Easy3D::EffectContainer::Reload3DEffect);
-}
-
-void Easy3D::EffectContainer::Reload3DEffect(const std::string& aFilePath)
-{
-	if (my3DEffects.find(aFilePath) == my3DEffects.end())
+	void EffectContainer::Reload2DEffect(const std::string& aFilePath)
 	{
-		return;
-	}
+		if (my2DEffects.find(aFilePath) == my2DEffects.end())
+		{
+			return;
+		}
 
-	my3DEffects[aFilePath]->Init(aFilePath);
-
-
-	Texture* tex = Engine::GetInstance()->GetTextureContainer()->GetTexture(myCubeMap);
-	ID3DX11EffectShaderResourceVariable* shaderVar = my3DEffects[aFilePath]->GetEffect()->GetVariableByName("CubeMap")->AsShaderResource();
-
-	if (shaderVar->IsValid())
-	{
-		shaderVar->SetResource(tex->GetShaderView());
-	}
-}
-
-
-void Easy3D::EffectContainer::LoadParticleEffect(const std::string& aFilePath)
-{
-	ParticleEffect* newEffect = new ParticleEffect();
-
-	if (newEffect->Init(aFilePath) == false)
-	{
-		std::stringstream ss;
-		ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
-		DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load3DEffect", MB_ICONWARNING);
-		return;
+		my2DEffects[aFilePath]->Init(aFilePath);
 	}
 
 
-	DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
-
-	myParticleEffects[aFilePath] = newEffect;
-
-	WATCH_FILE(aFilePath, Easy3D::EffectContainer::ReloadParticleEffect);
-}
-
-void Easy3D::EffectContainer::ReloadParticleEffect(const std::string& aFilePath)
-{
-	if (myParticleEffects.find(aFilePath) == myParticleEffects.end())
+	void EffectContainer::Load3DEffect(const std::string& aFilePath)
 	{
-		return;
+		Effect3D* newEffect = new Effect3D();
+
+		if (newEffect->Init(aFilePath) == false)
+		{
+			std::stringstream ss;
+			ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
+			DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load3DEffect", MB_ICONWARNING);
+			return;
+		}
+
+		Texture* tex = TextureContainer::GetInstance()->GetTexture(myCubeMap);
+		ID3DX11EffectShaderResourceVariable* shaderVar = newEffect->GetEffect()->GetVariableByName("CubeMap")->AsShaderResource();
+
+		if (shaderVar->IsValid())
+		{
+			shaderVar->SetResource(tex->GetShaderView());
+		}
+
+
+		DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
+
+		my3DEffects[aFilePath] = newEffect;
+
+		WATCH_FILE(aFilePath, EffectContainer::Reload3DEffect);
 	}
 
-	myParticleEffects[aFilePath]->Init(aFilePath);
-}
+	void EffectContainer::Reload3DEffect(const std::string& aFilePath)
+	{
+		if (my3DEffects.find(aFilePath) == my3DEffects.end())
+		{
+			return;
+		}
 
-void Easy3D::EffectContainer::SetCubeMap(const std::string& aFilePath)
-{
-	myCubeMap = aFilePath;
+		my3DEffects[aFilePath]->Init(aFilePath);
+
+
+		Texture* tex = TextureContainer::GetInstance()->GetTexture(myCubeMap);
+		ID3DX11EffectShaderResourceVariable* shaderVar = my3DEffects[aFilePath]->GetEffect()->GetVariableByName("CubeMap")->AsShaderResource();
+
+		if (shaderVar->IsValid())
+		{
+			shaderVar->SetResource(tex->GetShaderView());
+		}
+	}
+
+
+	void EffectContainer::LoadParticleEffect(const std::string& aFilePath)
+	{
+		ParticleEffect* newEffect = new ParticleEffect();
+
+		if (newEffect->Init(aFilePath) == false)
+		{
+			std::stringstream ss;
+			ss << "Failed to Init Effect: " << aFilePath.c_str() << std::endl;
+			DL_MESSAGE_BOX(ss.str().c_str(), "EffectContainer::Load3DEffect", MB_ICONWARNING);
+			return;
+		}
+
+
+		DL_ASSERT_EXP(newEffect != nullptr, "newEffect is nullpter in LoadEffect, HOW?");
+
+		myParticleEffects[aFilePath] = newEffect;
+
+		WATCH_FILE(aFilePath, EffectContainer::ReloadParticleEffect);
+	}
+
+	void EffectContainer::ReloadParticleEffect(const std::string& aFilePath)
+	{
+		if (myParticleEffects.find(aFilePath) == myParticleEffects.end())
+		{
+			return;
+		}
+
+		myParticleEffects[aFilePath]->Init(aFilePath);
+	}
+
+	void EffectContainer::SetCubeMap(const std::string& aFilePath)
+	{
+		myCubeMap = aFilePath;
+	}
 }

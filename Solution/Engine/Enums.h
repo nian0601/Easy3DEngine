@@ -2,18 +2,24 @@
 
 namespace Easy3D
 {
-	enum class eDepthStencilType
+	enum class eDepthStencil
 	{
 		Z_ENABLED,
 		Z_DISABLED,
 		PARTICLES,
 	};
 
-	enum class eRasterizerType
+	enum class eRasterizer
 	{
 		CULL_FRONT,
 		WIRE_FRAME,
 		NO_CULLING,
+	};
+
+	enum class eBlendState
+	{
+		ALPHA,
+		NO_ALPHA
 	};
 
 	enum ePostProcess

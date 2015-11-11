@@ -7,13 +7,13 @@
 
 Easy3D::Texture::~Texture()
 {
-	if(myTexture != nullptr)
+	/*if(myTexture != nullptr)
 	{
 		myTexture->Release();
 		myTexture = nullptr;
-	}
+	}*/
 
-	if(myRenderTargetView != nullptr)
+	/*if(myRenderTargetView != nullptr)
 	{
 		myRenderTargetView->Release();
 		myRenderTargetView = nullptr;
@@ -23,15 +23,15 @@ Easy3D::Texture::~Texture()
 	{
 		myDepthStencilView->Release();
 		myDepthStencilView = nullptr;
-	}
+	}*/
 }
 
 
 void Easy3D::Texture::Init(float aWidth, float aHeight, unsigned int aBindFlag, unsigned int aFormat)
 {
-	myRenderTargetView = nullptr;
-	myTexture = nullptr;
-	myDepthStencilView = nullptr;
+	//myRenderTargetView = nullptr;
+	//myTexture = nullptr;
+	//myDepthStencilView = nullptr;
 
 	if ((aBindFlag & D3D11_BIND_RENDER_TARGET) > 0 || (aBindFlag & D3D11_BIND_SHADER_RESOURCE) > 0)
 	{
@@ -53,16 +53,22 @@ void Easy3D::Texture::Init(float aWidth, float aHeight, unsigned int aBindFlag, 
 
 		if ((aBindFlag & D3D11_BIND_SHADER_RESOURCE) > 0)
 		{
-			hr = Engine::GetInstance()->GetDevice()->CreateShaderResourceView(tempBuffer, NULL, &myTexture);
+			ID3D11ShaderResourceView* view = nullptr;
+			hr = Engine::GetInstance()->GetDevice()->CreateShaderResourceView(tempBuffer, NULL, &view);
 			if (FAILED(hr))
 				assert(0);
+
+			myTexture.Set(view);
 		}
 
 		if ((aBindFlag & D3D11_BIND_SHADER_RESOURCE) > 0)
 		{
-			hr = Engine::GetInstance()->GetDevice()->CreateRenderTargetView(tempBuffer, NULL, &myRenderTargetView);
+			ID3D11RenderTargetView* target = nullptr;
+			hr = Engine::GetInstance()->GetDevice()->CreateRenderTargetView(tempBuffer, NULL, &target);
 			if (FAILED(hr))
 				assert(0);
+
+			myRenderTargetView.Set(target);
 		}
 
 		tempBuffer->Release();
@@ -77,20 +83,24 @@ void Easy3D::Texture::Init(float aWidth, float aHeight, unsigned int aBindFlag, 
 
 bool Easy3D::Texture::LoadTexture(const std::string& aFilePath)
 {
+	ID3D11ShaderResourceView* view = nullptr;
 	HRESULT hr = D3DX11CreateShaderResourceViewFromFile(Engine::GetInstance()->GetDevice(), aFilePath.c_str()
-		, NULL, NULL, &myTexture, NULL);
+		, NULL, NULL, &view, NULL);
+
 	myFileName = aFilePath;
 	if (FAILED(hr) != S_OK)
 	{
 		RESOURCE_LOG("Failed to load: %s, trying to use debug-texture.", aFilePath.c_str());
 		hr = D3DX11CreateShaderResourceViewFromFile(Engine::GetInstance()->GetDevice()
-			, "Data/resources/texture/uv_map.png", NULL, NULL, &myTexture, NULL);
+			, "Data/resources/texture/uv_map.png", NULL, NULL, &view, NULL);
 		myFileName = "Data/resources/texture/uv_map.png";
 		if (FAILED(hr) != S_OK)
 		{
 			DL_ASSERT("[Texture]: Failed to load debug-texture: Data/resources/texture/uv_map.png");
 		}
 	}
+
+	myTexture.Set(view);
 
 	return true;
 }
@@ -102,20 +112,20 @@ const std::string& Easy3D::Texture::GetFileName() const
 
 ID3D11ShaderResourceView* Easy3D::Texture::GetShaderView()
 {
-	DL_ASSERT_EXP(myTexture != nullptr, "[Texture]: Tried to GetShaderView, but texture wasnt created with D3D11_BIND_SHADER_RESOURCE");
-	return myTexture;
+	DL_ASSERT_EXP(myTexture.Get() != nullptr, "[Texture]: Tried to GetShaderView, but texture wasnt created with D3D11_BIND_SHADER_RESOURCE");
+	return myTexture.Get();
 }
 
 ID3D11RenderTargetView* Easy3D::Texture::GetRenderTargetView()
 {
-	DL_ASSERT_EXP(myRenderTargetView != nullptr, "[Texture]: Tried to GetRenderTargetView, but texture wasnt created with D3D11_BIND_RENDER_TARGET");
-	return myRenderTargetView;
+	DL_ASSERT_EXP(myRenderTargetView.Get() != nullptr, "[Texture]: Tried to GetRenderTargetView, but texture wasnt created with D3D11_BIND_RENDER_TARGET");
+	return myRenderTargetView.Get();
 }
 
 ID3D11DepthStencilView* Easy3D::Texture::GetDepthStencilView()
 {
-	DL_ASSERT_EXP(myDepthStencilView != nullptr, "[Texture]: Tried to GetDepthStencilView, but texture wasnt created with D3D11_BIND_DEPTH_STENCIL");
-	return myDepthStencilView;
+	DL_ASSERT_EXP(myDepthStencilView.Get() != nullptr, "[Texture]: Tried to GetDepthStencilView, but texture wasnt created with D3D11_BIND_DEPTH_STENCIL");
+	return myDepthStencilView.Get();
 }
 
 void Easy3D::Texture::CreateDepthStencilView(float aWidth, float aHeight)
@@ -136,11 +146,12 @@ void Easy3D::Texture::CreateDepthStencilView(float aWidth, float aHeight)
 	ID3D11Texture2D* tempBuffer;
 	HRESULT hr = Engine::GetInstance()->GetDevice()->CreateTexture2D(&tempBufferInfo, NULL, &tempBuffer);
 
-
+	ID3D11DepthStencilView* view = nullptr;
 	tempBufferInfo.Format = DXGI_FORMAT_D32_FLOAT;
-	hr = Engine::GetInstance()->GetDevice()->CreateDepthStencilView(tempBuffer, NULL, &myDepthStencilView);
+	hr = Engine::GetInstance()->GetDevice()->CreateDepthStencilView(tempBuffer, NULL, &view);
 	if (FAILED(hr))
 		assert(0);
 
+	myDepthStencilView.Set(view);
 	tempBuffer->Release();
 }

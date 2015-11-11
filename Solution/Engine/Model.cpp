@@ -63,7 +63,7 @@ namespace Easy3D
 
 	void Model::InitCube(const float aWidth, const float aHeight, const float aDepth, CU::Vector4f aColour)
 	{
-		myEffect = Engine::GetInstance()->GetEffectContainer()->Get3DEffect("Data/effect/3D/CubeColored.fx");
+		myEffect = EffectContainer::GetInstance()->Get3DEffect("Data/effect/3D/CubeColored.fx");
 
 		if (myEffect == nullptr)
 		{

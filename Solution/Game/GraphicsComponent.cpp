@@ -134,6 +134,6 @@ void GraphicsComponent::LoadModel(luabridge::LuaRef& aModelRef)
 	}
 	std::string shader = shaderRef.cast<std::string>();
 
-	myModel = new Easy3D::Instance(*Easy3D::Engine::GetInstance()->GetModelLoader()->LoadModel(myFilePath, shader)
+	myModel = new Easy3D::Instance(*Easy3D::ModelLoader::GetInstance()->LoadModel(myFilePath, shader)
 		, myEntity.GetOrientation(), myEntity.IsActive());
 }

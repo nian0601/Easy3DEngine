@@ -23,25 +23,22 @@ namespace Easy3D
 	Engine::Engine() 
 		: myClearColor({ 0.5f, 0.5f, 0.5f, 1.f })
 	{
-		myTextureContainer = new TextureContainer();
-		myEffectContainer = new EffectContainer();
-		myFontContainer = new FontContainer();
-		myFileWatcher = new FileWatcher();
-		myModelLoader = new ModelLoader();
-		myEmitterContainer = new EmitterContainer();
-
-		myWireframeIsOn = false;
-		myWireframeShouldShow = false;
+		TextureContainer::Create();
+		EffectContainer::Create();
+		FontContainer::Create();
+		EmitterContainer::Create();
+		FileWatcher::Create();
+		ModelLoader::Create();
 	}
 
 	Engine::~Engine()
 	{
-		delete myTextureContainer;
-		delete myEffectContainer;
-		delete myFontContainer;
-		delete myFileWatcher;
-		delete myModelLoader;
-		delete myEmitterContainer;
+		TextureContainer::Destroy();
+		EffectContainer::Destroy();
+		FontContainer::Destroy();
+		EmitterContainer::Destroy();
+		FileWatcher::Destroy();
+		ModelLoader::Destroy();
 	}
 
 	bool Engine::Create(HWND& aHwnd, WNDPROC aWndProc, SetupInfo& aSetupInfo)
@@ -64,7 +61,7 @@ namespace Easy3D
 
 	void Engine::Shutdown()
 	{
-		myModelLoader->Shutdown();
+		ModelLoader::GetInstance()->Shutdown();
 		myModelLoaderThread->join();
 
 		myDirectX->CleanD3D();
@@ -145,7 +142,7 @@ namespace Easy3D
 		myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(static_cast<float>(myWindowSize.x)
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);
 
-		myModelLoaderThread = new std::thread(&ModelLoader::Run, myModelLoader);
+		myModelLoaderThread = new std::thread(&ModelLoader::Run, ModelLoader::GetInstance());
 
 		ENGINE_LOG("Engine Init Successful");
 		return true;
@@ -156,41 +153,34 @@ namespace Easy3D
 		myDebugText->Render(aText.c_str(), aPosition.x, aPosition.y, aScale);
 	}
 
-	void Engine::SetDepthBufferState(eDepthStencilType aState)
+	void Engine::SetDepthBufferState(eDepthStencil aState)
 	{
 		myDirectX->SetDepthBufferState(aState);
 	}
 
-	void Engine::SetRasterizeState(eRasterizerType aState)
+	void Engine::SetRasterizeState(eRasterizer aState)
 	{
 		myDirectX->SetRasterizeState(aState);
 	}
 
-	void Engine::ToggleWireframe()
+	void Engine::SetBlendState(eBlendState aState)
 	{
-		myDirectX->SetRasterizeState(eRasterizerType::WIRE_FRAME);
-
-		
-		if (myWireframeIsOn == true)
-		{
-			myDirectX->SetRasterizeState(eRasterizerType::CULL_FRONT);
-			myWireframeIsOn = false;
-			myWireframeShouldShow = false;
-			return;
-		}
-
-		myWireframeShouldShow = true;
-		myWireframeIsOn = true;
+		myDirectX->SetBlendState(aState);
 	}
 
-	void Engine::EnableAlphaBlending()
+	eDepthStencil Engine::GetDepthBufferState() const
 	{
-		myDirectX->EnableAlphaBlending();
+		return myDirectX->GetDepthBufferState();
 	}
 
-	void Engine::DisableAlphaBlending()
+	eRasterizer Engine::GetRasterizerState() const
 	{
-		myDirectX->DisableAlpaBlending();
+		return myDirectX->GetRasterizerState();
+	}
+
+	eBlendState Engine::GetBlendState() const
+	{
+		return myDirectX->GetBlendState();
 	}
 
 	void Engine::RestoreViewPort()

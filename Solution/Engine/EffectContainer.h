@@ -12,7 +12,9 @@ namespace Easy3D
 	class EffectContainer
 	{
 	public:
-		~EffectContainer();
+		static void Create();
+		static void Destroy();
+		static EffectContainer* GetInstance();
 
 		BaseEffect* GetBaseEffect(const std::string& aFilePath);
 		Effect2D* Get2DEffect(const std::string& aFilePath);
@@ -21,6 +23,8 @@ namespace Easy3D
 
 		void SetCubeMap(const std::string& aFilePath);	
 	private:
+		~EffectContainer();
+
 		void LoadBaseEffect(const std::string& aFilePath);
 		void ReloadBaseEffect(const std::string& aFilePath);
 
@@ -38,5 +42,7 @@ namespace Easy3D
 		std::unordered_map<std::string, Effect3D*> my3DEffects;
 		std::unordered_map<std::string, ParticleEffect*> myParticleEffects;
 		std::string myCubeMap;
+
+		static EffectContainer* myInstance;
 	};
 }

@@ -50,48 +50,31 @@ namespace Easy3D
 
 		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName);
 
-		TextureContainer* GetTextureContainer();
-		EffectContainer* GetEffectContainer();
-		FontContainer* GetFontContainer();
-		FileWatcher* GetFileWatcher();
-		ModelLoader* GetModelLoader();
-		EmitterContainer* GetEmitterContainer();
-
 		const CU::Vector2<int>& GetWindowSize() const;
 		const CU::Matrix44<float>& GetOrthogonalMatrix() const;
 
 		void PrintDebugText(const std::string& aText, const CU::Vector2<float>& aPosition, float aScale = 1.f);
 
-		void SetDepthBufferState(eDepthStencilType aState);
-		void SetRasterizeState(eRasterizerType aState);
-
-		void ToggleWireframe();
-
-		void EnableAlphaBlending();
-		void DisableAlphaBlending();
+		void SetDepthBufferState(eDepthStencil aState);
+		void SetRasterizeState(eRasterizer aState);
+		void SetBlendState(eBlendState aState);
+		eDepthStencil GetDepthBufferState() const;
+		eRasterizer GetRasterizerState() const;
+		eBlendState GetBlendState() const;
 
 		void RestoreViewPort();
 
 		void SetClearColor(const CU::Vector4<float>& aClearColor);
 
-		bool myWireframeShouldShow;
 
 	private:
 		Engine();
 		~Engine();
 		bool Init(HWND& aHwnd, WNDPROC aWndProc);
 		bool WindowSetup(HWND& aHwnd, WNDPROC aWindowProc);
-		
-		bool myWireframeIsOn;
-
 
 		DirectX* myDirectX;
 		SetupInfo* mySetupInfo;
-		TextureContainer* myTextureContainer;
-		EffectContainer* myEffectContainer;
-		FontContainer* myFontContainer;
-		FileWatcher* myFileWatcher;
-		EmitterContainer* myEmitterContainer;
 
 		Text* myDebugText;
 
@@ -99,42 +82,10 @@ namespace Easy3D
 		CU::Vector2<int> myWindowSize;
 		CU::Matrix44<float> myOrthogonalMatrix;
 
-
-		ModelLoader* myModelLoader;
 		std::thread* myModelLoaderThread;
 
 		static Engine* myInstance;
 	};
-}
-
-inline Easy3D::TextureContainer* Easy3D::Engine::GetTextureContainer()
-{
-	return myTextureContainer;
-}
-
-inline Easy3D::EffectContainer* Easy3D::Engine::GetEffectContainer()
-{
-	return myEffectContainer;
-}
-
-inline Easy3D::FontContainer* Easy3D::Engine::GetFontContainer()
-{
-	return myFontContainer;
-}
-
-inline Easy3D::FileWatcher* Easy3D::Engine::GetFileWatcher()
-{
-	return myFileWatcher;
-}
-
-inline Easy3D::ModelLoader* Easy3D::Engine::GetModelLoader()
-{
-	return myModelLoader;
-}
-
-inline Easy3D::EmitterContainer* Easy3D::Engine::GetEmitterContainer()
-{
-	return myEmitterContainer;
 }
 
 inline const CU::Vector2<int>& Easy3D::Engine::GetWindowSize() const
