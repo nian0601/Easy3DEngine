@@ -20,27 +20,6 @@ namespace Easy3D
 {
 	Engine* Engine::myInstance = nullptr;
 
-	Engine::Engine() 
-		: myClearColor({ 0.5f, 0.5f, 0.5f, 1.f })
-	{
-		TextureContainer::Create();
-		EffectContainer::Create();
-		FontContainer::Create();
-		EmitterContainer::Create();
-		FileWatcher::Create();
-		ModelLoader::Create();
-	}
-
-	Engine::~Engine()
-	{
-		TextureContainer::Destroy();
-		EffectContainer::Destroy();
-		FontContainer::Destroy();
-		EmitterContainer::Destroy();
-		FileWatcher::Destroy();
-		ModelLoader::Destroy();
-	}
-
 	bool Engine::Create(HWND& aHwnd, WNDPROC aWndProc, SetupInfo& aSetupInfo)
 	{
 		myInstance = new Engine();
@@ -58,6 +37,7 @@ namespace Easy3D
 	{
 		return myInstance;
 	}
+
 
 	void Engine::Shutdown()
 	{
@@ -90,6 +70,14 @@ namespace Easy3D
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);
 	}
 
+
+	void Engine::CreateRenderTargetView(const std::string& aDebugName, ID3D11Resource* aResource
+		, const D3D11_RENDER_TARGET_VIEW_DESC* aDesc, D3DPointer<ID3D11RenderTargetView>& aOutPointer)
+	{
+		myDirectX->CreateRenderTargetView(aDebugName, aResource, aDesc, aOutPointer);
+	}
+
+
 	ID3D11Device* Engine::GetDevice()
 	{
 		return myDirectX->GetDevice();
@@ -110,9 +98,73 @@ namespace Easy3D
 		return myDirectX->GetBackbuffer();
 	}
 
+
+	void Engine::SetDepthBufferState(eDepthStencil aState)
+	{
+		myDirectX->SetDepthBufferState(aState);
+	}
+
+	eDepthStencil Engine::GetDepthBufferState() const
+	{
+		return myDirectX->GetDepthBufferState();
+	}
+
+	void Engine::SetRasterizeState(eRasterizer aState)
+	{
+		myDirectX->SetRasterizeState(aState);
+	}
+
+	eRasterizer Engine::GetRasterizerState() const
+	{
+		return myDirectX->GetRasterizerState();
+	}
+
+	void Engine::SetBlendState(eBlendState aState)
+	{
+		myDirectX->SetBlendState(aState);
+	}
+
+	eBlendState Engine::GetBlendState() const
+	{
+		return myDirectX->GetBlendState();
+	}
+
+
 	void Engine::SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName)
 	{
 		myDirectX->SetDebugName(aChild, aName);
+	}
+
+	void Engine::RestoreViewPort()
+	{
+		myDirectX->RestoreViewPort();
+	}
+
+	void Engine::PrintDebugText(const std::string& aText, const CU::Vector2<float>& aPosition, float aScale)
+	{
+		myDebugText->Render(aText.c_str(), aPosition.x, aPosition.y, aScale);
+	}
+
+
+	Engine::Engine() 
+		: myClearColor({ 0.5f, 0.5f, 0.5f, 1.f })
+	{
+		TextureContainer::Create();
+		EffectContainer::Create();
+		FontContainer::Create();
+		EmitterContainer::Create();
+		FileWatcher::Create();
+		ModelLoader::Create();
+	}
+
+	Engine::~Engine()
+	{
+		TextureContainer::Destroy();
+		EffectContainer::Destroy();
+		FontContainer::Destroy();
+		EmitterContainer::Destroy();
+		FileWatcher::Destroy();
+		ModelLoader::Destroy();
 	}
 
 	bool Engine::Init(HWND& aHwnd, WNDPROC aWndProc)
@@ -146,46 +198,6 @@ namespace Easy3D
 
 		ENGINE_LOG("Engine Init Successful");
 		return true;
-	}
-
-	void Engine::PrintDebugText(const std::string& aText, const CU::Vector2<float>& aPosition, float aScale)
-	{
-		myDebugText->Render(aText.c_str(), aPosition.x, aPosition.y, aScale);
-	}
-
-	void Engine::SetDepthBufferState(eDepthStencil aState)
-	{
-		myDirectX->SetDepthBufferState(aState);
-	}
-
-	void Engine::SetRasterizeState(eRasterizer aState)
-	{
-		myDirectX->SetRasterizeState(aState);
-	}
-
-	void Engine::SetBlendState(eBlendState aState)
-	{
-		myDirectX->SetBlendState(aState);
-	}
-
-	eDepthStencil Engine::GetDepthBufferState() const
-	{
-		return myDirectX->GetDepthBufferState();
-	}
-
-	eRasterizer Engine::GetRasterizerState() const
-	{
-		return myDirectX->GetRasterizerState();
-	}
-
-	eBlendState Engine::GetBlendState() const
-	{
-		return myDirectX->GetBlendState();
-	}
-
-	void Engine::RestoreViewPort()
-	{
-		myDirectX->RestoreViewPort();
 	}
 
 	bool Engine::WindowSetup(HWND& aHwnd, WNDPROC aWindowProc)

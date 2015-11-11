@@ -1,5 +1,6 @@
 #pragma once
 
+#include "D3DPointers.h"
 #include "Enums.h"
 #include <Matrix.h>
 #include <Vector.h>
@@ -13,23 +14,14 @@ struct ID3D11DeviceChild;
 struct ID3D11DeviceContext;
 struct ID3D11DepthStencilView;
 struct ID3D11RenderTargetView;
+struct ID3D11Resource;
+
+struct D3D11_RENDER_TARGET_VIEW_DESC;
 
 namespace Easy3D
 {
-	class Camera;
 	class DirectX;
-	class EffectContainer;
-	class Effect3D;
-	class EmitterContainer;
-	class FBXFactory;
-	class FileWatcher;
-	class FontContainer;
-	class Model;
-	class ModelLoader;
-	class ModelProxy;
-	class TextureContainer;
 	class Text;
-
 
 	struct SetupInfo;
 
@@ -39,33 +31,39 @@ namespace Easy3D
 		static bool Create(HWND& aHwnd, WNDPROC aWndProc, SetupInfo& aSetupInfo);
 		static void Destroy();
 		static Engine* GetInstance();
+
 		void Shutdown();
 		void Render();
 		void OnResize(int aWidth, int aHeigth);
+
+		void CreateRenderTargetView(const std::string& aDebugName, ID3D11Resource* aResource
+			, const D3D11_RENDER_TARGET_VIEW_DESC* aDesc, D3DPointer<ID3D11RenderTargetView>& aOutPointer);
+
 
 		ID3D11Device* GetDevice();
 		ID3D11DeviceContext* GetContex();
 		ID3D11DepthStencilView* GetDepthStencilView();
 		ID3D11RenderTargetView* GetBackbuffer();
 
-		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName);
-
-		const CU::Vector2<int>& GetWindowSize() const;
-		const CU::Matrix44<float>& GetOrthogonalMatrix() const;
-
-		void PrintDebugText(const std::string& aText, const CU::Vector2<float>& aPosition, float aScale = 1.f);
-
 		void SetDepthBufferState(eDepthStencil aState);
-		void SetRasterizeState(eRasterizer aState);
-		void SetBlendState(eBlendState aState);
 		eDepthStencil GetDepthBufferState() const;
+
+		void SetRasterizeState(eRasterizer aState);
 		eRasterizer GetRasterizerState() const;
+
+		void SetBlendState(eBlendState aState);
 		eBlendState GetBlendState() const;
+
+		void SetDebugName(ID3D11DeviceChild* aChild, const std::string& aName);
+		
 
 		void RestoreViewPort();
 
-		void SetClearColor(const CU::Vector4<float>& aClearColor);
+		void PrintDebugText(const std::string& aText, const CU::Vector2<float>& aPosition, float aScale = 1.f);
 
+		const CU::Vector2<int>& GetWindowSize() const;
+		const CU::Matrix44<float>& GetOrthogonalMatrix() const;
+		void SetClearColor(const CU::Vector4<float>& aClearColor);
 
 	private:
 		Engine();
