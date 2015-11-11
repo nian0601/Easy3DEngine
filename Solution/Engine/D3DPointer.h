@@ -24,6 +24,7 @@ namespace Easy3D
 		T* operator->(){ DL_ASSERT_EXP(myPtr != nullptr, "D3DPointer, tried to -> a nullptr");  return myPtr; };
 		T& operator*() { return *myPtr; };
 		T* Get() { return myPtr; };
+		T* Get() const { return myPtr; };
 		void Set(T* aPtr);
 
 		void Release();

@@ -77,6 +77,17 @@ namespace Easy3D
 		myDirectX->CreateRenderTargetView(aDebugName, aResource, aDesc, aOutPointer);
 	}
 
+	void Engine::CreateTexture2D(const std::string& aDebugName, const D3D11_TEXTURE2D_DESC* aDesc
+		, const D3D11_SUBRESOURCE_DATA* aInitData, D3DPointer<ID3D11Texture2D>& aOutPointer)
+	{
+		myDirectX->CreateTexture2D(aDebugName, aDesc, aInitData, aOutPointer);
+	}
+
+	void Engine::CreateDepthStencilView(const std::string& aDebugName, const D3DPointer<ID3D11Texture2D>& aTexture
+		, const D3D11_DEPTH_STENCIL_VIEW_DESC* aDesc, D3DPointer<ID3D11DepthStencilView>& aOutPointer)
+	{
+		myDirectX->CreateDepthStencilView(aDebugName, aTexture, aDesc, aOutPointer);
+	}
 
 	ID3D11Device* Engine::GetDevice()
 	{

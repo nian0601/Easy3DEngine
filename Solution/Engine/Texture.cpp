@@ -48,13 +48,13 @@ void Easy3D::Texture::Init(float aWidth, float aHeight, unsigned int aBindFlag, 
 		tempBufferInfo.CPUAccessFlags = 0;
 		tempBufferInfo.MiscFlags = 0;
 
-		ID3D11Texture2D* tempBuffer;
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateTexture2D(&tempBufferInfo, NULL, &tempBuffer);
+		D3DPointer<ID3D11Texture2D> tempBuffer;
+		Engine::GetInstance()->CreateTexture2D("Texture::tempBuffer", &tempBufferInfo, NULL, tempBuffer);
 
 		if ((aBindFlag & D3D11_BIND_SHADER_RESOURCE) > 0)
 		{
 			ID3D11ShaderResourceView* view = nullptr;
-			hr = Engine::GetInstance()->GetDevice()->CreateShaderResourceView(tempBuffer, NULL, &view);
+			HRESULT hr = Engine::GetInstance()->GetDevice()->CreateShaderResourceView(tempBuffer.Get(), NULL, &view);
 			if (FAILED(hr))
 				assert(0);
 
@@ -63,15 +63,8 @@ void Easy3D::Texture::Init(float aWidth, float aHeight, unsigned int aBindFlag, 
 
 		if ((aBindFlag & D3D11_BIND_SHADER_RESOURCE) > 0)
 		{
-			ID3D11RenderTargetView* target = nullptr;
-			hr = Engine::GetInstance()->GetDevice()->CreateRenderTargetView(tempBuffer, NULL, &target);
-			if (FAILED(hr))
-				assert(0);
-
-			myRenderTargetView.Set(target);
+			Engine::GetInstance()->CreateRenderTargetView("Texture::myRenderTargetView", tempBuffer.Get(), NULL, myRenderTargetView);
 		}
-
-		tempBuffer->Release();
 	}
 
 	
@@ -143,15 +136,9 @@ void Easy3D::Texture::CreateDepthStencilView(float aWidth, float aHeight)
 	tempBufferInfo.CPUAccessFlags = 0;
 	tempBufferInfo.MiscFlags = 0;
 
-	ID3D11Texture2D* tempBuffer;
-	HRESULT hr = Engine::GetInstance()->GetDevice()->CreateTexture2D(&tempBufferInfo, NULL, &tempBuffer);
+	D3DPointer<ID3D11Texture2D> tempBuffer;
+	Engine::GetInstance()->CreateTexture2D("Texture::tempBuffer", &tempBufferInfo, NULL, tempBuffer);
 
-	ID3D11DepthStencilView* view = nullptr;
-	tempBufferInfo.Format = DXGI_FORMAT_D32_FLOAT;
-	hr = Engine::GetInstance()->GetDevice()->CreateDepthStencilView(tempBuffer, NULL, &view);
-	if (FAILED(hr))
-		assert(0);
 
-	myDepthStencilView.Set(view);
-	tempBuffer->Release();
+	Engine::GetInstance()->CreateDepthStencilView("Texture::myDepthStencilView", tempBuffer, NULL, myDepthStencilView);
 }

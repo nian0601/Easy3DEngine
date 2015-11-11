@@ -57,8 +57,14 @@ namespace Easy3D
 		void RestoreViewPort();
 
 
-		void CreateRenderTargetView(const std::string& aDebugName, ID3D11Resource* aResource, const D3D11_RENDER_TARGET_VIEW_DESC* aDesc
-			, D3DPointer<ID3D11RenderTargetView>& aOutPointer);
+		void CreateRenderTargetView(const std::string& aDebugName, ID3D11Resource* aResource
+			, const D3D11_RENDER_TARGET_VIEW_DESC* aDesc, D3DPointer<ID3D11RenderTargetView>& aOutPointer);
+		void CreateTexture2D(const std::string& aDebugName, const D3D11_TEXTURE2D_DESC* aDesc
+			, const D3D11_SUBRESOURCE_DATA* aInitData, D3DPointer<ID3D11Texture2D>& aOutPointer);
+		void CreateDepthStencilView(const std::string& aDebugName, const D3DPointer<ID3D11Texture2D>& aTexture
+			, const D3D11_DEPTH_STENCIL_VIEW_DESC* aDesc, D3DPointer<ID3D11DepthStencilView>& aOutPointer);
+		void CreateDepthStencilState(const std::string& aDebugName, const D3D11_DEPTH_STENCIL_DESC* aDesc
+			, D3DPointer<ID3D11DepthStencilState>& aOutPointer);
 
 	private:
 		void operator=(const DirectX&) = delete;

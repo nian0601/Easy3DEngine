@@ -358,8 +358,6 @@ namespace Easy3D
 
 	bool DirectX::D3DStencilBufferSetup(int aWidth, int aHeight)
 	{
-		HRESULT hr = S_OK;
-
 		D3D11_TEXTURE2D_DESC depthBufferInfo;
 		ZeroMemory(&depthBufferInfo, sizeof(depthBufferInfo));
 
@@ -372,50 +370,24 @@ namespace Easy3D
 		depthBufferInfo.Usage = D3D11_USAGE_DEFAULT;
 		depthBufferInfo.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 
-		ID3D11Texture2D* tex = nullptr;
-		hr = myDevice->CreateTexture2D(&depthBufferInfo, NULL, &tex);
-		if (FAILED(hr))
-		{
-			return false;
-		}
-
-		myDepthBuffer.Set(tex);
-
-		SetDebugName(myDepthBuffer.Get(), "DirectX::myDepthBuffer");
+		CreateTexture2D("DirectX::myDepthBuffer", &depthBufferInfo, NULL, myDepthBuffer);
 
 		D3D11_DEPTH_STENCIL_VIEW_DESC stencilDesc;
 		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
 
 		stencilDesc.Format = depthBufferInfo.Format;
 		stencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-
 		stencilDesc.Texture2D.MipSlice = 0;
 
-		ID3D11DepthStencilView* depth = nullptr;
-		hr = myDevice->CreateDepthStencilView(myDepthBuffer.Get(), &stencilDesc, &depth);
-		if (FAILED(hr))
-		{
-			return false;
-		}
-
-		myDepthBufferView.Set(depth);
-
-		SetDebugName(myDepthBufferView.Get(), "DirectX::myDepthBufferView");
+		CreateDepthStencilView("DirectX::myDepthBufferView", myDepthBuffer, &stencilDesc
+			, myDepthBufferView);
 
 		return true;
 	}
 
 	bool DirectX::D3DDepthStencilStatesSetup()
 	{
-		HRESULT hr;
 		D3D11_DEPTH_STENCIL_DESC  stencilDesc;
-
-#pragma region EnabledState
-		hr = S_OK;
-		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
-
-		stencilDesc.DepthEnable = true;
-		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
 		stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
 		stencilDesc.StencilEnable = true;
 		stencilDesc.StencilReadMask = 0xFF;
@@ -429,78 +401,23 @@ namespace Easy3D
 		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
 		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
-		ID3D11DepthStencilState* depth = nullptr;
-		hr = myDevice->CreateDepthStencilState(&stencilDesc, &depth);
-		if (FAILED(hr))
-		{
-			return false;
-		}
 
-		myDepthStencilStates[0].Set(depth);
-		SetDebugName(myDepthStencilStates[0].Get(), "DirectX::myDepthStencilStates[0]");
-#pragma endregion
+		stencilDesc.DepthEnable = true;
+		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		CreateDepthStencilState("DirectX::myDepthStencilStates[0]", &stencilDesc
+			, myDepthStencilStates[0]);
 
-
-#pragma region DisabledState
-		hr = S_OK;
-		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
 
 		stencilDesc.DepthEnable = false;
 		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-		stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		stencilDesc.StencilEnable = true;
-		stencilDesc.StencilReadMask = 0xFF;
-		stencilDesc.StencilWriteMask = 0xFF;
-		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+		CreateDepthStencilState("DirectX::myDepthStencilStates[1]", &stencilDesc
+			, myDepthStencilStates[1]);
 
-		hr = myDevice->CreateDepthStencilState(&stencilDesc, &depth);
-		if (FAILED(hr))
-		{
-			return false;
-		}
-
-		myDepthStencilStates[1].Set(depth);
-
-		SetDebugName(myDepthStencilStates[1].Get(), "DirectX::myDepthStencilStates[1]");
-#pragma endregion
-
-
-#pragma region ParticlesState
-		hr = S_OK;
-		ZeroMemory(&stencilDesc, sizeof(stencilDesc));
 
 		stencilDesc.DepthEnable = true;
 		stencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-		stencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-		stencilDesc.StencilEnable = true;
-		stencilDesc.StencilReadMask = 0xFF;
-		stencilDesc.StencilWriteMask = 0xFF;
-		stencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-		stencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-		stencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-		stencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-		stencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-
-		hr = myDevice->CreateDepthStencilState(&stencilDesc, &depth);
-		if (FAILED(hr))
-		{
-			return false;
-		}
-
-		myDepthStencilStates[2].Set(depth);
-		SetDebugName(myDepthStencilStates[2].Get(), "DirectX::myDepthStencilStates[2]");
-#pragma endregion
+		CreateDepthStencilState("DirectX::myDepthStencilStates[2]", &stencilDesc
+			, myDepthStencilStates[2]);
 
 		return true;
 	}
@@ -652,13 +569,52 @@ namespace Easy3D
 		myContext->RSSetViewports(1, myViewPort);
 	}
 
-	void DirectX::CreateRenderTargetView(const std::string& aDebugName, ID3D11Resource* aResource, const D3D11_RENDER_TARGET_VIEW_DESC* aDesc
-		, D3DPointer<ID3D11RenderTargetView>& aOutPointer)
+	void DirectX::CreateRenderTargetView(const std::string& aDebugName, ID3D11Resource* aResource
+		, const D3D11_RENDER_TARGET_VIEW_DESC* aDesc, D3DPointer<ID3D11RenderTargetView>& aOutPointer)
 	{
 		ID3D11RenderTargetView* target = nullptr;
-		myDevice->CreateRenderTargetView(aResource, aDesc, &target);
+		HRESULT hr = myDevice->CreateRenderTargetView(aResource, aDesc, &target);
+
+		DL_ASSERT_EXP(hr == S_OK, "Failed to CreateRenderTargetView");
 
 		aOutPointer.Set(target);
+		SetDebugName(aOutPointer.Get(), aDebugName);
+	}
+
+	void DirectX::CreateTexture2D(const std::string& aDebugName, const D3D11_TEXTURE2D_DESC* aDesc
+		, const D3D11_SUBRESOURCE_DATA* aInitData, D3DPointer<ID3D11Texture2D>& aOutPointer)
+	{
+		ID3D11Texture2D* tex = nullptr;
+		HRESULT hr = myDevice->CreateTexture2D(aDesc, aInitData, &tex);
+		
+		DL_ASSERT_EXP(hr == S_OK, "Failed to CreateTexture2D");
+
+		aOutPointer.Set(tex);
+		SetDebugName(aOutPointer.Get(), aDebugName);
+	}
+
+	void DirectX::CreateDepthStencilView(const std::string& aDebugName, const D3DPointer<ID3D11Texture2D>& aTexture
+		, const D3D11_DEPTH_STENCIL_VIEW_DESC* aDesc, D3DPointer<ID3D11DepthStencilView>& aOutPointer)
+	{
+		ID3D11DepthStencilView* depth = nullptr;
+		HRESULT hr = myDevice->CreateDepthStencilView(aTexture.Get(), aDesc, &depth);
+		
+		DL_ASSERT_EXP(hr == S_OK, "Failed to CreateDepthStencilView");
+
+		aOutPointer.Set(depth);
+
+		SetDebugName(aOutPointer.Get(), aDebugName);
+	}
+
+	void DirectX::CreateDepthStencilState(const std::string& aDebugName, const D3D11_DEPTH_STENCIL_DESC* aDesc
+		, D3DPointer<ID3D11DepthStencilState>& aOutPointer)
+	{
+		ID3D11DepthStencilState* depth = nullptr;
+		HRESULT hr = myDevice->CreateDepthStencilState(aDesc, &depth);
+		
+		DL_ASSERT_EXP(hr == S_OK, "Failed to CreateDepthStencilState");
+
+		aOutPointer.Set(depth);
 		SetDebugName(aOutPointer.Get(), aDebugName);
 	}
 }
