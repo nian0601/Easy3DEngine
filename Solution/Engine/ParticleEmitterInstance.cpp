@@ -120,15 +120,8 @@ namespace Easy3D
 		ZeroMemory(&initData, sizeof(initData));
 		initData.pSysMem = reinterpret_cast<char*>(&myParticles[0]);
 
-		ID3D11Buffer* buf = nullptr;
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(&vertexBufferDesc, &initData
-			, &buf);
-		if (FAILED(hr) != S_OK)
-		{
-			DL_ASSERT("ParticleEmitterInstance::CreateVertexBuffer: Failed to CreateVertexBuffer");
-		}
-
-		myVertexBufferWrapper->myVertexBuffer.Set(buf);
+		Engine::GetInstance()->CreateBuffer("ParticleEmitterInstance::myVertexBuffer->myVertexBuffer"
+			, &vertexBufferDesc, &initData, myVertexBufferWrapper->myVertexBuffer);
 	}
 
 	void ParticleEmitterInstance::EmitterUpdate(float aDelta)

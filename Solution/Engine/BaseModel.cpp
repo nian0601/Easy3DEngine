@@ -134,58 +134,31 @@ namespace Easy3D
 		blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
 		blendDesc.RenderTarget[0].RenderTargetWriteMask = 0x0f;
 
-		ID3D11BlendState* state = nullptr;
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBlendState(&blendDesc, &state);
-		if (FAILED(hr) != S_OK)
-		{
-			DL_ASSERT("BaseModel::InitBlendState: Failed to CreateBlendState");
-		}
-
-		myBlendState.Set(state);
-		Engine::GetInstance()->SetDebugName(myBlendState.Get(), "BaseModel::myBlendState");
+		Engine::GetInstance()->CreateBlendState("BaseModel::myBlendState", &blendDesc, myBlendState);
 	}
 
 	void BaseModel::SetupVertexBuffer(int aVertexCount, int aVertexSize, char* aVertexData)
 	{
-		if (myVertexBuffer->myVertexBuffer.Get() != nullptr)
-			myVertexBuffer->myVertexBuffer->Release();
+		if (myVertexBuffer != nullptr && myVertexBuffer->myVertexBuffer.Get() != nullptr)
+			myVertexBuffer->myVertexBuffer.Release();
 
 		myVertexBufferDesc.ByteWidth = aVertexSize * aVertexCount;
 		myInitData.pSysMem = aVertexData;
 
-		ID3D11Buffer* buf = nullptr;
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(&myVertexBufferDesc, &myInitData
-			, &buf);
-		if (FAILED(hr) != S_OK)
-		{
-			DL_ASSERT("BaseModel::SetupVertexBuffer: Failed to SetupVertexBuffer");
-		}
-
-		myVertexBuffer->myVertexBuffer.Set(buf);
-		Engine::GetInstance()->SetDebugName(myVertexBuffer->myVertexBuffer.Get(), "BaseModel::myVertexBuffer->myVertexBuffer");
+		Engine::GetInstance()->CreateBuffer("BaseModel::myVertexBuffer->myVertexBuffer"
+			, &myVertexBufferDesc, &myInitData, myVertexBuffer->myVertexBuffer);
 	}
 
 	void BaseModel::SetupIndexBuffer(int aIndexCount, char* aIndexData)
 	{
-		/*if (myIndexBuffer->myIndexBuffer != nullptr)
-			myIndexBuffer->myIndexBuffer->Release();*/
-
 		if (myIndexBuffer != nullptr && myIndexBuffer->myIndexBuffer.Get() != nullptr)
-			myIndexBuffer->myIndexBuffer->Release();
+			myIndexBuffer->myIndexBuffer.Release();
 
 		myIndexBufferDesc.ByteWidth = sizeof(UINT) * aIndexCount;
 		myInitData.pSysMem = aIndexData;
 
-		ID3D11Buffer* buf = myIndexBuffer->myIndexBuffer.Get();
-		HRESULT hr = Engine::GetInstance()->GetDevice()->CreateBuffer(&myIndexBufferDesc, &myInitData,
-			&buf);
-		if (FAILED(hr) != S_OK)
-		{
-			DL_ASSERT("BaseModel::SetupIndexBuffer: Failed to SetupIndexBuffer");
-		}
-
-		myIndexBuffer->myIndexBuffer.Set(buf);
-		Engine::GetInstance()->SetDebugName(myIndexBuffer->myIndexBuffer.Get(), "BaseModel::myIndexBuffer->myIndexBuffer");
+		Engine::GetInstance()->CreateBuffer("BaseModel::myIndexBuffer->myIndexBuffer"
+			, &myIndexBufferDesc, &myInitData, myIndexBuffer->myIndexBuffer);
 	}
 
 	void BaseModel::OnEffectLoad()

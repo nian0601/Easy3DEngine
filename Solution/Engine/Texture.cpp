@@ -4,35 +4,8 @@
 #include <DL_Debug.h>
 #include "Texture.h"
 
-
-Easy3D::Texture::~Texture()
-{
-	/*if(myTexture != nullptr)
-	{
-		myTexture->Release();
-		myTexture = nullptr;
-	}*/
-
-	/*if(myRenderTargetView != nullptr)
-	{
-		myRenderTargetView->Release();
-		myRenderTargetView = nullptr;
-	}
-
-	if(myDepthStencilView != nullptr)
-	{
-		myDepthStencilView->Release();
-		myDepthStencilView = nullptr;
-	}*/
-}
-
-
 void Easy3D::Texture::Init(float aWidth, float aHeight, unsigned int aBindFlag, unsigned int aFormat)
 {
-	//myRenderTargetView = nullptr;
-	//myTexture = nullptr;
-	//myDepthStencilView = nullptr;
-
 	if ((aBindFlag & D3D11_BIND_RENDER_TARGET) > 0 || (aBindFlag & D3D11_BIND_SHADER_RESOURCE) > 0)
 	{
 		D3D11_TEXTURE2D_DESC tempBufferInfo;
@@ -138,7 +111,5 @@ void Easy3D::Texture::CreateDepthStencilView(float aWidth, float aHeight)
 
 	D3DPointer<ID3D11Texture2D> tempBuffer;
 	Engine::GetInstance()->CreateTexture2D("Texture::tempBuffer", &tempBufferInfo, NULL, tempBuffer);
-
-
 	Engine::GetInstance()->CreateDepthStencilView("Texture::myDepthStencilView", tempBuffer, NULL, myDepthStencilView);
 }

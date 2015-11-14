@@ -5,6 +5,11 @@
 #include "Enums.h"
 #include "SetupInfo.h"
 
+struct D3D11_BLEND_DESC;
+struct D3D11_RASTERIZER_DESC;
+struct D3D11_RENDER_TARGET_VIEW_DESC;
+struct D3D11_VIEWPORT;
+
 struct ID3D11Debug;
 struct ID3D11DepthStencilState;
 struct ID3D11DepthStencilView;
@@ -15,11 +20,10 @@ struct ID3D11DeviceContext;
 struct ID3D11InfoQueue;
 struct ID3D11RasterizerState;
 struct ID3D11RenderTargetView;
-struct D3D11_RENDER_TARGET_VIEW_DESC;
 struct ID3D11Resource;
 struct ID3D11Texture2D;
 struct IDXGISwapChain;
-struct D3D11_VIEWPORT;
+
 struct SetupInfo;
 
 
@@ -50,21 +54,23 @@ namespace Easy3D
 		eRasterizer GetRasterizerState() const;
 		eBlendState GetBlendState() const;
 
-
-		void EnableAlphaBlending();
-		void DisableAlpaBlending();
-
 		void RestoreViewPort();
 
 
 		void CreateRenderTargetView(const std::string& aDebugName, ID3D11Resource* aResource
 			, const D3D11_RENDER_TARGET_VIEW_DESC* aDesc, D3DPointer<ID3D11RenderTargetView>& aOutPointer);
+		void CreateBuffer(const std::string& aDebugName, const D3D11_BUFFER_DESC* aDesc
+			, const D3D11_SUBRESOURCE_DATA* aInitData, D3DPointer<ID3D11Buffer>& aOutPointer);
 		void CreateTexture2D(const std::string& aDebugName, const D3D11_TEXTURE2D_DESC* aDesc
 			, const D3D11_SUBRESOURCE_DATA* aInitData, D3DPointer<ID3D11Texture2D>& aOutPointer);
 		void CreateDepthStencilView(const std::string& aDebugName, const D3DPointer<ID3D11Texture2D>& aTexture
 			, const D3D11_DEPTH_STENCIL_VIEW_DESC* aDesc, D3DPointer<ID3D11DepthStencilView>& aOutPointer);
 		void CreateDepthStencilState(const std::string& aDebugName, const D3D11_DEPTH_STENCIL_DESC* aDesc
 			, D3DPointer<ID3D11DepthStencilState>& aOutPointer);
+		void CreateRasterizerState(const std::string& aDebugName, const D3D11_RASTERIZER_DESC* aDesc
+			, D3DPointer<ID3D11RasterizerState>& aOutPointer);
+		void CreateBlendState(const std::string& aDebugName, const D3D11_BLEND_DESC* aDesc
+			, D3DPointer<ID3D11BlendState >& aOutPointer);
 
 	private:
 		void operator=(const DirectX&) = delete;
@@ -75,10 +81,11 @@ namespace Easy3D
 		bool D3DViewPortSetup(int aWidth, int aHeight);
 		bool D3DStencilBufferSetup(int aWidth, int aHeight);
 		bool D3DDepthStencilStatesSetup();
-		bool D3DWireframeRasterizerStateSetup();
-		bool D3DSolidRasterizerStateSetup();
-		bool D3DNoCullingRasterizerStateSetup();
+		bool D3DRasterizerStateSetup();
 		bool D3DSetupBlendStates();
+
+		template <typename T>
+		void AssignPointer(T* aDirectXObject, D3DPointer<T>& aD3DPointer, const std::string& aDebugName);
 
 
 		D3DPointer<ID3D11Device> myDevice;
@@ -104,4 +111,12 @@ namespace Easy3D
 		HWND& myHWND;
 		SetupInfo mySetupInfo;
 	};
+
+	template <typename T>
+	inline void DirectX::AssignPointer(T* aDirectXObject, D3DPointer<T>& aD3DPointer
+		, const std::string& aDebugName)
+	{
+		aD3DPointer.Set(aDirectXObject);
+		SetDebugName(aD3DPointer.Get(), aDebugName);
+	}
 }

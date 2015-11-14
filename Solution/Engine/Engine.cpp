@@ -77,6 +77,12 @@ namespace Easy3D
 		myDirectX->CreateRenderTargetView(aDebugName, aResource, aDesc, aOutPointer);
 	}
 
+	void Engine::CreateBuffer(const std::string& aDebugName, const D3D11_BUFFER_DESC* aDesc
+		, const D3D11_SUBRESOURCE_DATA* aInitData, D3DPointer<ID3D11Buffer>& aOutPointer)
+	{
+		myDirectX->CreateBuffer(aDebugName, aDesc, aInitData, aOutPointer);
+	}
+
 	void Engine::CreateTexture2D(const std::string& aDebugName, const D3D11_TEXTURE2D_DESC* aDesc
 		, const D3D11_SUBRESOURCE_DATA* aInitData, D3DPointer<ID3D11Texture2D>& aOutPointer)
 	{
@@ -87,6 +93,24 @@ namespace Easy3D
 		, const D3D11_DEPTH_STENCIL_VIEW_DESC* aDesc, D3DPointer<ID3D11DepthStencilView>& aOutPointer)
 	{
 		myDirectX->CreateDepthStencilView(aDebugName, aTexture, aDesc, aOutPointer);
+	}
+
+	void Engine::CreateDepthStencilState(const std::string& aDebugName, const D3D11_DEPTH_STENCIL_DESC* aDesc
+		, D3DPointer<ID3D11DepthStencilState>& aOutPointer)
+	{
+		myDirectX->CreateDepthStencilState(aDebugName, aDesc, aOutPointer);
+	}
+
+	void Engine::CreateRasterizerState(const std::string& aDebugName, const D3D11_RASTERIZER_DESC* aDesc
+		, D3DPointer<ID3D11RasterizerState>& aOutPointer)
+	{
+		myDirectX->CreateRasterizerState(aDebugName, aDesc, aOutPointer);
+	}
+
+	void Engine::CreateBlendState(const std::string& aDebugName, const D3D11_BLEND_DESC* aDesc
+		, D3DPointer<ID3D11BlendState >& aOutPointer)
+	{
+		myDirectX->CreateBlendState(aDebugName, aDesc, aOutPointer);
 	}
 
 	ID3D11Device* Engine::GetDevice()
