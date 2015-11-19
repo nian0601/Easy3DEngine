@@ -98,6 +98,9 @@
     <ClCompile Include="TextInstance.cpp">
       <Filter>Rendering\RenderableObjects</Filter>
     </ClCompile>
+    <ClCompile Include="Thread.cpp">
+      <Filter>Threading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -248,6 +251,9 @@
     <ClInclude Include="TextInstance.h">
       <Filter>Rendering\RenderableObjects</Filter>
     </ClInclude>
+    <ClInclude Include="Thread.h">
+      <Filter>Threading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompile">
@@ -285,6 +291,9 @@
     </Filter>
     <Filter Include="Rendering\Renderer">
       <UniqueIdentifier>{5e0835bf-55cb-44b5-9977-2565d2b201e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Threading">
+      <UniqueIdentifier>{3c8e15f4-4ab8-4fb8-941e-29319e7f21a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

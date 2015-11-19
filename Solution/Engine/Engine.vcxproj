@@ -144,6 +144,7 @@
     <ClCompile Include="TextInstance.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureContainer.cpp" />
+    <ClCompile Include="Thread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseModel.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="TextInstance.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureContainer.h" />
+    <ClInclude Include="Thread.h" />
     <ClInclude Include="VertexBufferWrapper.h" />
     <ClInclude Include="VertexDataWrapper.h" />
     <ClInclude Include="VertexIndexWrapper.h" />

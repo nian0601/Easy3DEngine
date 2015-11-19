@@ -1,7 +1,8 @@
 #pragma once
 
-#include <GrowingArray.h>
 #include <atomic>
+#include <GrowingArray.h>
+#include "Thread.h"
 
 namespace Easy3D
 {
@@ -9,20 +10,22 @@ namespace Easy3D
 	class ModelProxy;
 	class FBXFactory;
 
-	class ModelLoader
+	class ModelLoader : public Thread
 	{
 	public:
 		static void Create();
 		static void Destroy();
 		static ModelLoader* GetInstance();
 
-		
+		void Start() override;
+		void Stop() override;
+		void Pause() override;
+		void UnPause() override;
 
 		void Run();
-		void Shutdown();
 
-		ModelProxy* LoadModel(const std::string& aModelPath, const std::string& aEffectPath);
-		ModelProxy* LoadCube(float aWidth = 1.f, float aHeight = 1.f, float aDepth = 1.f
+		ModelProxy* RequestModel(const std::string& aModelPath, const std::string& aEffectPath);
+		ModelProxy* RequestCube(float aWidth = 1.f, float aHeight = 1.f, float aDepth = 1.f
 			, CU::Vector4f aColor = { 1.f, 1.f, 1.f, 1.f });
 
 	private:
@@ -46,11 +49,14 @@ namespace Easy3D
 
 		void WaitUntilCopyIsAllowed();
 		void WaitUntilAddIsAllowed();
+		void CopyNewJobs();
+		Model* LoadModel(const LoadData& aData);
+		Model* LoadCube(const LoadData& aData);
 
-		CU::GrowingArray<LoadData> myModelsToLoad;
+		CU::GrowingArray<LoadData> myNewLoadJobs;
+		CU::GrowingArray<LoadData> myCurrentLoadJobs;
 		volatile bool myCanAddToLoadArray;
 		volatile bool myCanCopyArray;
-		volatile bool myIsRunning;
 
 		FBXFactory* myModelFactory;
 		CU::GrowingArray<Model*> myNonFXBModels;

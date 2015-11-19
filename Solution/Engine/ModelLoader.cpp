@@ -7,7 +7,7 @@
 #include "ModelProxy.h"
 #include "FBXFactory.h"
 #include <TimerManager.h>
-
+#include <thread>
 
 #define THREADED_LOADING
 
@@ -32,9 +32,10 @@ namespace Easy3D
 	}
 
 	ModelLoader::ModelLoader()
-		: myModelsToLoad(4)
+		: Thread()
+		, myNewLoadJobs(4)
+		, myCurrentLoadJobs(4)
 		, myNonFXBModels(4)
-		, myIsRunning(true)
 		, myCanAddToLoadArray(true)
 		, myCanCopyArray(true)
 		, myModelFactory(new FBXFactory())
@@ -53,6 +54,33 @@ namespace Easy3D
 		}
 	}
 
+	void ModelLoader::Start()
+	{
+		DL_ASSERT_EXP(myIsRunning == false, "Tried to start a thread thats allready running");
+		DL_ASSERT_EXP(mySTDThread == nullptr, "Tried to start a thread before deleting the old");
+
+		myIsRunning = true;
+		mySTDThread = new std::thread(&ModelLoader::Run, this);
+	}
+
+	void ModelLoader::Stop()
+	{
+		DL_ASSERT_EXP(mySTDThread != nullptr, "Tried to stop a nonexisting thread");
+		DL_ASSERT_EXP(myIsRunning == true, "Tried to stop a thread that wasnt running");
+
+		myIsRunning = false;
+		mySTDThread->join();
+		delete mySTDThread;
+	}
+
+	void ModelLoader::Pause()
+	{
+	}
+
+	void ModelLoader::UnPause()
+	{
+	}
+
 	void ModelLoader::Run()
 	{
 #ifndef THREADED_LOADING
@@ -63,75 +91,45 @@ namespace Easy3D
 			WaitUntilCopyIsAllowed();
 			myCanAddToLoadArray = false;
 
-			if (myModelsToLoad.Size() == 0)
+			if (myNewLoadJobs.Size() == 0)
 			{
 				myCanAddToLoadArray = true;
 				std::this_thread::yield();
 				continue;
 			}
 
-			CU::GrowingArray<LoadData> loadArray;
-			loadArray = myModelsToLoad;
-			myModelsToLoad.RemoveAll();
+			CopyNewJobs();
+			myNewLoadJobs.RemoveAll();
 			myCanAddToLoadArray = true;
 			
 
-			for (int i = 0; i < loadArray.Size(); ++i)
+			for (int i = 0; i < myCurrentLoadJobs.Size(); ++i)
 			{
-				eLoadType loadType = loadArray[i].myLoadType;
-
-				Model* model = nullptr;
-				switch (loadType)
+				switch (myCurrentLoadJobs[i].myLoadType)
 				{
 				case Easy3D::ModelLoader::eLoadType::MODEL:
 				{
-					CU::TimerManager::GetInstance()->StartTimer("LoadModel");
-
-					model = myModelFactory->LoadModel(loadArray[i].myModelPath.c_str(),
-						EffectContainer::GetInstance()->Get3DEffect(loadArray[i].myEffectPath));
-					model->Init();
-
-
-					int elapsed = static_cast<int>(
-						CU::TimerManager::GetInstance()->StopTimer("LoadModel").GetMilliseconds());
-					RESOURCE_LOG("Model \"%s\" took %d ms to load", loadArray[i].myModelPath.c_str(), elapsed);
+					myCurrentLoadJobs[i].myProxy->SetModel(LoadModel(myCurrentLoadJobs[i]));
 					break;
 				}
 				case Easy3D::ModelLoader::eLoadType::CUBE:
 				{
-					model = new Easy3D::Model();
-					model->InitCube(loadArray[i].mySize.x, loadArray[i].mySize.y,
-						loadArray[i].mySize.z, loadArray[i].myColor);
-
-					myNonFXBModels.Add(model);
+					myCurrentLoadJobs[i].myProxy->SetModel(LoadCube(myCurrentLoadJobs[i]));
 					break;
 				}
 				default:
 					DL_ASSERT("ModelLoader tried to load something that dint have a specified LoadType!!!");
 					break;
 				}
-
-				if (model == nullptr)
-				{
-					DL_MESSAGE_BOX("Failed to Load model", "ModelLoader->Error", MB_ICONWARNING);
-				}
-
-				loadArray[i].myProxy->SetModel(model);
 			}
 		}
 #endif
 	}
 
-	void ModelLoader::Shutdown()
-	{
-		myIsRunning = false;
-	}
-
-	ModelProxy* ModelLoader::LoadModel(const std::string& aModelPath, const std::string& aEffectPath)
+	ModelProxy* ModelLoader::RequestModel(const std::string& aModelPath, const std::string& aEffectPath)
 	{
 #ifdef THREADED_LOADING
 		WaitUntilAddIsAllowed();
-
 
 		if(myProxies.find(aModelPath) != myProxies.end())
 		{
@@ -148,7 +146,7 @@ namespace Easy3D
 		newData.myModelPath = aModelPath;
 		newData.myEffectPath = aEffectPath;
 
-		myModelsToLoad.Add(newData);
+		myNewLoadJobs.Add(newData);
 
 		myCanCopyArray = true;
 
@@ -163,16 +161,11 @@ namespace Easy3D
 
 		ModelProxy* proxy = new ModelProxy();
 		
-		CU::TimerManager::GetInstance()->StartTimer("LoadModel");
+		LoadData data;
+		data.myModelPath = aModelPath;
+		data.myEffectPath = aEffectPath;
 
-		Model* model = myModelFactory->LoadModel(aModelPath.c_str(),
-			EffectContainer::GetInstance()->GetEffect(aEffectPath));
-		model->Init();
-
-		int elapsed = static_cast<int>(
-			CU::TimerManager::GetInstance()->StopTimer("LoadModel").GetMilliseconds());
-		RESOURCE_LOG("Model \"%s\" took %d ms to load", aModelPath.c_str(), elapsed);
-
+		Model* model = LoadModel(data);
 		proxy->SetModel(model);
 
 		myProxies[aModelPath] = proxy;
@@ -181,7 +174,7 @@ namespace Easy3D
 		
 	}
 
-	ModelProxy* ModelLoader::LoadCube(float aWidth, float aHeight, float aDepth
+	ModelProxy* ModelLoader::RequestCube(float aWidth, float aHeight, float aDepth
 		, CU::Vector4f aColor)
 	{
 #ifdef THREADED_LOADING
@@ -197,7 +190,7 @@ namespace Easy3D
 		newData.mySize = { aWidth, aHeight, aDepth };
 		newData.myColor = aColor;
 
-		myModelsToLoad.Add(newData);
+		myNewLoadJobs.Add(newData);
 
 		myCanCopyArray = true;
 
@@ -223,6 +216,40 @@ namespace Easy3D
 	{
 		while (myCanAddToLoadArray == false)
 			; //Should be an empty whileloop!
+	}
+
+	void ModelLoader::CopyNewJobs()
+	{
+		for (int i = 0; i < myNewLoadJobs.Size(); ++i)
+		{
+			myCurrentLoadJobs.Add(myNewLoadJobs[i]);
+		}
+	}
+
+	Model* ModelLoader::LoadModel(const LoadData& aData)
+	{
+		CU::TimerManager::GetInstance()->StartTimer("LoadModel");
+
+		Model* model = myModelFactory->LoadModel(aData.myModelPath.c_str(),
+			EffectContainer::GetInstance()->Get3DEffect(aData.myEffectPath));
+		model->Init();
+
+
+		int elapsed = static_cast<int>(
+			CU::TimerManager::GetInstance()->StopTimer("LoadModel").GetMilliseconds());
+		RESOURCE_LOG("Model \"%s\" took %d ms to load", aData.myModelPath.c_str(), elapsed);
+
+		return model;
+	}
+
+	Model* ModelLoader::LoadCube(const LoadData& aData)
+	{
+		Model* model = new Easy3D::Model();
+		model->InitCube(aData.mySize.x, aData.mySize.y,
+			aData.mySize.z, aData.myColor);
+
+		myNonFXBModels.Add(model);
+		return model;
 	}
 
 }
