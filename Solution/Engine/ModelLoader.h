@@ -21,6 +21,8 @@ namespace Easy3D
 		void Stop() override;
 		void Pause() override;
 		void UnPause() override;
+		void WaitUuntilFinished() const;
+		volatile bool IsLoading() const;
 
 		void Run();
 
@@ -57,6 +59,7 @@ namespace Easy3D
 		CU::GrowingArray<LoadData> myCurrentLoadJobs;
 		volatile bool myCanAddToLoadArray;
 		volatile bool myCanCopyArray;
+		volatile bool myIsLoading;
 
 		FBXFactory* myModelFactory;
 		CU::GrowingArray<Model*> myNonFXBModels;

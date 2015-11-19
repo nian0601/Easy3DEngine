@@ -104,8 +104,6 @@ namespace Easy3D
 		CU::Vector2<int> myWindowSize;
 		CU::Matrix44<float> myOrthogonalMatrix;
 
-		std::thread* myModelLoaderThread;
-
 		static Engine* myInstance;
 	};
 }

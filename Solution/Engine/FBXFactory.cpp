@@ -5,8 +5,9 @@
 #include "FBX/FbxLoader.h"
 #include "Matrix44.h"
 #include "Model.h"
-#include "Surface.h"
 #include "IndexBufferWrapper.h"
+#include "Surface.h"
+#include <TimerManager.h>
 #include "VertexBufferWrapper.h"
 #include "VertexDataWrapper.h"
 #include "VertexIndexWrapper.h"
@@ -178,6 +179,7 @@ Easy3D::Model* Easy3D::FBXFactory::LoadModel(const char* aFilePath, Effect3D* aE
 		return myModels[aFilePath];
 	}
 
+	CU::TimerManager::GetInstance()->StartTimer("LoadModel");
 
 	FBXData* found = 0;
 	for (FBXData* data : myFBXData)
@@ -206,8 +208,13 @@ Easy3D::Model* Easy3D::FBXFactory::LoadModel(const char* aFilePath, Effect3D* aE
 
 
 	Model* returnModel = CreateModel(modelData, aEffect);
+	returnModel->Init();
 
 	myModels[aFilePath] = returnModel;
+
+	int elapsed = static_cast<int>(
+		CU::TimerManager::GetInstance()->StopTimer("LoadModel").GetMilliseconds());
+	RESOURCE_LOG("Model \"%s\" took %d ms to load", aFilePath, elapsed);
 
 	return returnModel;
 }

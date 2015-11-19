@@ -38,6 +38,7 @@ namespace Easy3D
 		, myNonFXBModels(4)
 		, myCanAddToLoadArray(true)
 		, myCanCopyArray(true)
+		, myIsLoading(false)
 		, myModelFactory(new FBXFactory())
 	{
 	}
@@ -60,6 +61,7 @@ namespace Easy3D
 		DL_ASSERT_EXP(mySTDThread == nullptr, "Tried to start a thread before deleting the old");
 
 		myIsRunning = true;
+		myIsLoading = true;
 		mySTDThread = new std::thread(&ModelLoader::Run, this);
 	}
 
@@ -75,10 +77,35 @@ namespace Easy3D
 
 	void ModelLoader::Pause()
 	{
+		DL_ASSERT_EXP(myIsPaused == true, "ModelLoader needs to unpaused to pause it");
+		myIsPaused = true;
+		while (myIsLoading == true)
+		{
+			//Wait
+		}
 	}
 
 	void ModelLoader::UnPause()
 	{
+		DL_ASSERT_EXP(myIsPaused == true, "ModelLoader needs to paused to unpause it");
+		myIsPaused = false;
+		while (myIsLoading == false)
+		{
+			//Wait
+		}
+	}
+
+	void ModelLoader::WaitUuntilFinished() const
+	{
+		while (myIsLoading == true)
+		{
+			//Wait
+		}
+	}
+
+	volatile bool ModelLoader::IsLoading() const
+	{
+		return myIsLoading;
 	}
 
 	void ModelLoader::Run()
@@ -100,11 +127,23 @@ namespace Easy3D
 
 			CopyNewJobs();
 			myNewLoadJobs.RemoveAll();
+			myIsLoading = true;
 			myCanAddToLoadArray = true;
 			
 
-			for (int i = 0; i < myCurrentLoadJobs.Size(); ++i)
+			for (int i = myCurrentLoadJobs.Size()-1; i >= 0; --i)
 			{
+				if (myIsPaused == true)
+				{
+					myIsLoading = false;
+					break;
+				}
+
+				if (myIsRunning == false)
+				{
+					return;
+				}
+
 				switch (myCurrentLoadJobs[i].myLoadType)
 				{
 				case Easy3D::ModelLoader::eLoadType::MODEL:
@@ -121,6 +160,8 @@ namespace Easy3D
 					DL_ASSERT("ModelLoader tried to load something that dint have a specified LoadType!!!");
 					break;
 				}
+
+				myCurrentLoadJobs.RemoveCyclicAtIndex(i);
 			}
 		}
 #endif
@@ -153,7 +194,6 @@ namespace Easy3D
 		myProxies[aModelPath] = proxy;
 		return proxy;
 #else
-
 		if (myProxies.find(aModelPath) != myProxies.end())
 		{
 			return myProxies[aModelPath];
@@ -228,16 +268,8 @@ namespace Easy3D
 
 	Model* ModelLoader::LoadModel(const LoadData& aData)
 	{
-		CU::TimerManager::GetInstance()->StartTimer("LoadModel");
-
 		Model* model = myModelFactory->LoadModel(aData.myModelPath.c_str(),
 			EffectContainer::GetInstance()->Get3DEffect(aData.myEffectPath));
-		model->Init();
-
-
-		int elapsed = static_cast<int>(
-			CU::TimerManager::GetInstance()->StopTimer("LoadModel").GetMilliseconds());
-		RESOURCE_LOG("Model \"%s\" took %d ms to load", aData.myModelPath.c_str(), elapsed);
 
 		return model;
 	}

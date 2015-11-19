@@ -42,7 +42,6 @@ namespace Easy3D
 	void Engine::Shutdown()
 	{
 		ModelLoader::GetInstance()->Stop();
-		myModelLoaderThread->join();
 
 		myDirectX->CleanD3D();
 		delete myDirectX;
@@ -230,7 +229,6 @@ namespace Easy3D
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);
 
 		ModelLoader::GetInstance()->Start();
-		myModelLoaderThread = new std::thread(&ModelLoader::Run, ModelLoader::GetInstance());
 
 		ENGINE_LOG("Engine Init Successful");
 		return true;
