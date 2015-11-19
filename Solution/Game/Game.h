@@ -10,6 +10,7 @@ namespace Easy3D
 {
 	class Camera;
 	class DebugMenu;
+	class LineRenderer;
 	class ParticleEmitterInstance;
 	class Scene;
 	class Renderer;
@@ -66,6 +67,7 @@ private:
 	int mySceneEffect;
 
 	Easy3D::Renderer* myRenderer;
+	Easy3D::LineRenderer* myLineRenderer;
 	std::bitset<eGameSettings::_COUNT> mySettings;
 
 	float myDeltaTime;

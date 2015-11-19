@@ -101,6 +101,9 @@
     <ClCompile Include="Thread.cpp">
       <Filter>Threading</Filter>
     </ClCompile>
+    <ClCompile Include="LineRenderer.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -253,6 +256,9 @@
     </ClInclude>
     <ClInclude Include="Thread.h">
       <Filter>Threading</Filter>
+    </ClInclude>
+    <ClInclude Include="LineRenderer.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

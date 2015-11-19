@@ -15,6 +15,24 @@ TextureCube CubeMap;
 float3 Scale;
 float4 ColorMask;
 
+struct VS_LINE
+{
+	float4 Position : POSITION;
+	float4 Color : COLOR;	
+};
+
+struct PS_LINE
+{
+	float4 Position : SV_POSITION;
+	float4 Color : COLOR;	
+};
+
+struct GS_LINE
+{
+	float4 Position : POSITION;
+	float4 Color : COLOR;
+};
+
 struct VS_INPUT_POS_NORM_TEX
 {
 	float4 Pos : POSITION;

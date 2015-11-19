@@ -12,6 +12,7 @@
 #include "Game.h"
 #include "GraphicsComponent.h"
 #include <InputWrapper.h>
+#include <LineRenderer.h>
 #include <ParticleEmitterInstance.h>
 #include <Renderer.h>
 #include <Scene.h>
@@ -42,8 +43,10 @@ bool Game::Init(HWND& aHwnd)
 		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
 
 	myCamera = new Easy3D::Camera();
-	myCamera->RotateX(90);
-	myCamera->SetPosition({ 0.f, 30.f, 0.f });
+	/*myCamera->RotateX(90);
+	myCamera->SetPosition({ 0.f, 30.f, 0.f });*/
+
+	myCamera->SetPosition({ 0, 2, -2 });
 
 	myDebugMenu->StartGroup("SystemInfo");
 	myDebugMenu->AddVariable("FPS", myFPS);
@@ -70,6 +73,8 @@ bool Game::Init(HWND& aHwnd)
 	myScene = new Easy3D::Scene();
 	myScene->SetCamera(myCamera);
 	mySceneEffect = Easy3D::ePostProcess::HDR;
+
+	myLineRenderer = new Easy3D::LineRenderer();
 
 	myEntityManager = new EntityManager(myScene, myCollisionManager);
 
@@ -151,6 +156,8 @@ bool Game::Update()
 
 	myCollisionManager->CheckCollisions();
 
+	myLineRenderer->AddLine({ -10.f, 0.f, 10.f }, { 50.f, 0.f, 10.f }, 200);
+	myLineRenderer->AddLine({ -10.f, 10.f, 0.f }, { 50.f, 0.f, 100.f }, 200, { 1.f, 0.f, 0.f, 1.f });
 
 	Render();
 	return true;
@@ -222,6 +229,8 @@ void Game::Render()
 	//}
 	
 	myRenderer->FinalRender();
+
+	myLineRenderer->Render(*myCamera);
 
 	//myScene->Render();
 }

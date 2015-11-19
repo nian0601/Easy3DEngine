@@ -109,6 +109,7 @@
     <ClCompile Include="DebugMenu.cpp" />
     <ClCompile Include="EmitterContainer.cpp" />
     <ClCompile Include="FullScreenHelper.cpp" />
+    <ClCompile Include="LineRenderer.cpp" />
     <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="ParticleEmitterInstance.cpp" />
     <ClCompile Include="ParticleEmitterData.cpp" />
@@ -156,6 +157,7 @@
     <ClInclude Include="EmitterContainer.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="FullScreenHelper.h" />
+    <ClInclude Include="LineRenderer.h" />
     <ClInclude Include="ParticleEffect.h" />
     <ClInclude Include="ParticleEmitterInstance.h" />
     <ClInclude Include="ParticleInstance.h" />
