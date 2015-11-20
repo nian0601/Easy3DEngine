@@ -2,9 +2,11 @@
 #include "InputComponent.h"
 #include <InputWrapper.h>
 #include <LuaBridge.h>
+#include "ToggleInputNote.h"
 
 InputComponent::InputComponent(Entity& aEntity)
 	: Component(aEntity, eComponent::INPUT)
+	, myInputEnabled(true)
 {
 }
 
@@ -43,6 +45,11 @@ void InputComponent::LoadFromScript(luabridge::LuaRef& aTableRef)
 
 void InputComponent::Update(float)
 {
+	if (myInputEnabled == false)
+	{
+		return;
+	}
+
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
 	{
 		try{
@@ -87,3 +94,9 @@ void InputComponent::Update(float)
 		}
 	}
 }
+
+void InputComponent::ReceiveNote(const ToggleInputNote& aNote)
+{
+	myInputEnabled = aNote.myInputEnabled;
+}
+

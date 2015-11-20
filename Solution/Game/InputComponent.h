@@ -17,10 +17,14 @@ public:
 	void LoadFromScript(luabridge::LuaRef& aTableRef) override;
 	void Update(float aDelta) override;
 
+	void ReceiveNote(const ToggleInputNote& aNote) override;
+
 private:
 	std::shared_ptr<luabridge::LuaRef> myWCommand;
 	std::shared_ptr<luabridge::LuaRef> mySCommand;
 	std::shared_ptr<luabridge::LuaRef> myACommand;
 	std::shared_ptr<luabridge::LuaRef> myDCommand;
+
+	bool myInputEnabled;
 };
 
