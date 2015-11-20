@@ -2,15 +2,20 @@
 #include <vector>
 #include <unordered_map>
 
+struct AnimationData;
+struct Bone;
 struct ModelData;
 
 class FBXLoader;
 class FbxModelData;
 
+
+
 namespace Easy3D
 {
 	class Model;
 	class Effect3D;
+	class HierarchyBone;
 
 	class FBXFactory
 	{
@@ -22,6 +27,10 @@ namespace Easy3D
 	private:
 		void FillData(ModelData* someData, Model* outData, Effect3D* aEffect);
 		void FillAnimationData(FbxModelData* someData, Model* outData);
+		void FillBoneAnimationData(FbxModelData* someData, Model* aOutData);
+		void BuildBoneHierarchy(Bone& aBone, AnimationData* aAnimationData, Easy3D::HierarchyBone& aOutBone);
+		
+
 		Model* CreateModel(FbxModelData* someModelData, Effect3D* aEffect);
 
 		FBXLoader *myLoader;

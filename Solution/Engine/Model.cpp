@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "Animation.h"
 #include <d3dx11effect.h>
 #include "Effect3D.h"
 #include "Model.h"
@@ -20,6 +21,7 @@ namespace Easy3D
 		, myVertexBaseData(nullptr)
 		, myIndexBaseData(nullptr)
 		, myTransformation(nullptr)
+		, myAnimation(nullptr)
 	{
 
 	}
@@ -28,6 +30,7 @@ namespace Easy3D
 	{
 		delete myIndexBaseData;
 		delete myVertexBaseData;
+		delete myAnimation;
 
 		myChilds.DeleteAll();
 		myChildTransforms.RemoveAll();

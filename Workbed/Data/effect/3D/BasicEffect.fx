@@ -4,6 +4,28 @@
 #include "../SharedUtilities/SpotLights.fx"
 
 
+matrix Bones[64];
+
+struct VS_ANIMATION_INPUT
+{
+	float4 Position : POSITION;
+	float3 Normal : NORMAL;
+	float2 Tex : TEXCOORD;
+	float3 BiNormal : BINORMAL;
+	float3 Tangent : TANGENT;
+	uint4 Bones : BONES;
+	float4 Weights : WEIGHTS;
+};
+
+struct SkinnedVert
+{
+	float4 Position : POSITION;
+	float3 Normal : NORMAL;
+	float2 Tex : TEXCOORD;
+	float3 BiNormal : BINORMAL;
+	float3 Tangent : TANGENT;
+	float4 WorldPosition : POSITION;
+};
 
 SamplerState linearSampling
 {
@@ -13,23 +35,56 @@ SamplerState linearSampling
 };
 
 
-PS_INPUT_POS_NORM_TEX_BI_TANG VS(VS_INPUT_POS_NORM_TEX_BI_TANG input)
+SkinnedVert VS(VS_ANIMATION_INPUT input)
 {
-	PS_INPUT_POS_NORM_TEX_BI_TANG output = (PS_INPUT_POS_NORM_TEX_BI_TANG)0;
+	SkinnedVert output = (SkinnedVert)0;
 	
 	float4 scale = float4(Scale, 1.0f);
 	input.Position *= scale;
 	
 	input.Position.w = 1.0f;
 	
+	float4 pos = input.Position;
+	float3 norm = input.Normal;
+	
+	uint iBone;
+	float fWeight;
+
+	// Bone 0
+	iBone = input.Bones.x;
+	fWeight = input.Weights.x;
+
+	output.Position += fWeight * mul(pos, Bones[iBone]);
+	output.Normal += fWeight * mul(norm, (float3x3)Bones[iBone]);
+
+	// Bone 1
+	iBone = input.Bones.y;
+	fWeight = input.Weights.y;
+
+	output.Position += fWeight * mul(pos, Bones[iBone]);
+	output.Normal += fWeight * mul(norm, (float3x3)Bones[iBone]);
+
+	// Bone 2
+	iBone = input.Bones.z;
+	fWeight = input.Weights.z;
+
+	output.Position += fWeight * mul(pos, Bones[iBone]);
+	output.Normal += fWeight * mul(norm, (float3x3)Bones[iBone]);
+
+	// Bone 3
+	iBone = input.Bones.w;
+	fWeight = input.Weights.w;
+
+	output.Position += fWeight * mul(pos, Bones[iBone]);
+	output.Normal += fWeight * mul(norm, (float3x3)Bones[iBone]);
+
+
 	output.Position = mul(input.Position, World);
 	output.Position = mul(output.Position, View);
 	output.Position = mul(output.Position, Projection);
 	
 	
 	output.Tex = input.Tex;
-	
-	
 	output.Normal = mul(input.Normal, World);
 	output.BiNormal = input.BiNormal;
 	output.Tangent = mul(input.Tangent, World);
@@ -39,7 +94,7 @@ PS_INPUT_POS_NORM_TEX_BI_TANG VS(VS_INPUT_POS_NORM_TEX_BI_TANG input)
 	return output;
 }
 
-float4 PS(PS_INPUT_POS_NORM_TEX_BI_TANG input) : SV_Target
+float4 PS(SkinnedVert input) : SV_Target
 {
 	float3 norm = NormalTexture.Sample(linearSampling, input.Tex) * 2 - 1;
 	

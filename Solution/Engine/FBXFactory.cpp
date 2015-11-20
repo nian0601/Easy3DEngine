@@ -1,8 +1,11 @@
 #include "stdafx.h"
 
+#include "Animation.h"
+#include "AnimationNode.h"
 #include "Effect3D.h"
 #include "FBXFactory.h"
 #include "FBX/FbxLoader.h"
+#include "HierarchyBone.h"
 #include "Matrix44.h"
 #include "Model.h"
 #include "Surface.h"
@@ -102,15 +105,13 @@ void Easy3D::FBXFactory::FillData(ModelData* someData, Model* outData, Effect3D*
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_SKINWEIGHTS)
 		{
-			break;
-			//desc->SemanticName = "WEIGHTS";
-			//desc->Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+			desc->SemanticName = "WEIGHTS";
+			desc->Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		}
 		else if (currentLayout.myType == ModelData::VERTEX_BONEID)
 		{
-			break;
-			//desc->SemanticName = "BONES";
-			//desc->Format = DXGI_FORMAT_R32G32B32A32_SINT;
+			desc->SemanticName = "BONES";
+			desc->Format = DXGI_FORMAT_R32G32B32A32_SINT;
 		}
 		outData->myVertexFormat.Add(desc);
 	}
@@ -221,6 +222,70 @@ void Easy3D::FBXFactory::FillAnimationData(FbxModelData* someData, Model* outDat
 	outData->myTransformation = nodeCurves;
 }
 
+void Easy3D::FBXFactory::FillBoneAnimationData(FbxModelData* someData, Model* aOutData)
+{
+	auto loadedAnimation = someData->myAnimation;
+	float animationLenght = 0.f;
+
+	Animation* newAnimation = new Animation();
+
+	HierarchyBone rootBone;
+	BuildBoneHierarchy(loadedAnimation->myBones[loadedAnimation->myRootBone], loadedAnimation, rootBone);
+
+	int nrOfbones = static_cast<int>(someData->myAnimation->myBones.size());
+	for (int i = 0; i < nrOfbones; ++i)
+	{
+		Bone& currentBone = someData->myAnimation->myBones[i];
+		
+		AnimationNode* newNode = new AnimationNode(currentBone.myFrames.size());
+
+		int nrOfFrames = currentBone.myFrames.size();
+		for (int j = 0; j < nrOfFrames; ++j)
+		{
+			AnimationNodeValue newValue;
+			auto currentFrame = currentBone.myFrames[j];
+
+			newValue.myTime = currentFrame.myTime;
+			newValue.myMatrix = currentFrame.myMatrix;
+
+			newNode->AddValue(newValue);
+		}
+
+		newNode->myBoneName = currentBone.myName;
+		newAnimation->AddAnimation(newNode);
+
+		newAnimation->SetBoneMatrix(currentBone.myBaseOrientation, i);
+		newAnimation->SetBoneBindPose(currentBone.myBindMatrix, i);
+		newAnimation->AddBoneName(currentBone.myName);
+
+		newAnimation->SetBindMatrix(loadedAnimation->myBindMatrix);
+	}
+
+	newAnimation->SetHierarchy(rootBone);
+	animationLenght = someData->myAnimation->myBones[0].myAnimationTime;
+	newAnimation->SetAnimationLenght(animationLenght);
+
+	aOutData->myAnimation = newAnimation;
+}
+
+void Easy3D::FBXFactory::BuildBoneHierarchy(Bone& aBone, AnimationData* aAnimationData, Easy3D::HierarchyBone& aOutBone)
+{
+	aOutBone.myBoneID = aBone.myId;
+	aOutBone.myBoneName = aBone.myName;
+	const int nrOfChildren = static_cast<int>(aBone.myChilds.size());
+
+	if (nrOfChildren > 0)
+	{
+		aOutBone.myChildren.Init(nrOfChildren);
+		for (int i = 0; i < nrOfChildren; ++i)
+		{
+			HierarchyBone child;
+			BuildBoneHierarchy(aAnimationData->myBones[aBone.myChilds[i]], aAnimationData, child);
+			aOutBone.myChildren.Add(child);
+		}
+	}
+}
+
 Easy3D::Model* Easy3D::FBXFactory::CreateModel(FbxModelData* someModelData, Effect3D* aEffect)
 {
 	Model* tempModel = new Model();
@@ -232,9 +297,17 @@ Easy3D::Model* Easy3D::FBXFactory::CreateModel(FbxModelData* someModelData, Effe
 		tempModel->myOrientation = someModelData->myOrientation;
 	}
 
-	if (someModelData->myAnimationCurves != nullptr)
+	if (someModelData->myAnimationCurves != nullptr
+		&& someModelData->myAnimationCurves->myRotationCurve[0] != nullptr
+		&& someModelData->myAnimationCurves->myTtranslationCurve[0] != nullptr)
 	{
 		FillAnimationData(someModelData, tempModel);
+	}
+
+	if (someModelData->myAnimation != nullptr && someModelData->myAnimation->myRootBone != -1 
+		&& someModelData->myAnimation->myBones.size() > 0)
+	{
+		FillBoneAnimationData(someModelData, tempModel);
 	}
 
 	for (int i = 0; i < someModelData->myChilds.Size(); ++i)
@@ -285,4 +358,3 @@ Easy3D::Model* Easy3D::FBXFactory::LoadModel(const char* aFilePath, Effect3D* aE
 
 	return returnModel;
 }
-

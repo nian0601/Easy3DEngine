@@ -8,6 +8,7 @@
 
 namespace Easy3D
 {
+	class Animation;
 	class Camera;
 	class Light;
 	class ModelProxy;
@@ -47,5 +48,8 @@ namespace Easy3D
 		CU::Vector3<float> myPosition;
 
 		TransformationNodeInstance myHierarchy;
+		Animation* myAnimation;
+		float myTotalTime;
+		CU::StaticArray<CU::Matrix44<float>, MAX_NR_OF_BONES> myBones;
 	};
 }

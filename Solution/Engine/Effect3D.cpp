@@ -44,6 +44,13 @@ namespace Easy3D
 			return false;
 		}
 
+		myBonesArray = myEffect->GetVariableByName("Bones")->AsMatrix();
+		if (myBonesArray->IsValid() == false)
+		{
+			DL_MESSAGE_BOX("Failed to get Bones", "Effect Error", MB_ICONWARNING);
+			return false;
+		}
+
 		myDirectionalLightVariable = myEffect->GetVariableByName("DirectionalLights");
 		if (myDirectionalLightVariable->IsValid() == false)
 		{
@@ -87,6 +94,11 @@ namespace Easy3D
 	void Effect3D::SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix)
 	{
 		myProjectionMatrixVariable->SetMatrix(&aProjectionMatrix.myMatrix[0]);
+	}
+
+	void Effect3D::SetBones(const CU::StaticArray<CU::Matrix44<float>, MAX_NR_OF_BONES>& someBones)
+	{
+		myBonesArray->SetMatrixArray(&someBones[0].myMatrix[0], 0, MAX_NR_OF_BONES);
 	}
 
 	void Effect3D::UpdateDirectionalLights(

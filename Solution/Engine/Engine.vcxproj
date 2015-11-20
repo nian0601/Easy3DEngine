@@ -103,13 +103,16 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationCurve.cpp" />
+    <ClCompile Include="AnimationNode.cpp" />
     <ClCompile Include="BaseModel.cpp" />
     <ClCompile Include="BaseEffect.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugMenu.cpp" />
     <ClCompile Include="EmitterContainer.cpp" />
     <ClCompile Include="FullScreenHelper.cpp" />
+    <ClCompile Include="HierarchyBone.cpp" />
     <ClCompile Include="ParticleEffect.cpp" />
     <ClCompile Include="ParticleEmitterInstance.cpp" />
     <ClCompile Include="ParticleEmitterData.cpp" />
@@ -150,7 +153,9 @@
     <ClCompile Include="TransformationNodeHierarchy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationCurve.h" />
+    <ClInclude Include="AnimationNode.h" />
     <ClInclude Include="BaseModel.h" />
     <ClInclude Include="BaseEffect.h" />
     <ClInclude Include="Camera.h" />
@@ -158,6 +163,7 @@
     <ClInclude Include="EmitterContainer.h" />
     <ClInclude Include="Enums.h" />
     <ClInclude Include="FullScreenHelper.h" />
+    <ClInclude Include="HierarchyBone.h" />
     <ClInclude Include="ParticleEffect.h" />
     <ClInclude Include="ParticleEmitterInstance.h" />
     <ClInclude Include="ParticleInstance.h" />

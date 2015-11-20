@@ -1062,7 +1062,7 @@ CU::Matrix44f CreateMatrix(FbxAMatrix& aOriention)
 	{
 		for(int x = 0;x < 4;++x)
 		{
-			returnMatrix.myMatrix[y * 4 + x] = (float)aOriention.Get(x, y);
+			returnMatrix.myMatrix[y * 4 + x] = (float)aOriention.Get(y, x);
 		}
 	}
 	return returnMatrix;

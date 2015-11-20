@@ -46,9 +46,9 @@ end
 
 entity = {
 	graphicsComponent = {
-		file = "Data/resources/model/Dice/dice.fbx",
+		file = "Data/resources/model/Animated_Dragon/dragon_tier_02.fbx",
 		model = {
-			shader = "Data/effect/3D/BasicEffect.fx"
+			shader = "Data/effect/3D/NoTextureEffect.fx"
 		}
 	},
 	--[[inputComponent = {

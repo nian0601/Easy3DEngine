@@ -23,6 +23,7 @@ namespace Easy3D
 		void SetWorldMatrix(const CU::Matrix44<float>& aWorldMatrix);
 		void SetViewMatrix(const CU::Matrix44<float>& aViewMatrix);
 		void SetProjectionMatrix(const CU::Matrix44<float>& aProjectionMatrix);
+		void SetBones(const CU::StaticArray<CU::Matrix44<float>, MAX_NR_OF_BONES>& someBones);
 
 		void UpdateDirectionalLights(
 			const CU::StaticArray<DirectionalLightData, NUMBER_OF_DIRECTIONAL_LIGHTS>& someDirectionalLightData);
@@ -34,6 +35,7 @@ namespace Easy3D
 		ID3DX11EffectMatrixVariable* myProjectionMatrixVariable;
 		ID3DX11EffectMatrixVariable* myViewMatrixVariable;
 		ID3DX11EffectMatrixVariable* myWorldMatrixVariable;
+		ID3DX11EffectMatrixVariable* myBonesArray;
 
 		ID3DX11EffectVectorVariable* myScaleVectorVariable;
 

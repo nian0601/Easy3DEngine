@@ -6,6 +6,7 @@ struct D3D11_INPUT_ELEMENT_DESC;
 
 namespace Easy3D
 {
+	class Animation;
 	class Effect3D;
 	class TransformationNode;
 
@@ -47,6 +48,7 @@ namespace Easy3D
 		CU::GrowingArray<Model*> myChilds;
 		CU::GrowingArray<TransformationNode*> myChildTransforms;
 		TransformationNode* myTransformation;
+		Animation* myAnimation;
 		CU::Matrix44f myOrientation;
 	};
 }

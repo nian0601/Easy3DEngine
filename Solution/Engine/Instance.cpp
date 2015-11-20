@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "Animation.h"
 #include "Camera.h"
 #include "Effect3D.h"
 #include "EffectContainer.h"
@@ -14,6 +15,11 @@ Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrien
 	, myOrientation(aOrientation)
 	, myScale({1,1,1})
 {
+	if (aModel.GetModel()->myAnimation != nullptr)
+	{
+		myAnimation = aModel.GetModel()->myAnimation;
+	}
+
 	BuildHierarchy(myHierarchy, aModel.GetModel());
 }
 
@@ -37,7 +43,12 @@ void Easy3D::Instance::BuildHierarchy(TransformationNodeInstance& aHierarchy, Mo
 
 void Easy3D::Instance::Update(float aDelta)
 {
+	myTotalTime += aDelta;
 	myHierarchy.Update(aDelta);
+	if (myAnimation != nullptr)
+	{
+		myAnimation->Update(myTotalTime, myBones);
+	}
 }
 
 void Easy3D::Instance::Render(Camera& aCamera)
@@ -46,6 +57,7 @@ void Easy3D::Instance::Render(Camera& aCamera)
 	myProxy.GetEffect()->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
 	myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
 	myProxy.GetEffect()->SetScaleVector(myScale);
+	myProxy.GetEffect()->SetBones(myBones);
 
 	RenderModel(myProxy.GetModel(), myOrientation, aCamera, myHierarchy);
 
@@ -66,6 +78,7 @@ void Easy3D::Instance::Render(const CU::Matrix44<float>& aParentMatrix, Camera& 
 		myProxy.GetEffect()->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
 		myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
 		myProxy.GetEffect()->SetScaleVector(myScale);
+		myProxy.GetEffect()->SetBones(myBones);
 
 		myProxy.Render(myOrientation * aParentMatrix);
 	}

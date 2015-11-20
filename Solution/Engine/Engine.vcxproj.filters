@@ -96,19 +96,28 @@
       <Filter>Rendering</Filter>
     </ClCompile>
     <ClCompile Include="TransformationNode.cpp">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
     </ClCompile>
     <ClCompile Include="TransformationNodeInstance.cpp">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
     </ClCompile>
     <ClCompile Include="AnimationCurve.cpp">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
     </ClCompile>
     <ClCompile Include="TransformationNodeHierarchy.cpp">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
     </ClCompile>
     <ClCompile Include="TransformationNodeCurves.cpp">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Rendering\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="HierarchyBone.cpp">
+      <Filter>Rendering\Animations</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationNode.cpp">
+      <Filter>Rendering\Animations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -252,19 +261,28 @@
       <Filter>Rendering</Filter>
     </ClInclude>
     <ClInclude Include="TransformationNode.h">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
     </ClInclude>
     <ClInclude Include="TransformationNodeInstance.h">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
     </ClInclude>
     <ClInclude Include="AnimationCurve.h">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
     </ClInclude>
     <ClInclude Include="TransformationNodeHierarchy.h">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
     </ClInclude>
     <ClInclude Include="TransformationNodeCurves.h">
-      <Filter>Rendering\Animationer</Filter>
+      <Filter>Rendering\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Rendering\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="HierarchyBone.h">
+      <Filter>Rendering\Animations</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationNode.h">
+      <Filter>Rendering\Animations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -304,7 +322,7 @@
     <Filter Include="Rendering\Renderer">
       <UniqueIdentifier>{5e0835bf-55cb-44b5-9977-2565d2b201e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering\Animationer">
+    <Filter Include="Rendering\Animations">
       <UniqueIdentifier>{3f3a5212-9296-4a2e-b231-758a538fe0ee}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
