@@ -1,167 +1,240 @@
 #include "InputWrapper.h"
 
-CommonUtilities::InputWrapper* CommonUtilities::InputWrapper::myInstance = nullptr;
-bool CommonUtilities::InputWrapper::Create(HWND aHwnd, HINSTANCE aHInstance, DWORD aKeyCoopFlags, DWORD aMouseCoopFlags)
+namespace CommonUtilities
 {
-	myInstance = new InputWrapper();
-	myInstance->Init(aHwnd, aHInstance, aKeyCoopFlags, aMouseCoopFlags);
-
-	return true;
-}
-
-void CommonUtilities::InputWrapper::Destroy()
-{
-	delete myInstance;
-}
-CommonUtilities::InputWrapper* CommonUtilities::InputWrapper::GetInstance()
-{
-	return myInstance;
-}
-
-
-
-CommonUtilities::InputWrapper::InputWrapper()
-{
-
-}
-
-CommonUtilities::InputWrapper::~InputWrapper()
-{
-	myKeyboardDevice->Unacquire();
-	myMouseDevice->Unacquire();
-}
-
-void CommonUtilities::InputWrapper::Init(HWND aHwnd, HINSTANCE aHInstance, DWORD aKeyCoopFlags, DWORD aMouseCoopFlags)
-{
-
-	DirectInput8Create(aHInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&myDirectInput), 0);
-
-	myDirectInput->CreateDevice(GUID_SysKeyboard, &myKeyboardDevice, nullptr);
-	myDirectInput->CreateDevice(GUID_SysMouse, &myMouseDevice, nullptr);
-
-	myKeyboardDevice->SetDataFormat(&c_dfDIKeyboard);
-	myMouseDevice->SetDataFormat(&c_dfDIMouse);
-
-	myKeyboardDevice->SetCooperativeLevel(aHwnd, aKeyCoopFlags);
-	myMouseDevice->SetCooperativeLevel(aHwnd, aMouseCoopFlags);
-
-	myKeyboardDevice->Acquire();
-	myMouseDevice->Acquire();
-
-	myWindowHandler = aHwnd;
-
-	myIsRecordingDeltas = true;
-
-	Update();
-}
-
-
-
-
-void CommonUtilities::InputWrapper::Update()
-{
-	CapturePreviousState();
-	HRESULT hr = myKeyboardDevice->GetDeviceState(sizeof(myKeyState), reinterpret_cast<void**>(&myKeyState));
-
-	if (FAILED(hr))
+	InputWrapper* InputWrapper::myInstance = nullptr;
+	bool InputWrapper::Create(HWND aHwnd, HINSTANCE aHInstance, DWORD aKeyCoopFlags
+		, DWORD aMouseCoopFlags, bool aUseInputRecording)
 	{
-		ZeroMemory(myKeyState, sizeof(myKeyState));
+		myInstance = new InputWrapper(aHwnd, aHInstance, aKeyCoopFlags, aMouseCoopFlags, aUseInputRecording);
+		return true;
+	}
+
+	void InputWrapper::Destroy()
+	{
+		delete myInstance;
+	}
+
+	InputWrapper* InputWrapper::GetInstance()
+	{
+		return myInstance;
+	}
+
+	InputWrapper::InputWrapper(HWND aHwnd, HINSTANCE aHInstance, DWORD aKeyCoopFlags
+		, DWORD aMouseCoopFlags, bool aUseInputRecording)
+	{
+		DirectInput8Create(aHInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&myDirectInput), 0);
+
+		myDirectInput->CreateDevice(GUID_SysKeyboard, &myKeyboardDevice, nullptr);
+		myDirectInput->CreateDevice(GUID_SysMouse, &myMouseDevice, nullptr);
+
+		myKeyboardDevice->SetDataFormat(&c_dfDIKeyboard);
+		myMouseDevice->SetDataFormat(&c_dfDIMouse);
+
+		myKeyboardDevice->SetCooperativeLevel(aHwnd, aKeyCoopFlags);
+		myMouseDevice->SetCooperativeLevel(aHwnd, aMouseCoopFlags);
 
 		myKeyboardDevice->Acquire();
-	}
-
-	hr = myMouseDevice->GetDeviceState(sizeof(DIMOUSESTATE), reinterpret_cast<void**>(&myMouseState));
-	if (FAILED(hr))
-	{
-		ZeroMemory(&myMouseState, sizeof(myMouseState));
-
 		myMouseDevice->Acquire();
+
+		myWindowHandler = aHwnd;
+
+		myIsRecordingDeltas = true;
+
+		myIsRecording = false;
+		myIsPlayingBack = false;
+		myHasRecording = false;
+
+		myStartedRecording = false;
+		myStoppedRecording = false;
+		myStartedPlayback = false;
+
+		if (aUseInputRecording == true)
+		{
+			myIsPlayingBack = true;
+			myHasRecording = true;
+			StartPlayback();
+		}
+
+		Update();
 	}
 
-	tagPOINT cursorPoint;
-	GetCursorPos(&cursorPoint);
-	ScreenToClient(myWindowHandler, &cursorPoint);
-	myMousePos.x = static_cast<float>(cursorPoint.x);
-	myMousePos.y = static_cast<float>(cursorPoint.y);
-
-	if (myIsRecordingDeltas == false)
+	InputWrapper::~InputWrapper()
 	{
-		myMouseState.lX = 0;
-		myMouseState.lY = 0;
+		if (myIsRecording == true)
+		{
+			RecordInput();
+			StopRecording();
+		}
+		myKeyboardDevice->Unacquire();
+		myMouseDevice->Unacquire();
 	}
 
-	//myMousePos.x += myMouseState.lX;
-	//myMousePos.y += myMouseState.lY;
-	//myMousePos.z += myMouseState.lZ;
-}
+	void InputWrapper::Update()
+	{
+		myStartedRecording = false;
+		myStoppedRecording = false;
+		myStartedPlayback = false;
 
+		UpdateNormalInput();
 
-void CommonUtilities::InputWrapper::PauseDeltaRecording()
-{
-	myIsRecordingDeltas = false;
-}
+		CheckRecorderKeybinds();
 
+		if (myIsRecording == true)
+		{
+			RecordInput();
+		}
+		else if (myIsPlayingBack == true)
+		{
+			PlaybackInput();
+		}
+	}
 
-void CommonUtilities::InputWrapper::ResumeDeltaRecording()
-{
-	myIsRecordingDeltas = true;
-}
+	void InputWrapper::UpdateNormalInput()
+	{
+		CapturePreviousState();
+		HRESULT hr = myKeyboardDevice->GetDeviceState(sizeof(myInputData.myKeyState), reinterpret_cast<void**>(&myInputData.myKeyState));
 
-const CommonUtilities::Vector2<float>& CommonUtilities::InputWrapper::GetMousePosition() const
-{
-	return myMousePos;
-}
+		if (FAILED(hr))
+		{
+			ZeroMemory(myInputData.myKeyState, sizeof(myInputData.myKeyState));
 
-void CommonUtilities::InputWrapper::CapturePreviousState()
-{
-	memcpy_s(myPreviousKeyState, sizeof(myPreviousKeyState), myKeyState, sizeof(myKeyState));
-	memcpy_s(&myPreviousMouseState, sizeof(myPreviousMouseState), &myMouseState, sizeof(myMouseState));
-}
+			myKeyboardDevice->Acquire();
+		}
 
-bool CommonUtilities::InputWrapper::KeyIsPressed(unsigned int aKey) const
-{
-	UCHAR key = static_cast<UCHAR>(aKey);
-	return (myKeyState[key] & 0x80) != 0;
-}
+		hr = myMouseDevice->GetDeviceState(sizeof(DIMOUSESTATE), reinterpret_cast<void**>(&myInputData.myMouseState));
+		if (FAILED(hr))
+		{
+			ZeroMemory(&myInputData.myMouseState, sizeof(myInputData.myMouseState));
 
-bool CommonUtilities::InputWrapper::KeyDown(unsigned int aKey) const
-{
-	UCHAR key = static_cast<UCHAR>(aKey);
-	return ((myKeyState[key] & 0x80) != 0 && (myPreviousKeyState[key] & 0x80) == 0);
-}
+			myMouseDevice->Acquire();
+		}
 
-bool CommonUtilities::InputWrapper::KeyUp(unsigned int aKey) const
-{
-	UCHAR key = static_cast<UCHAR>(aKey);
-	return ((myKeyState[key] & 0x80) == 0 && (myPreviousKeyState[key] & 0x80) != 0);
-}
+		tagPOINT cursorPoint;
+		GetCursorPos(&cursorPoint);
+		ScreenToClient(myWindowHandler, &cursorPoint);
+		myInputData.myMousePosition.x = static_cast<float>(cursorPoint.x);
+		myInputData.myMousePosition.y = static_cast<float>(cursorPoint.y);
 
-bool CommonUtilities::InputWrapper::MouseIsPressed(int aButton) const
-{
-	return (myMouseState.rgbButtons[aButton] & 0x80) != 0;
-}
+		if (myIsRecordingDeltas == false)
+		{
+			myInputData.myMouseState.lX = 0;
+			myInputData.myMouseState.lY = 0;
+		}
 
-bool CommonUtilities::InputWrapper::MouseDown(int aButton) const
-{
-	return ((myMouseState.rgbButtons[aButton] & 0x80) != 0 && (myPreviousMouseState.rgbButtons[aButton] & 0x80) == 0);
-}
+		//myMousePos.x += myMouseState.lX;
+		//myMousePos.y += myMouseState.lY;
+		//myMousePos.z += myMouseState.lZ;
+	}
 
-bool CommonUtilities::InputWrapper::MouseUp(int aButton) const
-{
-	return ((myMouseState.rgbButtons[aButton] & 0x80) == 0 && (myPreviousMouseState.rgbButtons[aButton] & 0x80) != 0);
-}
+	void InputWrapper::PauseDeltaRecording()
+	{
+		myIsRecordingDeltas = false;
+	}
 
-float CommonUtilities::InputWrapper::GetMouseDX() const
-{
-	return static_cast<float>(myMouseState.lX);
-}
+	void InputWrapper::ResumeDeltaRecording()
+	{
+		myIsRecordingDeltas = true;
+	}
 
-float CommonUtilities::InputWrapper::GetMouseDY() const
-{
-	return static_cast<float>(myMouseState.lY);
-}
+	void InputWrapper::CapturePreviousState()
+	{
+		memcpy_s(myInputData.myPreviousKeyState, sizeof(myInputData.myPreviousKeyState)
+			, myInputData.myKeyState, sizeof(myInputData.myKeyState));
+		memcpy_s(&myInputData.myPreviousMouseState, sizeof(myInputData.myPreviousMouseState)
+			, &myInputData.myMouseState, sizeof(myInputData.myMouseState));
+	}
 
-float CommonUtilities::InputWrapper::GetMouseDZ() const
-{
-	return static_cast<float>(myMouseState.lZ);
+	void InputWrapper::CheckRecorderKeybinds()
+	{
+		if (KeyDown(DIK_F12) && myIsPlayingBack == true)
+		{
+			StopPlayback();
+		}
+		else
+		{
+			if (KeyUp(DIK_L) && myIsPlayingBack == false)
+			{
+				if (myIsRecording == false)
+				{
+					StartRecording();
+				}
+				else
+				{
+					StopRecording();
+				}
+			}
+			else if (KeyUp(DIK_P) && myIsRecording == false)
+			{
+				if (myIsPlayingBack == false)
+				{
+					StartPlayback();
+				}
+				else
+				{
+					StopPlayback();
+				}
+			}
+		}
+	}
+
+	void InputWrapper::StartRecording()
+	{
+		OutputDebugString("Started Recording\n");
+		myWriteFileHandle = CreateFile("inputRecording.ird", GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+		myIsRecording = true;
+		myHasRecording = false;
+
+		myStartedRecording = true;
+	}
+
+	void InputWrapper::StopRecording()
+	{
+		OutputDebugString("Stopped Recording\n");
+		CloseHandle(myWriteFileHandle);
+		myIsRecording = false;
+		myHasRecording = true;
+
+		myStoppedRecording = true;
+	}
+
+	void InputWrapper::StartPlayback()
+	{
+		if (myHasRecording == false)
+		{
+			return;
+		}
+
+		OutputDebugString("Started Playback\n");
+		myReadFileHandle = CreateFile("inputRecording.ird", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+		myIsPlayingBack = true;
+
+		myStartedPlayback = true;
+	}
+
+	void InputWrapper::StopPlayback()
+	{
+		OutputDebugString("Stopped Playback\n");
+		CloseHandle(myReadFileHandle);
+		myIsPlayingBack = false;
+	}
+
+	void InputWrapper::RecordInput()
+	{
+		DWORD bytesWritten;
+		WriteFile(myWriteFileHandle, &myInputData, sizeof(myInputData), &bytesWritten, 0);
+	}
+
+	void InputWrapper::PlaybackInput()
+	{
+		DWORD bytesWritten;
+		if (ReadFile(myReadFileHandle, &myInputData, sizeof(myInputData), &bytesWritten, 0))
+		{
+			if (bytesWritten == 0)
+			{
+				StopPlayback();
+				StartPlayback();
+			}
+		}
+	}
 }

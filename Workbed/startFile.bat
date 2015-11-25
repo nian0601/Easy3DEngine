@@ -1,0 +1,1 @@
+Application_Debug.exe -useInputRecording

@@ -37,10 +37,11 @@ Game::~Game()
 	delete myScene;
 }
 
-bool Game::Init(HWND& aHwnd)
+bool Game::Init(HWND& aHwnd, bool aUseInputRecording)
 {
 	CU::InputWrapper::Create(aHwnd, GetModuleHandle(NULL)
-		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+		, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND, DISCL_NONEXCLUSIVE | DISCL_FOREGROUND
+		, aUseInputRecording);
 
 	myCamera = new Easy3D::Camera();
 	/*myCamera->RotateX(90);

@@ -22,7 +22,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 
 	DL_Debug::Debug::Create();
 	CU::TimerManager::Create();
-
+	bool useInputRecording = false;
 	if (aNumberCommands > 2)
 	{
 		int commandCount = 0;
@@ -55,6 +55,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 			{
 				DL_Debug::Debug::GetInstance()->ActivateFilterLog(DL_Debug::eFilterLog::FUNCTION_TIMER);
 			}
+			else if (command == "-useInputRecording")
+			{
+				useInputRecording = true;
+			}
 		}
 
 		LocalFree(realCommands);
@@ -72,7 +76,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 
 	globalGame = new Game();
 	//OnResize();
-	if (globalGame->Init(hwnd) == false)
+	if (globalGame->Init(hwnd, useInputRecording) == false)
 	{
 		return 1;
 	}

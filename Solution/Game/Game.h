@@ -44,7 +44,7 @@ public:
 	Game();
 	~Game();
 
-	bool Init(HWND& aHwnd);
+	bool Init(HWND& aHwnd, bool aUseInputRecording);
 	bool Destroy();
 
 	bool Update();
