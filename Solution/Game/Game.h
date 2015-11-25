@@ -10,7 +10,6 @@ namespace Easy3D
 {
 	class Camera;
 	class DebugMenu;
-	class LineRenderer;
 	class ParticleEmitterInstance;
 	class Scene;
 	class Renderer;
@@ -24,19 +23,6 @@ namespace luabridge
 class CollisionManager;
 class Entity;
 class EntityManager;
-
-enum eGameSettings
-{
-	SCENE_ONE_RENDER,
-	SCENE_ONE_HDR,
-	SCENE_ONE_BLOOM,
-	SCENE_ONE_MOTION_BLUR,
-	SCENE_TWO_RENDER,
-	SCENE_TWO_HDR,
-	SCENE_TWO_BLOOM,
-	SCENE_TWO_MOTION_BLUR,
-	_COUNT
-};
 
 class Game
 {
@@ -58,24 +44,21 @@ private:
 	void operator=(Game& aApp) = delete;
 	void UpdateSubSystems();
 	void Render();
-
-	void ToggleSetting(eGameSettings aSetting);
+	void ToggleCamera();
 
 	Easy3D::Camera* myCamera;
 	Easy3D::DebugMenu* myDebugMenu;
 	Easy3D::Scene* myScene;
-	int mySceneEffect;
-
 	Easy3D::Renderer* myRenderer;
-	Easy3D::LineRenderer* myLineRenderer;
-	std::bitset<eGameSettings::_COUNT> mySettings;
 
 	float myDeltaTime;
 
 	int myFPS;
 	int myMemoryUsage;
 	float myCPUUsage;
+	bool myCameraEnabled;
 
 	EntityManager* myEntityManager;
+	Entity* myPlayer;
 	CollisionManager* myCollisionManager;
 };

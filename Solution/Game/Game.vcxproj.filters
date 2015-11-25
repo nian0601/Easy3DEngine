@@ -92,6 +92,9 @@
     <ClInclude Include="Player.h">
       <Filter>ComponentSystem</Filter>
     </ClInclude>
+    <ClInclude Include="ToggleInputNote.h">
+      <Filter>ComponentSystem\Messages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

@@ -18,6 +18,7 @@
 #include <Scene.h>
 #include <SystemMonitor.h>
 #include <TimerManager.h>
+#include "ToggleInputNote.h"
 #include <XMLReader.h>
 
 
@@ -25,6 +26,7 @@
 
 Game::Game()
 	: myDebugMenu(new Easy3D::DebugMenu())
+	, myPlayer(nullptr)
 {
 }
 
@@ -53,29 +55,14 @@ bool Game::Init(HWND& aHwnd, bool aUseInputRecording)
 	myDebugMenu->AddVariable("FPS", myFPS);
 	myDebugMenu->AddVariable("Memory (MB)", myMemoryUsage);
 	myDebugMenu->AddVariable("CPU", myCPUUsage);
-	myDebugMenu->EndGroup();
-	
-	myDebugMenu->StartGroup("Rendering");
-	
-	myDebugMenu->StartGroup("Scene One");
-	myDebugMenu->AddVariable("Toggle Rendering", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_RENDER));
-	myDebugMenu->AddVariable("Toggle HDR", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_HDR));
-	myDebugMenu->AddVariable("Toggle Bloom", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_BLOOM));
-	myDebugMenu->AddVariable("Toggle Motion Blur", std::bind(&Game::ToggleSetting, this, eGameSettings::SCENE_ONE_MOTION_BLUR));
-	myDebugMenu->AddVariable("Effect Value", mySceneEffect);
+	myDebugMenu->AddVariable("ToggleCamera", std::bind(&Game::ToggleCamera, this));
 	myDebugMenu->EndGroup();
 
-	myDebugMenu->EndGroup();
-	
-	myDebugMenu->EndGroup();
 
 	myRenderer = new Easy3D::Renderer();
 	myCollisionManager = new CollisionManager();
 	myScene = new Easy3D::Scene();
 	myScene->SetCamera(myCamera);
-	mySceneEffect = Easy3D::ePostProcess::HDR;
-
-	myLineRenderer = new Easy3D::LineRenderer();
 
 	myEntityManager = new EntityManager(myScene, myCollisionManager);
 
@@ -106,7 +93,9 @@ bool Game::Init(HWND& aHwnd, bool aUseInputRecording)
 		Entity* newEntity = nullptr;
 		if (entityType == "player")
 		{
+			DL_ASSERT_EXP(myPlayer == nullptr, "Tried to add several Players");
 			newEntity = myEntityManager->CreateEntity(file, eEntityType::PLAYER);
+			myPlayer = newEntity;
 		}
 		else if (entityType == "material")
 		{
@@ -121,10 +110,6 @@ bool Game::Init(HWND& aHwnd, bool aUseInputRecording)
 
 		entityElem = reader.FindNextElement(entityElem, "entity");
 	}
-
-	
-	mySettings.set(eGameSettings::SCENE_ONE_RENDER, true);
-
 
 	Easy3D::DirectionalLight* dirLight = new Easy3D::DirectionalLight();
 	dirLight->SetColor({ 1.f, 0.5f, 0.5f, 1.f });
@@ -150,15 +135,11 @@ bool Game::Update()
 	}
 
 	myCollisionManager->CleanUp();
-
 	
 	myEntityManager->Update(myDeltaTime);
 
-
 	myCollisionManager->CheckCollisions();
 
-	myLineRenderer->AddLine({ -10.f, 0.f, 10.f }, { 50.f, 0.f, 10.f }, 200);
-	myLineRenderer->AddLine({ -10.f, 10.f, 0.f }, { 50.f, 0.f, 100.f }, 200, { 1.f, 0.f, 0.f, 1.f });
 
 	Render();
 	return true;
@@ -177,22 +158,25 @@ void Game::UpdateSubSystems()
 	myCPUUsage = Easy3D::SystemMonitor::GetCPUUsage();
 
 
-	/*if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+	if (myCameraEnabled == true)
 	{
-		myCamera->MoveForward(100.f * myDeltaTime);
+		if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
+		{
+			myCamera->MoveForward(100.f * myDeltaTime);
+		}
+		if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
+		{
+			myCamera->MoveForward(-100.f * myDeltaTime);
+		}
+		if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
+		{
+			myCamera->MoveRight(-100.f * myDeltaTime);
+		}
+		if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
+		{
+			myCamera->MoveRight(100.f * myDeltaTime);
+		}
 	}
-	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
-	{
-		myCamera->MoveForward(-100.f * myDeltaTime);
-	}
-	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
-	{
-		myCamera->MoveRight(-100.f * myDeltaTime);
-	}
-	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
-	{
-		myCamera->MoveRight(100.f * myDeltaTime);
-	}*/
 
 
 	if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_UP))
@@ -219,40 +203,15 @@ void Game::Render()
 	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
 	myRenderer->EndFontRendering();
 	
-	if (mySettings.at(eGameSettings::SCENE_ONE_RENDER))
-	{
-		myRenderer->ProcessScene(myScene, mySceneEffect);
-	}
-	
-	//if (mySettings.at(eGameSettings::SCENE_TWO_RENDER))
-	//{
-	//	myRenderer->ProcessScene(mySecondScene, mySecondSceneEffect);
-	//}
+	myRenderer->ProcessScene(myScene, Easy3D::HDR);
 	
 	myRenderer->FinalRender();
-
-	myLineRenderer->Render(*myCamera);
-
-	//myScene->Render();
 }
 
-void Game::ToggleSetting(eGameSettings aSetting)
+void Game::ToggleCamera()
 {
-	switch (aSetting)
-	{
-	case SCENE_ONE_HDR:
-		mySceneEffect ^= Easy3D::ePostProcess::HDR;
-		break;
-	case SCENE_ONE_BLOOM:
-		mySceneEffect ^= Easy3D::ePostProcess::BLOOM;
-		break;
-	case SCENE_ONE_MOTION_BLUR:
-		mySceneEffect ^= Easy3D::ePostProcess::MOTION_BLUR;
-		break;
-	default:
-		mySettings.flip(aSetting);
-		break;
-	}
+	myCameraEnabled = !myCameraEnabled;
+	myPlayer->SendNote(ToggleInputNote(!myCameraEnabled));
 }
 
 void Game::Pause()

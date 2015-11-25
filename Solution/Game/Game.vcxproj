@@ -101,6 +101,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="ScriptComponent.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="ToggleInputNote.h" />
     <ClInclude Include="UpdateVelocityNote.h" />
   </ItemGroup>
   <ItemGroup>

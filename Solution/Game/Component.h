@@ -13,6 +13,7 @@ class Entity;
 
 struct ChangeColorNote;
 struct UpdateVelocityNote;
+struct ToggleInputNote;
 
 class Component
 {
@@ -27,6 +28,7 @@ public:
 
 	virtual void ReceiveNote(const ChangeColorNote& aNote);
 	virtual void ReceiveNote(const UpdateVelocityNote& aNote);
+	virtual void ReceiveNote(const ToggleInputNote& aNote);
 
 	eComponent GetType() const;
 

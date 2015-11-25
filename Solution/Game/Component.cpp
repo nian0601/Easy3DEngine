@@ -24,3 +24,7 @@ void Component::ReceiveNote(const ChangeColorNote&)
 void Component::ReceiveNote(const UpdateVelocityNote&)
 {
 }
+
+void Component::ReceiveNote(const ToggleInputNote&)
+{
+}
