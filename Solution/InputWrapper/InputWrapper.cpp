@@ -153,7 +153,7 @@ namespace CommonUtilities
 		}
 		else
 		{
-			if (KeyUp(DIK_L) && myIsPlayingBack == false)
+			if (KeyUp(DIK_F11) && myIsPlayingBack == false)
 			{
 				if (myIsRecording == false)
 				{
@@ -164,7 +164,7 @@ namespace CommonUtilities
 					StopRecording();
 				}
 			}
-			else if (KeyUp(DIK_P) && myIsRecording == false)
+			else if (KeyUp(DIK_F9) && myIsRecording == false)
 			{
 				if (myIsPlayingBack == false)
 				{

@@ -225,6 +225,24 @@ namespace Easy3D
 		}
 	}
 
+	void DebugMenu::AddVariable(const std::string& aString, const std::string& aSecondString)
+	{
+		DebugVariable* var = new DebugVariable();
+		var->myName = aString;
+		var->myType = eDebugVariableType::STRING;
+		var->myString = aSecondString.c_str();
+
+		if (myGroups->myGroup == nullptr)
+		{
+			myGroups->myGroup = var;
+			myCurrentGroup = myGroups->myGroup;
+		}
+		else
+		{
+			LinkVariable(myCurrentGroup, var);
+		}
+	}
+
 	void DebugMenu::RenderGroup(DebugVariable* aGroup, const CU::Vector2<float>& aStartPosition
 		, const CU::InputWrapper& aInput)
 	{
@@ -253,6 +271,9 @@ namespace Easy3D
 				break;
 			case eDebugVariableType::FUNCTION:
 				ss << var->myName << "()" << std::endl;
+				break;
+			case eDebugVariableType::STRING:
+				ss << var->myString << std::endl;
 				break;
 			default:
 				DL_ASSERT("Tried to render a debugvariable with invalid type.");

@@ -52,6 +52,12 @@ namespace Easy3D
 	{
 		VTUNE_EVENT_BEGIN(VTUNE::RENDER);
 
+		for (int i = 0; i < myDebugTexts.Size(); ++i)
+		{
+			myDebugText->Render(myDebugTexts[i].myText.c_str(), myDebugTexts[i].myPosition);
+		}
+		myDebugTexts.RemoveAll();
+
 		myDirectX->Present(0, 0);
 		float clearColor[4] = { myClearColor.myR, myClearColor.myG, myClearColor.myB, myClearColor.myA };
 		myDirectX->Clear(clearColor);
@@ -176,7 +182,10 @@ namespace Easy3D
 
 	void Engine::PrintDebugText(const std::string& aText, const CU::Vector2<float>& aPosition, float aScale)
 	{
-		myDebugText->Render(aText.c_str(), aPosition.x, aPosition.y, aScale);
+		if (aText != "")
+		{
+			myDebugTexts.Add({ aText, aPosition });
+		}
 	}
 
 
@@ -227,6 +236,8 @@ namespace Easy3D
 
 		myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(static_cast<float>(myWindowSize.x)
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);
+
+		myDebugTexts.Init(64);
 
 		ModelLoader::GetInstance()->Start();
 

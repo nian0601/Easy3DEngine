@@ -1,5 +1,6 @@
 #pragma once
 
+#include <GrowingArray.h>
 #include "D3DPointers.h"
 #include "Enums.h"
 #include <Matrix.h>
@@ -103,6 +104,17 @@ namespace Easy3D
 		CU::Vector4<float> myClearColor;
 		CU::Vector2<int> myWindowSize;
 		CU::Matrix44<float> myOrthogonalMatrix;
+
+		struct DebugText
+		{
+			DebugText(){}
+			DebugText(const std::string& aText, const CU::Vector2<float>& aPosition)
+				: myText(aText), myPosition(aPosition) {}
+
+			std::string myText;
+			CU::Vector2<float> myPosition;
+		};
+		CU::GrowingArray<DebugText> myDebugTexts;
 
 		static Engine* myInstance;
 	};

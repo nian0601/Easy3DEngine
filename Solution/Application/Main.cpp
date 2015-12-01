@@ -31,6 +31,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPTSTR, int aNumberCommands)
 		for (int i = 1; i < commandCount; ++i)
 		{
 			std::string command = CW2A(realCommands[i]);
+			DL_PRINT(command.c_str());
 			if (command == "-useEngineLog")
 			{
 				DL_Debug::Debug::GetInstance()->ActivateFilterLog(DL_Debug::eFilterLog::ENGINE);

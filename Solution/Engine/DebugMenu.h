@@ -18,6 +18,7 @@ namespace Easy3D
 		BOOL,
 		GROUP,
 		FUNCTION,
+		STRING
 	};
 
 	struct DebugGroup;
@@ -39,6 +40,7 @@ namespace Easy3D
 			float* myFloat;
 			bool* myBool;
 			DebugGroup* myGroup;
+			const char* myString;
 			
 		};
 
@@ -79,6 +81,7 @@ namespace Easy3D
 		void AddVariable(const std::string& aString, CU::Vector3<float>& aVector, bool aUseRGB = false);
 		void AddVariable(const std::string& aString, CU::Vector4<float>& aVector, bool aUseRGB = false);
 		void AddVariable(const std::string& aString, std::function<void()> aFunction);
+		void AddVariable(const std::string& aString, const std::string& aSecondString);
 
 	private:
 		void RenderGroup(DebugVariable* aGroup, const CU::Vector2<float>& aStartPosition
