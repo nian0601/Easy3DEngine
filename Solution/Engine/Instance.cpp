@@ -8,10 +8,9 @@
 #include "ModelProxy.h"
 
 
-Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation, const bool& aIsActive)
+Easy3D::Instance::Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation)
 	: myProxy(aModel)
 	, myOrientation(aOrientation)
-	, myIsActive(aIsActive)
 	, myScale({1,1,1})
 	, myColor({ 1.f, 1.f, 1.f, 1.f })
 {
@@ -24,7 +23,7 @@ Easy3D::Instance::~Instance()
 
 void Easy3D::Instance::Render(Camera& aCamera)
 {
-	if (myProxy.IsLoaded() && myIsActive == true)
+	if (myProxy.IsLoaded())
 	{
 		myProxy.GetEffect()->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
 		myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
@@ -37,7 +36,7 @@ void Easy3D::Instance::Render(Camera& aCamera)
 
 void Easy3D::Instance::Render(const CU::Matrix44<float>& aParentMatrix, Camera& aCamera)
 {
-	if (myProxy.IsLoaded() && myIsActive == true)
+	if (myProxy.IsLoaded())
 	{
 		myProxy.GetEffect()->SetViewMatrix(CU::InverseSimple(aCamera.GetOrientation()));
 		myProxy.GetEffect()->SetProjectionMatrix(aCamera.GetProjection());
@@ -91,4 +90,22 @@ void Easy3D::Instance::UpdateSpotLights(
 	{
 		myProxy.GetEffect()->UpdateSpotLights(someSpotLightData);
 	}
+}
+
+bool Easy3D::Instance::IsLoaded() const
+{
+	return myProxy.IsLoaded();
+}
+
+void Easy3D::Instance::SetVideoResource(ID3D11ShaderResourceView* aResource)
+{
+	if (myProxy.IsLoaded())
+	{
+		myProxy.myModel->SetAlbedoResource(aResource);
+	}
+}
+
+void Easy3D::Instance::OnVideoStop()
+{
+
 }

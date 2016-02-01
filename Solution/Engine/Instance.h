@@ -4,6 +4,7 @@
 #include "LightStructs.h"
 #include <Matrix.h>
 #include <StaticArray.h>
+#include "VideoReceiver.h"
 
 namespace Easy3D
 {
@@ -11,10 +12,10 @@ namespace Easy3D
 	class Light;
 	class ModelProxy;
 
-	class Instance
+	class Instance : public VideoReceiver
 	{
 	public:
-		Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation, const bool& aIsActive);
+		Instance(ModelProxy& aModel, const CU::Matrix44<float>& aOrientation);
 		~Instance();
 
 		void Render(Camera& aCamera);
@@ -30,14 +31,18 @@ namespace Easy3D
 		void UpdatePointLights(const CU::StaticArray<PointLightData, NUMBER_OF_POINT_LIGHTS>& somePointLightData);
 		void UpdateSpotLights(const CU::StaticArray<SpotLightData, NUMBER_OF_SPOT_LIGHTS>& someSpotLightData);
 
+		bool IsLoaded() const;
+
+		void SetVideoResource(ID3D11ShaderResourceView* aResource) override;
+		void OnVideoStop() override;
+
 	private:
 		void operator=(Instance&) = delete;
 
-		ModelProxy& myProxy;
 		const CU::Matrix44<float>& myOrientation;
 		CU::Vector3<float> myScale;
 		CU::Vector3<float> myPosition;
 		CU::Vector4<float> myColor;
-		const bool& myIsActive;
+		ModelProxy& myProxy;
 	};
 }

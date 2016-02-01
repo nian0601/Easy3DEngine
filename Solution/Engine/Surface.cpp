@@ -9,9 +9,10 @@
 Easy3D::Surface::Surface()
 {
 	myTextures.Init(2);
-	myShaderViews.Init(2);
+	myShaderVariables.Init(2);
 	myFilePaths.Init(2);
 	myShaderResourceNames.Init(2);
+	myShaderResoures.Init(2);
 }
 
 bool Easy3D::Surface::SetTexture(const std::string& aResourceName, const std::string& aFileName, bool aUseSRGB)
@@ -25,9 +26,10 @@ bool Easy3D::Surface::SetTexture(const std::string& aResourceName, const std::st
 		shaderVar = myEffect->GetEffect()->GetVariableByName(aResourceName.c_str())->AsShaderResource();
 	}
 	myTextures.Add(tex);
-	myShaderViews.Add(shaderVar);
+	myShaderVariables.Add(shaderVar);
 	myFilePaths.Add(aFileName);
 	myShaderResourceNames.Add(aResourceName);
+	myShaderResoures.Add(tex->GetShaderView());
 
 	return true;
 }
@@ -35,7 +37,7 @@ bool Easy3D::Surface::SetTexture(const std::string& aResourceName, const std::st
 void Easy3D::Surface::ReloadSurface()
 {
 	myTextures.RemoveAll();
-	myShaderViews.RemoveAll();
+	myShaderVariables.RemoveAll();
 
 	for (int i = 0; i < myFilePaths.Size(); ++i)
 	{
@@ -54,8 +56,14 @@ void Easy3D::Surface::ReloadSurface()
 		}
 
 		myTextures.Add(tex);
-		myShaderViews.Add(shaderVar);
+		myShaderVariables.Add(shaderVar);
+		myShaderResoures.Add(tex->GetShaderView());
 	}
+}
+
+void Easy3D::Surface::SetAlbedoResource(ID3D11ShaderResourceView* aResource)
+{
+	myShaderResoures[0] = aResource;
 }
 
 bool Easy3D::Surface::SetTexture(const std::string& aResourceName, Texture* aTexture)
@@ -74,7 +82,8 @@ bool Easy3D::Surface::SetTexture(const std::string& aResourceName, Texture* aTex
 	}
 
 	myTextures.Add(aTexture);
-	myShaderViews.Add(shaderVar);
+	myShaderVariables.Add(shaderVar);
+	myShaderResoures.Add(aTexture->GetShaderView());
 
 	return true;
 }
@@ -83,8 +92,8 @@ void Easy3D::Surface::Activate()
 {
 	Engine::GetInstance()->GetContex()->IASetPrimitiveTopology(myPrimitiveTopologyType);
 
-	for (int i = 0; i < myShaderViews.Size(); ++i)
+	for (int i = 0; i < myShaderVariables.Size(); ++i)
 	{
-		myShaderViews[i]->SetResource(myTextures[i]->GetShaderView());
+		myShaderVariables[i]->SetResource(myShaderResoures[i]);
 	}
 }

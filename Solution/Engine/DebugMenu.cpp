@@ -11,7 +11,7 @@ namespace Easy3D
 	DebugMenu::DebugMenu()
 	{
 		myText = new Text();
-		myText->Init("Data/resources/font/font.dds");
+		myText->Init("Data/Resource/Font/font.dds");
 
 		myCurrentGroup = nullptr;
 		myGroups = new DebugGroupStructure();

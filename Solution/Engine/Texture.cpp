@@ -57,12 +57,14 @@ bool Easy3D::Texture::LoadTexture(const std::string& aFilePath)
 	if (FAILED(hr) != S_OK)
 	{
 		RESOURCE_LOG("Failed to load: %s, trying to use debug-texture.", aFilePath.c_str());
+
+		myFileName = "Data/Resource/Texture/uv_map.png";
 		hr = D3DX11CreateShaderResourceViewFromFile(Engine::GetInstance()->GetDevice()
-			, "Data/resources/texture/uv_map.png", NULL, NULL, &view, NULL);
-		myFileName = "Data/resources/texture/uv_map.png";
+			, myFileName.c_str(), NULL, NULL, &view, NULL);
+		
 		if (FAILED(hr) != S_OK)
 		{
-			DL_ASSERT("[Texture]: Failed to load debug-texture: Data/resources/texture/uv_map.png");
+			DL_ASSERT("[Texture]: Failed to load debug-texture: Data/Resource/Texture/uv_map.png");
 		}
 	}
 

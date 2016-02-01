@@ -13,6 +13,8 @@ namespace Easy3D
 	class ParticleEmitterInstance;
 	class Scene;
 	class Renderer;
+	class Instance;
+	class Video;
 }
 
 namespace luabridge
@@ -46,6 +48,13 @@ private:
 	Easy3D::DebugMenu* myDebugMenu;
 	Easy3D::Scene* myScene;
 	Easy3D::Renderer* myRenderer;
+	Easy3D::Instance* myMonstersInstance;
+	CU::Matrix44<float> myMonstersInstanceOrientation;
+
+	Easy3D::Instance* myMinionsInstance;
+	CU::Matrix44<float> myMinionsInstanceOrientation;
+
+	Easy3D::Video* myVideo;
 
 	float myDeltaTime;
 

@@ -19,6 +19,8 @@ namespace Easy3D
 		BaseModel();
 		virtual ~BaseModel();
 
+		virtual void SetAlbedoResource(ID3D11ShaderResourceView* aResource);
+
 	protected:
 		void Render();
 

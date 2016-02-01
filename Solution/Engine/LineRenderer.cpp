@@ -11,7 +11,7 @@ namespace Easy3D
 	LineRenderer::LineRenderer()
 		: myVertexBuffer(nullptr)
 	{
-		myEffect = EffectContainer::GetInstance()->Get3DEffect("Data/effect/3D/LineEffect.fx");
+		myEffect = EffectContainer::GetInstance()->Get3DEffect("Data/Shader/3D/LineEffect.fx");
 		myPoints.Init(MAX_NR_OF_LINES * 2);
 		AddLine({ 0.f, 0.f, 0.f }, { 0.f, 0.f, 0.f });
 		CreateVertexBuffer();

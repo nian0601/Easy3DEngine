@@ -232,7 +232,7 @@ namespace Easy3D
 		UpdateWindow(aHwnd);
 
 		myDebugText = new Text();
-		myDebugText->Init("Data/resources/font/font.dds");
+		myDebugText->Init("Data/Resource/Font/font.dds");
 
 		myOrthogonalMatrix = CU::Matrix44<float>::CreateOrthogonalMatrixLH(static_cast<float>(myWindowSize.x)
 			, static_cast<float>(myWindowSize.y), 0.1f, 1000.f);

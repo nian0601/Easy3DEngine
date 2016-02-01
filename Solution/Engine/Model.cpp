@@ -63,7 +63,7 @@ namespace Easy3D
 
 	void Model::InitCube(const float aWidth, const float aHeight, const float aDepth, CU::Vector4f aColour)
 	{
-		myEffect = EffectContainer::GetInstance()->Get3DEffect("Data/effect/3D/CubeColored.fx");
+		myEffect = EffectContainer::GetInstance()->Get3DEffect("Data/Shader/3D/CubeColored.fx");
 
 		if (myEffect == nullptr)
 		{
@@ -196,7 +196,7 @@ namespace Easy3D
 		surf.SetVertexCount(vertices.Size());
 		surf.SetIndexStart(0);
 		surf.SetIndexCount(indices.Size());
-		surf.SetTexture("DiffuseTexture", "Data/resources/texture/seafloor.dds", true);
+		surf.SetTexture("DiffuseTexture", "Data/Resource/Texture/seafloor.dds", true);
 
 		mySurfaces.Add(new Surface(surf));
 
@@ -244,6 +244,19 @@ namespace Easy3D
 		for (int i = 0; i < myChilds.Size(); ++i)
 		{
 			myChilds[i]->Render(myChildTransforms[i] * aOrientation);
+		}
+	}
+
+	void Model::SetAlbedoResource(ID3D11ShaderResourceView* aResource)
+	{
+		if (myIsNULLObject == false)
+		{
+			mySurfaces[0]->SetAlbedoResource(aResource);
+		}
+
+		for (int i = 0; i < myChilds.Size(); ++i)
+		{
+			myChilds[i]->SetAlbedoResource(aResource);
 		}
 	}
 }

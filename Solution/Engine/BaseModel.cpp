@@ -30,6 +30,11 @@ namespace Easy3D
 		mySurfaces.DeleteAll();
 	}
 
+	void BaseModel::SetAlbedoResource(ID3D11ShaderResourceView* aResource)
+	{
+		mySurfaces[0]->SetAlbedoResource(aResource);
+	}
+
 	void BaseModel::Render()
 	{
 		ID3D11Buffer* buf = myVertexBuffer->myVertexBuffer.Get();

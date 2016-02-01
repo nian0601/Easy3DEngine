@@ -104,6 +104,18 @@
     <ClCompile Include="LineRenderer.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Video.cpp">
+      <Filter>Rendering\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="WMVVideoInstance.cpp">
+      <Filter>Rendering\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoTransmitter.cpp">
+      <Filter>Rendering\Video</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoReceiver.cpp">
+      <Filter>Rendering\Video</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
@@ -260,6 +272,18 @@
     <ClInclude Include="LineRenderer.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Video.h">
+      <Filter>Rendering\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="WMVVideoInstance.h">
+      <Filter>Rendering\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoTransmitter.h">
+      <Filter>Rendering\Video</Filter>
+    </ClInclude>
+    <ClInclude Include="VideoReceiver.h">
+      <Filter>Rendering\Video</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Precompile">
@@ -300,6 +324,9 @@
     </Filter>
     <Filter Include="Threading">
       <UniqueIdentifier>{3c8e15f4-4ab8-4fb8-941e-29319e7f21a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Video">
+      <UniqueIdentifier>{3c8a797c-490a-4138-a3d5-eae6ef59b151}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

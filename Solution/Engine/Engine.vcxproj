@@ -146,6 +146,10 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureContainer.cpp" />
     <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="Video.cpp" />
+    <ClCompile Include="VideoReceiver.cpp" />
+    <ClCompile Include="VideoTransmitter.cpp" />
+    <ClCompile Include="WMVVideoInstance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseModel.h" />
@@ -203,7 +207,11 @@
     <ClInclude Include="VertexDataWrapper.h" />
     <ClInclude Include="VertexIndexWrapper.h" />
     <ClInclude Include="Vertices.h" />
+    <ClInclude Include="Video.h" />
+    <ClInclude Include="VideoReceiver.h" />
+    <ClInclude Include="VideoTransmitter.h" />
     <ClInclude Include="VTuneApi.h" />
+    <ClInclude Include="WMVVideoInstance.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonUtilities\CommonUtilities.vcxproj">

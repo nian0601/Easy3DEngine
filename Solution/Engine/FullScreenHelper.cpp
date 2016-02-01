@@ -202,7 +202,7 @@ namespace Easy3D
 	void FullScreenHelper::CreateCombineData()
 	{
 		myCombineData.myEffect = EffectContainer::GetInstance()->GetBaseEffect(
-			"Data/effect/SharedUtilities/Combine.fx");
+			"Data/Shader/SharedUtilities/Combine.fx");
 
 		myCombineData.mySourceA 
 			= myCombineData.myEffect->GetEffect()->GetVariableByName("SourceA")->AsShaderResource();
@@ -213,7 +213,7 @@ namespace Easy3D
 	void FullScreenHelper::CreateRenderToTextureData()
 	{
 		myRenderToTextureData.myEffect = EffectContainer::GetInstance()->GetBaseEffect(
-			"Data/effect/SharedUtilities/RenderToTexture.fx");
+			"Data/Shader/SharedUtilities/RenderToTexture.fx");
 
 		myRenderToTextureData.mySource
 			= myRenderToTextureData.myEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
@@ -222,7 +222,7 @@ namespace Easy3D
 	void FullScreenHelper::CreateDownSampleData()
 	{
 		myDownSampleData.myEffect 
-			= EffectContainer::GetInstance()->GetBaseEffect("Data/effect/SharedUtilities/DownSample.fx");
+			= EffectContainer::GetInstance()->GetBaseEffect("Data/Shader/SharedUtilities/DownSample.fx");
 		myDownSampleData.myTexture 
 			= myDownSampleData.myEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
 
@@ -248,7 +248,7 @@ namespace Easy3D
 	void FullScreenHelper::CreateHDRData()
 	{
 		myHDRData.myEffect
-			= EffectContainer::GetInstance()->GetBaseEffect("Data/effect/SharedUtilities/HDR.fx");
+			= EffectContainer::GetInstance()->GetBaseEffect("Data/Shader/SharedUtilities/HDR.fx");
 
 		myHDRData.myOriginalTexture 
 			= myHDRData.myEffect->GetEffect()->GetVariableByName("Original")->AsShaderResource();
@@ -271,7 +271,7 @@ namespace Easy3D
 			, DXGI_FORMAT_R8G8B8A8_UNORM);
 
 		myBloomData.myEffect
-			= EffectContainer::GetInstance()->GetBaseEffect("Data/effect/SharedUtilities/Bloom.fx");
+			= EffectContainer::GetInstance()->GetBaseEffect("Data/Shader/SharedUtilities/Bloom.fx");
 		myBloomData.myTexture
 			= myBloomData.myEffect->GetEffect()->GetVariableByName("DiffuseTexture")->AsShaderResource();
 		myBloomData.myTexelWidthVariable

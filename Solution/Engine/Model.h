@@ -29,6 +29,7 @@ namespace Easy3D
 		void SetEffect(Effect3D* aEffect);
 
 		void Render(const CU::Matrix44<float>& aOrientation);
+		virtual void SetAlbedoResource(ID3D11ShaderResourceView* aResource) override;
 
 	private:
 		bool myIsNULLObject;

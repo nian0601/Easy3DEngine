@@ -1,32 +1,23 @@
 #include "stdafx.h"
 
 #include <Camera.h>
-#include "CollisionManager.h"
 #include <DebugMenu.h>
 #include <DirectionalLight.h>
-#include "Entity.h"
-#include "EntityManager.h"
-#include <EmitterContainer.h>
 #include <Engine.h>
-#include <FileWatcher.h>
 #include "Game.h"
-#include "GraphicsComponent.h"
 #include <InputWrapper.h>
-#include <LineRenderer.h>
-#include <ParticleEmitterInstance.h>
 #include <Renderer.h>
 #include <Scene.h>
 #include <SystemMonitor.h>
 #include <TimerManager.h>
-#include "ToggleInputNote.h"
-#include <XMLReader.h>
 
+#include <Instance.h>
+#include <ModelProxy.h>
+#include <ModelLoader.h>
+#include <Video.h>
 
-#include <D3DPointers.h>
-
-#include <numeric>
-#include <algorithm>
-#include <fstream>
+#include <Model.h>
+#include <VideoTransmitter.h>
 
 Game::Game()
 	: myDebugMenu(new Easy3D::DebugMenu())
@@ -48,8 +39,6 @@ bool Game::Init(HWND& aHwnd, bool aUseInputRecording)
 		, aUseInputRecording);
 
 	myCamera = new Easy3D::Camera();
-	/*myCamera->RotateX(90);
-	myCamera->SetPosition({ 0.f, 30.f, 0.f });*/
 
 	myCamera->SetPosition({ 0, 2, -2 });
 
@@ -71,6 +60,26 @@ bool Game::Init(HWND& aHwnd, bool aUseInputRecording)
 	dirLight->SetDir({ 0.f, -1.f, -1.f });
 	myScene->AddLight(dirLight);
 
+
+	myMonstersInstance = new Easy3D::Instance(*Easy3D::ModelLoader::GetInstance()->RequestModel("Data/Resource/Model/companion/companion.fbx", "Data/Shader/3D/BasicEffect.fx"), myMonstersInstanceOrientation);
+	myScene->AddInstance(myMonstersInstance);
+	myMonstersInstanceOrientation *= CU::Matrix44<float>::CreateRotateAroundZ(3.14f);
+	myMonstersInstanceOrientation.SetPos({ 1.5f, 1.f, 2.f, 1.f });
+
+	myMinionsInstance = new Easy3D::Instance(*Easy3D::ModelLoader::GetInstance()->RequestModel("Data/Resource/Model/companion2/companion.fbx", "Data/Shader/3D/BasicEffect.fx"), myMinionsInstanceOrientation);
+	myScene->AddInstance(myMinionsInstance);
+	myMinionsInstanceOrientation *= CU::Matrix44<float>::CreateRotateAroundZ(3.14f);
+	myMinionsInstanceOrientation.SetPos({ -1.5f, 1.f, 2.f, 1.f });
+
+	Easy3D::VideoTransmitter::GetInstance()->AddReceiver(L"Normal", myMonstersInstance);
+	Easy3D::VideoTransmitter::GetInstance()->AddReceiver(L"Normal2", myMinionsInstance);
+
+	Easy3D::VideoTransmitter::GetInstance()->AddVideo(L"Monsters Ink", L"Data/Resource/Video/test_video.wmv");
+	Easy3D::VideoTransmitter::GetInstance()->AddVideo(L"Minions", L"Data/Resource/Video/minions.wmv");
+	Easy3D::VideoTransmitter::GetInstance()->AddVideo(L"Emergency", L"Data/Resource/Video/emergency.wmv");
+	Easy3D::VideoTransmitter::GetInstance()->StartFeed(L"Monsters Ink", L"Normal");
+	Easy3D::VideoTransmitter::GetInstance()->StartFeed(L"Minions", L"Normal2");
+
 	GAME_LOG("Init Successful");
 	return true;
 }
@@ -89,6 +98,17 @@ bool Game::Update()
 		return false;
 	}
 
+	Easy3D::VideoTransmitter* transmitter = Easy3D::VideoTransmitter::GetInstance();
+	if (CU::InputWrapper::GetInstance()->KeyDown(DIK_1))
+	{
+		transmitter->StartEmergencyVideo(L"Emergency");
+	}
+	else if (CU::InputWrapper::GetInstance()->KeyDown(DIK_2))
+	{
+		transmitter->StopEmergencyVideo();
+	}
+
+	transmitter->Update();
 	Render();
 	return true;
 }
@@ -96,7 +116,6 @@ bool Game::Update()
 
 void Game::UpdateSubSystems()
 {
-	Easy3D::FileWatcher::GetInstance()->CheckFiles();
 	CU::InputWrapper::GetInstance()->Update();
 	CU::TimerManager::GetInstance()->Update();
 	myDeltaTime = CU::TimerManager::GetInstance()->GetMasterTimer().GetTime().GetFrameTime();
@@ -110,19 +129,19 @@ void Game::UpdateSubSystems()
 	{
 		if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_W))
 		{
-			myCamera->MoveForward(100.f * myDeltaTime);
+			myCamera->MoveForward(10.f * myDeltaTime);
 		}
 		if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_S))
 		{
-			myCamera->MoveForward(-100.f * myDeltaTime);
+			myCamera->MoveForward(-10.f * myDeltaTime);
 		}
 		if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_A))
 		{
-			myCamera->MoveRight(-100.f * myDeltaTime);
+			myCamera->MoveRight(-10.f * myDeltaTime);
 		}
 		if (CU::InputWrapper::GetInstance()->KeyIsPressed(DIK_D))
 		{
-			myCamera->MoveRight(100.f * myDeltaTime);
+			myCamera->MoveRight(10.f * myDeltaTime);
 		}
 	}
 
@@ -148,8 +167,7 @@ void Game::UpdateSubSystems()
 void Game::Render()
 {
 	myRenderer->StartFontRendering();
-	//myDebugMenu->Render(*CU::InputWrapper::GetInstance());
-
+	myDebugMenu->Render(*CU::InputWrapper::GetInstance());
 	myRenderer->EndFontRendering();
 	
 	myRenderer->ProcessScene(myScene, Easy3D::HDR);

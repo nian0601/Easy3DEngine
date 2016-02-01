@@ -16,7 +16,7 @@ namespace Easy3D
 		: mySize(aSize)
 		, myHotspot(aHotSpot)
 	{
-		myEffect = EffectContainer::GetInstance()->Get2DEffect("Data/effect/2D/SpriteEffect.fx");
+		myEffect = EffectContainer::GetInstance()->Get2DEffect("Data/Shader/2D/SpriteEffect.fx");
 		myEffect->AddListener(this);
 
 		D3D11_INPUT_ELEMENT_DESC vertexDesc[] =

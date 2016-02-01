@@ -18,8 +18,8 @@ namespace Easy3D
 		void SetEffect(Effect3D* aEffect);
 
 		bool IsLoaded() const;
-	private:
 		Model* myModel;
+	private:
 	};
 
 	inline bool ModelProxy::IsLoaded() const

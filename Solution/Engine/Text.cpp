@@ -21,7 +21,7 @@ namespace Easy3D
 
 	void Text::Init(const std::string& aFontPath)
 	{
-		myEffect = EffectContainer::GetInstance()->Get2DEffect("Data/effect/2D/FontEffect.fx");
+		myEffect = EffectContainer::GetInstance()->Get2DEffect("Data/Shader/2D/FontEffect.fx");
 		myFont = FontContainer::GetInstance()->GetFont(aFontPath);
 		myCharSize = myFont->GetCharSize();
 		myCharSpacing = 17.f;

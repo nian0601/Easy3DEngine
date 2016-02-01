@@ -35,9 +35,12 @@ namespace Easy3D
 		void Activate();
 		void ReloadSurface();
 
+		void SetAlbedoResource(ID3D11ShaderResourceView* aResource);
+
 	private:
 		CU::GrowingArray<Texture*> myTextures;
-		CU::GrowingArray<ID3DX11EffectShaderResourceVariable*> myShaderViews;
+		CU::GrowingArray<ID3DX11EffectShaderResourceVariable*> myShaderVariables;
+		CU::GrowingArray<ID3D11ShaderResourceView*> myShaderResoures;
 		CU::GrowingArray<std::string> myShaderResourceNames;
 		CU::GrowingArray<std::string> myFilePaths;
 
