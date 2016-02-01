@@ -20,10 +20,6 @@ namespace luabridge
 	struct lua_State;
 }
 
-class CollisionManager;
-class Entity;
-class EntityManager;
-
 class Game
 {
 public:
@@ -46,18 +42,6 @@ private:
 	void Render();
 	void ToggleCamera();
 
-	void ReadTextInput();
-	int GetLevenshteinDistance(const std::string &s1, const std::string &s2);
-	float GetLevenshteinRatio(const std::string& aString, int aLevenshtienDistance);
-	int GetSubstringBonus(const std::string& aInput, const std::string& aCorrectString, int aScore);
-	std::string FindClosestString(const std::string& aInput);
-
-	void LoadDictionary();
-
-	std::string myTextInput;
-	std::string mySuggestion;
-	CU::GrowingArray<std::string> myCorrectStrings;
-
 	Easy3D::Camera* myCamera;
 	Easy3D::DebugMenu* myDebugMenu;
 	Easy3D::Scene* myScene;
@@ -69,8 +53,4 @@ private:
 	int myMemoryUsage;
 	float myCPUUsage;
 	bool myCameraEnabled;
-
-	EntityManager* myEntityManager;
-	Entity* myPlayer;
-	CollisionManager* myCollisionManager;
 };
