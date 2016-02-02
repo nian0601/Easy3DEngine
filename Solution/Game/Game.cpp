@@ -49,8 +49,6 @@ bool Game::Init(HWND& aHwnd, bool aUseInputRecording)
 	myDebugMenu->AddVariable("ToggleCamera", std::bind(&Game::ToggleCamera, this));
 	myDebugMenu->EndGroup();
 
-	int apa = 5;
-
 	myRenderer = new Easy3D::Renderer();
 	myScene = new Easy3D::Scene();
 	myScene->SetCamera(myCamera);
